@@ -42,7 +42,7 @@ public class WebSecurityConfig {
 		return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> {
-					//requests.requestMatchers("/**").permitAll();
+					requests.requestMatchers("/**").permitAll();
 					requests.requestMatchers(mvc.pattern(Url.SECURITY + Url.VALIDATE_EMAIL)).permitAll();
 					requests.requestMatchers(mvc.pattern(Url.SECURITY + Url.CREATE_USER)).permitAll();
 					requests.requestMatchers(mvc.pattern(Url.SECURITY + Url.RESET_DEVICE_ID)).permitAll();

@@ -1,8 +1,11 @@
 package qalert.com.security;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -13,20 +16,26 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import qalert.com.models.generic.Response_;
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.login.LoginResponse;
 import qalert.com.models.login.TokenResponse;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
+
+	private static final Logger logger = LogManager.getLogger(JwtAuthenticationFilter.class);
     
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		LoginRequest user = null;
+
 		try {
 			user = new ObjectMapper().readValue(request.getReader(), LoginRequest.class);
 			user.joinUserNameAndDeviceId();
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			user = new LoginRequest();
+
+            logger.error(new Response_<>(ex, request).getErrorMssg());
 		}
 		
 		UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(

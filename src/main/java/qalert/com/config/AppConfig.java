@@ -77,4 +77,13 @@ public class AppConfig implements WebMvcConfigurer {
 	RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
+
+	/* @Bean
+    public Docket api() { 
+        return new Docket(DocumentationType.SWAGGER_2)  
+          .select()                                  
+          .apis(RequestHandlerSelectors.any())              
+          .paths(PathSelectors.any())                          
+          .build();                                           
+    } */
 }

@@ -281,3 +281,66 @@ qalert.com.security.SecutiryController#crear(UserRequest) mapped.
 2024-08-09T11:16:11.845-05:00  INFO 18916 --- [qalert-services] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
 2024-08-09T11:16:11.940-05:00  INFO 18916 --- [qalert-services] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2024-08-09T11:16:11.976-05:00  INFO 18916 --- [qalert-services] [restartedMain] qalert.com.QalertServicesApplication     : Started QalertServicesApplication in 9.046 seconds (process running for 10.336)
+2024-08-09T14:48:49.529-05:00  INFO 14512 --- [qalert-services] [restartedMain] qalert.com.QalertServicesApplication     : Starting QalertServicesApplication using Java 22 with PID 14512 (C:\Cris\jobs\qalert\QalertServices\target\classes started by cristhiandc98 in C:\Cris\jobs\qalert\QalertServices)
+2024-08-09T14:48:49.534-05:00  INFO 14512 --- [qalert-services] [restartedMain] qalert.com.QalertServicesApplication     : No active profile set, falling back to 1 default profile: "default"
+2024-08-09T14:48:49.615-05:00  INFO 14512 --- [qalert-services] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-08-09T14:48:49.616-05:00  INFO 14512 --- [qalert-services] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-08-09T14:48:51.911-05:00  INFO 14512 --- [qalert-services] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-08-09T14:48:51.934-05:00  INFO 14512 --- [qalert-services] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-08-09T14:48:51.935-05:00  INFO 14512 --- [qalert-services] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-08-09T14:48:52.042-05:00  INFO 14512 --- [qalert-services] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-08-09T14:48:52.043-05:00  INFO 14512 --- [qalert-services] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2425 ms
+2024-08-09T14:48:52.294-05:00  INFO 14512 --- [qalert-services] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-08-09T14:48:52.874-05:00  INFO 14512 --- [qalert-services] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@392fd25
+2024-08-09T14:48:52.879-05:00  INFO 14512 --- [qalert-services] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-08-09T14:48:53.061-05:00  WARN 14512 --- [qalert-services] [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'awsS3' defined in class path resource [qalert/com/config/AppConfig.class]: Failed to instantiate [com.amazonaws.services.s3.AmazonS3]: Factory method 'awsS3' threw exception with message: Required key 'aws.s3.access-key' not found
+2024-08-09T14:48:53.064-05:00  INFO 14512 --- [qalert-services] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-08-09T14:48:53.144-05:00  INFO 14512 --- [qalert-services] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-08-09T14:48:53.151-05:00  INFO 14512 --- [qalert-services] [restartedMain] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2024-08-09T14:48:53.177-05:00  INFO 14512 --- [qalert-services] [restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2024-08-09T14:48:53.227-05:00 ERROR 14512 --- [qalert-services] [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'awsS3' defined in class path resource [qalert/com/config/AppConfig.class]: Failed to instantiate [com.amazonaws.services.s3.AmazonS3]: Factory method 'awsS3' threw exception with message: Required key 'aws.s3.access-key' not found
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:485) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971) ~[spring-context-6.1.11.jar:6.1.11]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.11.jar:6.1.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.2.jar:3.3.2]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.3.2.jar:3.3.2]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.2.jar:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.2.jar:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.2.jar:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.2.jar:3.3.2]
+	at qalert.com.QalertServicesApplication.main(QalertServicesApplication.java:10) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-3.3.2.jar:3.3.2]
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.amazonaws.services.s3.AmazonS3]: Factory method 'awsS3' threw exception with message: Required key 'aws.s3.access-key' not found
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:178) ~[spring-beans-6.1.11.jar:6.1.11]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644) ~[spring-beans-6.1.11.jar:6.1.11]
+	... 22 common frames omitted
+Caused by: java.lang.IllegalStateException: Required key 'aws.s3.access-key' not found
+	at org.springframework.core.env.AbstractPropertyResolver.getRequiredProperty(AbstractPropertyResolver.java:183) ~[spring-core-6.1.11.jar:6.1.11]
+	at org.springframework.core.env.AbstractEnvironment.getRequiredProperty(AbstractEnvironment.java:573) ~[spring-core-6.1.11.jar:6.1.11]
+	at qalert.com.config.AppConfig.awsS3(AppConfig.java:65) ~[classes/:na]
+	at qalert.com.config.AppConfig$$SpringCGLIB$$0.CGLIB$awsS3$5(<generated>) ~[classes/:na]
+	at qalert.com.config.AppConfig$$SpringCGLIB$$FastClass$$1.invoke(<generated>) ~[classes/:na]
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258) ~[spring-core-6.1.11.jar:6.1.11]
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:348) ~[spring-context-6.1.11.jar:6.1.11]
+	at qalert.com.config.AppConfig$$SpringCGLIB$$0.awsS3(<generated>) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146) ~[spring-beans-6.1.11.jar:6.1.11]
+	... 23 common frames omitted
+

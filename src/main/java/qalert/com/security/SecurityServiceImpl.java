@@ -27,7 +27,7 @@ public class SecurityServiceImpl implements ISeguridad{
 	private static final Logger logger = LogManager.getLogger(SecurityServiceImpl.class);
 	
     @Override
-    public Response_<String> saveVerificationCode(UserRequest request) {
+    public Response_<String> saveVerificationCode(UserRequest request, boolean isChangeDevice) {
         Response_<String> out = null;
 
         try {
@@ -36,19 +36,20 @@ public class SecurityServiceImpl implements ISeguridad{
             randomCode = (int)Math.floor(Math.random() * (codMax - codMin + 1) + codMin);
             request.getLogin().setVerificationCode(String.valueOf(randomCode));
 
-            Response_<String> rptBD = dao.saveVerificationCode(request);
+            Response_<String> rptBD = dao.saveVerificationCode(request, isChangeDevice);
 
             if(rptBD.isStatus()){
-                SendEmailRequest sendEmail = new SendEmailRequest();
-                sendEmail.setTo(request.getEmail());
-                sendEmail.setSubject("Verificación de correo");
-                sendEmail.setBody("Su código de verificación es: " + randomCode);
+                // SendEmailRequest sendEmail = new SendEmailRequest();
+                // sendEmail.setTo(request.getEmail());
+                // sendEmail.setSubject("Verificación de correo");
+                // sendEmail.setBody("Su código de verificación es: " + randomCode);
 
-                String msjOk = "Se envió un código de verificación al correo: " + request.getEmail();
+                // String msjOk = "Se envió un código de verificación al correo: " + request.getEmail();
 
-                return emailService.sendSimpleEmail(sendEmail, msjOk);
+                // out = emailService.sendSimpleEmail(sendEmail, msjOk);
+                out = new Response_<String>(String.valueOf(randomCode));
             }
-            else return rptBD;
+            else out = rptBD;
 
         } catch (Exception e) {
             logger.error((out = new Response_<>(e, request, "Error al validar el código de verificación")).getErrorMssg());
@@ -59,7 +60,7 @@ public class SecurityServiceImpl implements ISeguridad{
 
 	@Override
 	public Response_<String> resetIdDevice(UserRequest request) {
-		request.getLogin().setDeviceId(Integer.parseInt(request.getLogin().getVerificationCode() + DateUtil.generateId()));
+		request.getLogin().setDeviceId(Integer.parseInt(DateUtil.generateId()));
 		return dao.resetIdDevice(request);
 	}
 }

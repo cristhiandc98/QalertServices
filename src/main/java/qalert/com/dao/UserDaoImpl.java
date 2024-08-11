@@ -1,5 +1,6 @@
 package qalert.com.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -21,6 +23,7 @@ import qalert.com.models.login.LoginResponse;
 import qalert.com.models.user.UserRequest;
 import qalert.com.models.user.UserResponse;
 import qalert.com.utils.consts.Consts;
+import qalert.com.utils.consts.DbConst;
 import qalert.com.utils.utils.DbUtil;
 
 @Qualifier(Consts.QALIFIER_DAO)
@@ -41,23 +44,24 @@ public class UserDaoImpl implements IUser{
     		    .withProcedureName("sp_insert_user");
         	
         	SqlParameterSource input = new MapSqlParameterSource()
-                .addValue("vi_userName", request.getLogin().getUserName())
+                .addValue("vi_user_name", request.getLogin().getUserName())
                 .addValue("vi_password", request.getLogin().getPassword())
+                .addValue("ni_device_id", request.getLogin().getDeviceId())
+                .addValue("vi_verification_code", request.getLogin().getVerificationCode())
                 .addValue("vi_email", request.getEmail())
                 .addValue("vi_full_name", request.getFullName())
-                .addValue("ni_document_id", request.getDocumentTypeId())
-                .addValue("ni_document", request.getDocument())
-                .addValue("vi_codigo_verificacion", request.getLogin().getVerificationCode())
-                .addValue("vi_id_equipo", request.getLogin().getDeviceId());
+                .addValue("ni_document_type_id", request.getDocumentTypeId())
+                .addValue("vi_document", request.getDocument());
         	
-            if(DbUtil.getInteger(jdbcCall.execute(input), "data") > 0)
-                out = new Response_<>(HttpStatus.OK, "¡Usuario registrado exitosamente!");
-            else
-                out = new Response_<>(HttpStatus.OK, "No se registró el usuario", false);
+            List<Map<String, Object>> dataset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
+            
+			out = new Response_<>(HttpStatus.OK, 
+				DbUtil.getString(dataset.get(0), "user_mssg"), 
+				DbUtil.getBool(dataset.get(0), "status"));
 		
-		} catch (Exception ex) {
+		}catch (Exception ex) {
             logger.error((out = new Response_<>(ex, request, "Error al crear usuario")).getErrorMssg());
-        }		
+        }	
 
     	return out;
     }

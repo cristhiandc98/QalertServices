@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import qalert.com.interfaces.IUser;
@@ -20,48 +21,28 @@ import qalert.com.utils.consts.UserMessageConst;
 
 @RestController
 @RequestMapping(Url.SECURITY)
-public class SecutiryController {
+public class SecurityController {
 
     @Qualifier(qalert.com.utils.consts.Consts.QALIFIER_SERVICE)
     @Autowired
     private ISeguridad service;
-
-    @Qualifier(qalert.com.utils.consts.Consts.QALIFIER_SERVICE)
-    @Autowired
-    private IUser userService;
     
-	private static final Logger logger = LogManager.getLogger(SecutiryController.class);
+	private static final Logger logger = LogManager.getLogger(SecurityController.class);
 		
-	@PostMapping(Url.VALIDATE_EMAIL)
-	public ResponseEntity<?> validarCorreo(@RequestBody UserRequest request) {
+	@PostMapping(Url.GET_VERIFICATION_CODE)
+	public ResponseEntity<?> getVerificationCode(@RequestBody UserRequest request, @RequestParam boolean isChangeDevice) {
 		Response_<String> out = null;
 
 		try {		
-			if(request.validateUserName())
-				out = service.saveVerificationCode(request);
+			if(request.validateFormVerificationCode())
+				out = service.saveVerificationCode(request, isChangeDevice);
 			else
 				out = new Response_<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
 		} catch (Exception e) {
             logger.error((out = new Response_<>(e, request)).getErrorMssg());
 		}
 
-		return ResponseEntity.status(out.getStatusCode()).body(out.getData());
-	}
-
-	@PostMapping(Url.CREATE_USER)
-	public ResponseEntity<?> crear(@RequestBody UserRequest request) {
-		Response_<String> out = null;
-
-		try {		
-			if(request.validateUserRegister())
-				out = userService.insert(request);
-			else
-				out = new Response_<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
-		} catch (Exception e) {
-            logger.error((out = new Response_<>(e, request)).getErrorMssg());
-		}
-
-		return ResponseEntity.status(out.getStatusCode()).body(out.getData());
+		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
 	
 	@PostMapping(Url.RESET_DEVICE_ID)

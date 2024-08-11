@@ -5,6 +5,8 @@ import java.util.Map;
 public class DbUtil {
 
     public static int getInt(Map<String, Object> data, String key){
+        if(data.get(key) == null)
+            return 0;
         return (int)data.get(key);
     }
 
@@ -12,11 +14,17 @@ public class DbUtil {
         if(data.get(key) == null)
             return null;
         else
-            return getInt(data, key);
+            return (int)data.get(key);
     }
 
     public static String getString(Map<String, Object> data, String key){
         return (String)data.get(key);
+    }
+
+    public static boolean getBool(Map<String, Object> data, String key){
+        if(data.get(key) == null)
+            return false;
+        return ((String)data.get(key)).equals("1");
     }
 
 }

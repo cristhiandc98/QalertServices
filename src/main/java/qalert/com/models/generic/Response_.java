@@ -21,7 +21,7 @@ public class Response_<T> {
 
     private HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    @JsonIgnore
+    //@JsonIgnore
     private String errorMssg;
 
 
@@ -41,7 +41,6 @@ public class Response_<T> {
         this.statusCode = statusCode;
         this.userMssg = userMssg;
         this.status = statusCode == HttpStatus.OK;
-        this.errorId = DateUtil.generateId();
     }
     
     public Response_(HttpStatus statusCode, String userMssg, boolean status) {

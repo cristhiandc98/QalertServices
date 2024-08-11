@@ -39,7 +39,9 @@ public class EmailServiceImpl implements IEmailService{
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");  
+        //props.put("mail.smtp.port", "587");  
+        props.put("mail.smtp.port", "465");  
+		props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
 		try {
 			String nombreApp = env.getRequiredProperty(EnvironmentConst.NOMBRE_APP)

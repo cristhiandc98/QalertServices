@@ -16,11 +16,11 @@ public class DateUtil {
 	}
 
 	public static String generateId() {
-        return getCurrentDateTime().format(DateTimeFormatter.ofPattern("YYYYMMDDHHMMSS"));
+        return getCurrentDateTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
     }
 	
 	public static String getStringCurrentDateTime() {
-        return getCurrentDateTime().format(DateTimeFormatter.ofPattern("YYYY-MM-DD"));
+        return getCurrentDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}
 	
 	public static String getStringFirstMonthDay(String cadenafecha) {

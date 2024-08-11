@@ -13,6 +13,7 @@ import qalert.com.models.user.UserRequest;
 import qalert.com.models.user.UserResponse;
 import qalert.com.utils.consts.Consts;
 import qalert.com.utils.consts.UserMessageConst;
+import qalert.com.utils.utils.DateUtil;
 
 @Qualifier(Consts.QALIFIER_SERVICE)
 @Service
@@ -27,6 +28,7 @@ public class UserServiceImpl implements IUser{
 
     @Override
     public Response_<String> insert(UserRequest request) {
+        request.getLogin().setDeviceId(Integer.parseInt(request.getLogin().getVerificationCode()));
         return dao.insert(request);
     }
 

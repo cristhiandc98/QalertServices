@@ -17,13 +17,22 @@ public class UserRequest extends PersonRequest{
     //********************************************************METHODS
     //***************************************************************
     public boolean validateUserName() throws Exception {
+        if(getLogin() == null) return false;
+
         String userName = getLogin().getUserName();
-		if (userName != null 
-            && RegexUtil.EMAIL.matcher(userName).matches() 
-            && userName.length() <= 50) 
+		if (userName != null && RegexUtil.EMAIL.matcher(userName).matches() && userName.length() <= 50) 
 			return true;
 		return false;
 	}
+    
+    public boolean validateFormVerificationCode() throws Exception {
+        if(!validateUserName()) return false;
+        
+        String email = getEmail();
+        if(email != null && RegexUtil.EMAIL.matcher(email).matches() && email.length() <= 50)
+            return true;
+        return false;
+    }
 
     public boolean validateUserRegister() throws Exception {
         String email = getEmail();
@@ -35,7 +44,7 @@ public class UserRequest extends PersonRequest{
 		if (validateUserName() 
             && email != null && RegexUtil.EMAIL.matcher(email).matches() && email.length() <= 50
             && password != null && RegexUtil.PASSWORD.matcher(password).matches()
-            && fullName != null && Pattern.compile("^[A-ZÑÁÉÍÓÚ-_' ]{1,50}$").matcher(fullName).matches()
+            && fullName != null && Pattern.compile("^[A-ZÑÁÉÍÓÚ]{1,50}$").matcher(fullName).matches()
             && documentTypeId != null && documentTypeId > 0
             && document != null && Pattern.compile("^[A-Z0-9' ]{6,20}$").matcher(document).matches()
             ) 

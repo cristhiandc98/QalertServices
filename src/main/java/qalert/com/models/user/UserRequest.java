@@ -35,6 +35,8 @@ public class UserRequest extends PersonRequest{
     }
 
     public boolean validateUserRegister() throws Exception {
+        if(getLogin() == null) return false;
+        
         String email = getEmail();
         String password = getLogin().getPassword();
         String fullName = getFullName();

@@ -15,10 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(Url.USER)
 public class UserController {
@@ -29,7 +31,7 @@ public class UserController {
     
 	private static final Logger logger = LogManager.getLogger(UserController.class);
 
-    @PostMapping()
+    @PostMapping(produces = "application/json;charset=UTF-8")
 	public ResponseEntity<?> insert(@RequestBody UserRequest request) {
 		Response_<String> out = null;
 

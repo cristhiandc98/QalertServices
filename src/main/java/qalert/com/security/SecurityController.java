@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.Url;
 import qalert.com.utils.consts.UserMessageConst;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(Url.SECURITY)
 public class SecurityController {

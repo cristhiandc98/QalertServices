@@ -46,9 +46,9 @@ public class UserRequest extends PersonRequest{
 		if (validateUserName() 
             && email != null && RegexUtil.EMAIL.matcher(email).matches() && email.length() <= 50
             && password != null && RegexUtil.PASSWORD.matcher(password).matches()
-            && fullName != null && Pattern.compile("^[A-ZÑÁÉÍÓÚ]{1,50}$").matcher(fullName).matches()
+            && fullName != null && Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ' -]{2,50}$").matcher(fullName).matches()
             && documentTypeId != null && documentTypeId > 0
-            && document != null && Pattern.compile("^[A-Z0-9' ]{6,20}$").matcher(document).matches()
+            && document != null && Pattern.compile("^[a-zA-Z0-9:;<>,\\!\\@#\\$\\%\\^&\\*\\(\\)_\\+\\{\\}\\[\\]\\.\\?\\/\\-]{5,30}$").matcher(document).matches()
             ) 
 			return true;
 		return false;

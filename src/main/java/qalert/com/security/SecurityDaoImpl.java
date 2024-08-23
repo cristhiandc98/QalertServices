@@ -35,7 +35,7 @@ public class SecurityDaoImpl implements ISeguridad{
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName("sp_insert_verification_code");
+    		    .withProcedureName("sp_save_verification_code");
         	
         	SqlParameterSource input = new MapSqlParameterSource()
                 .addValue("vi_user_name", request.getLogin().getUserName())
@@ -50,7 +50,7 @@ public class SecurityDaoImpl implements ISeguridad{
 				DbUtil.getBool(dataset.get(0), "status"));
 		
 		} catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, request, "Error al crear usuario")).getErrorMssg());
+            logger.error((out = new Response_<>(ex, request, "Error al guardar el código de verificación")).getErrorMssg());
         }		
 
     	return out;

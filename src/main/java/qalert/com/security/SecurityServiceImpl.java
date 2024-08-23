@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import qalert.com.interfaces.IEmailService;
@@ -11,11 +12,15 @@ import qalert.com.models.email.SendEmailRequest;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.Consts;
+import qalert.com.utils.consts.EnvironmentConst;
 import qalert.com.utils.utils.DateUtil;
 
 @Qualifier(Consts.QALIFIER_SERVICE)
 @Service
 public class SecurityServiceImpl implements ISeguridad{
+	
+	@Autowired
+	private Environment env;
 
     @Qualifier(Consts.QALIFIER_DAO)
     @Autowired
@@ -39,15 +44,13 @@ public class SecurityServiceImpl implements ISeguridad{
             Response_<String> rptBD = dao.saveVerificationCode(request, isChangeDevice);
 
             if(rptBD.isStatus()){
-                // SendEmailRequest sendEmail = new SendEmailRequest();
-                // sendEmail.setTo(request.getEmail());
-                // sendEmail.setSubject("Verificación de correo");
-                // sendEmail.setBody("Su código de verificación es: " + randomCode);
+                SendEmailRequest sendEmail = new SendEmailRequest();
+                sendEmail.setTo(request.getEmail());
+                sendEmail.setSubject(env.getRequiredProperty(EnvironmentConst.APP_NAME) + " - VERIFICACIÓN DE CORREO");
+                sendEmail.setBody("Su código de verificación es: " + randomCode);
 
-                // String msjOk = "Se envió un código de verificación al correo: " + request.getEmail();
-
-                // out = emailService.sendSimpleEmail(sendEmail, msjOk);
-                out = new Response_<String>(String.valueOf(randomCode));
+                out = emailService.sendSimpleEmail(sendEmail, rptBD.getUserMssg());
+                //if(out.isStatus()) out.setData(String.valueOf(randomCode));
             }
             else out = rptBD;
 

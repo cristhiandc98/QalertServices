@@ -35,6 +35,7 @@ public class Response_<T> {
         this.data = data;
         this.userMssg = UserMessageConst.SUCCESS;
         this.status = true;
+        this.statusCode = HttpStatus.OK;
     }
 
     public Response_(HttpStatus statusCode, String userMssg) {
@@ -51,6 +52,7 @@ public class Response_<T> {
     //Exception
     public Response_(Exception exception, Object object) {
         errorId = DateUtil.generateId();
+        status = false;
         statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         userMssg = UserMessageConst.INTERNAL_SERVER_ERROR;
         errorMssg = " | error: " + exception.getLocalizedMessage();

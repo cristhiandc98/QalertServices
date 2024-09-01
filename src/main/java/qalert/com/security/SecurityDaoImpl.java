@@ -38,7 +38,7 @@ public class SecurityDaoImpl implements ISeguridad{
     		    .withProcedureName("sp_save_verification_code");
         	
         	SqlParameterSource input = new MapSqlParameterSource()
-                .addValue("vi_user_name", request.getLogin().getUserName())
+                .addValue("vi_username", request.getLogin().getUserName())
                 .addValue("vi_email", request.getEmail())
                 .addValue("vi_verification_code", request.getLogin().getVerificationCode())
                 .addValue("is_change_device", isChangeDevice);
@@ -61,54 +61,4 @@ public class SecurityDaoImpl implements ISeguridad{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'resetIdDevice'");
 	}
-   
-    /* @Override
-    public Respuesta<String> guardarCodigoVerificacion(UsuarioNuevoModel obj) {
-        Respuesta<String> salida = new Respuesta<>();
-        try {
-			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName("sp_guardar_codigo_verificacion")
-				.declareParameters(ParametrosBD.PARAM_SALIDA_DATA);
-        	
-        	SqlParameterSource input = new MapSqlParameterSource()
-        			.addValue("vi_correo", obj.getUsuario().getCorreo())
-        			.addValue("vi_usuario", obj.getUsuario().getUsuario())
-        			.addValue("vi_codigo_verificacion", obj.getVerificationCode())
-        			.addValue("ni_cambio_equipo", obj.getEsCambioEquipo() ? 1 : 0);
-
-			salida = new Respuesta(jdbcCall.execute(input));
-			if(salida.getMsjError() != null)
-	            logger.error(salida.setError2(obj, "guardarCodigoVerificacion", salida.getMsjError()));
-
-		} catch (Exception ex) {
-            salida.setMsjUsuario(MsjUsuario.ERROR_COMUNICAR_BD);
-            logger.error(salida.setError2(obj, "guardarCodigoVerificacion", ex.getMessage()));
-        }		
-    	return salida;
-    }
-    
-    @Override
-    public Respuesta<String> resetearIdEquipo(UsuarioNuevoModel obj, String idEquipo) {
-        Respuesta<String> salida = new Respuesta<>();
-        try {
-			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName("sp_resetear_id_equipo")
-				.declareParameters(ParametrosBD.PARAM_SALIDA_DATA);
-        	
-        	SqlParameterSource input = new MapSqlParameterSource()
-        			.addValue("vi_usuario", obj.getUsuario().getUsuario())
-        			.addValue("vi_correo", obj.getUsuario().getCorreo())
-        			.addValue("vi_codigo_verificacion", obj.getVerificationCode())
-        			.addValue("vi_id_equipo", idEquipo);
-
-			salida = new Respuesta(jdbcCall.execute(input));
-			if(salida.getMsjError() != null)
-	            logger.error(salida.setError2(obj, "resetearIdEquipo", salida.getMsjError()));
-
-		} catch (Exception ex) {
-            salida.setMsjUsuario(MsjUsuario.ERROR_COMUNICAR_BD);
-            logger.error(salida.setError2(obj, "resetearIdEquipo", ex.getMessage()));
-        }		
-    	return salida;
-    } */
 }

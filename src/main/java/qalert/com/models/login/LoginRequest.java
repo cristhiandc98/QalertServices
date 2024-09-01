@@ -1,5 +1,7 @@
 package qalert.com.models.login;
 
+import qalert.com.utils.utils.RegexUtil;
+
 public class LoginRequest {
 
     private String userName;
@@ -14,14 +16,40 @@ public class LoginRequest {
     //********************************************************METHODS
     //***************************************************************
     public void joinUserNameAndDeviceId(){
-        userName = userName + ":" + password;
+        userName = userName + ":" + deviceId;
     }
 
     public void separateUserNameAndDeviceId(){
         String[] x = userName.split(":");
         userName = x[0];
-        password = x[1];
+        deviceId = Integer.parseInt(x[1]);
     }
+
+    public boolean validateUserName() throws Exception {
+		if (userName != null && RegexUtil.EMAIL.matcher(userName).matches() && userName.length() <= 50) 
+			return true;
+		return false;
+	}
+
+    public boolean validatePassword() throws Exception {
+		if (password != null && RegexUtil.PASSWORD.matcher(password).matches() && password.length() <= 50) 
+			return true;
+		return false;
+	}
+
+    public boolean validateDeviceId() throws Exception {
+		if (deviceId != null && deviceId.toString().length() == 3) 
+			return true;
+		return false;
+	}
+
+    public boolean validateLogin() throws Exception {
+		if (validateUserName()
+            && validatePassword()
+            && validateDeviceId()) 
+			return true;
+		return false;
+	}
 
 
     //***************************************************************

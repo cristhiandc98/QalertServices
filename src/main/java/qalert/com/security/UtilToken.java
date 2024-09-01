@@ -21,7 +21,7 @@ public class UtilToken {
     private static final String ACCES_TOKEN_SECRET = "$2a$10$ZTBFEpVID1vf5Luffx1mbeFedEHhaBsEJcC20t1kHLOt5BPTqOS9C"; //new BCryptPasswordEncoder().encode("M0QS9APGC+1FGG*/3DIGUV8BYB7"); Se utilizó esta cadena para encryptar y pasarla como clave para generar el token
 	private static final Long TIME_EXPIRATION = 300L * 1000;
 	
-	public static UserResponse crearToken(UserResponse user) {
+	public static void createToken(UserResponse user) {
 		Date expirationDate = new Date(System.currentTimeMillis() + TIME_EXPIRATION);
 		
 		Map<String, Object> extra = new HashMap<>();
@@ -40,9 +40,7 @@ public class UtilToken {
 		TokenResponse token = new TokenResponse(tokenString, DateUtil.getStringDateTimeFromDate(expirationDate));
 
 		login.setToken(token);
-		user.setLogin(login);		
-		
-		return user;
+		user.setLogin(login);	
 	}
 	
 	public static UsernamePasswordAuthenticationToken getAuthentication(String token) {

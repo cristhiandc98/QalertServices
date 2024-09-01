@@ -29,20 +29,13 @@ public class UserServiceImpl implements IUser{
     @Override
     public Response_<String> insert(UserRequest request) {
         request.getLogin().setDeviceId(Integer.parseInt(request.getLogin().getVerificationCode()));
+        request.getLogin().setPassword(encryptador.encode(request.getLogin().getPassword()));
         return dao.insert(request);
     }
 
     @Override
     public Response_<UserResponse> login(LoginRequest request) {
-        Response_<UserResponse> out = dao.login(request);
-		
-		if(out.getData() != null) {			
-			//if(idEquipo.equals(rpt.getData().getIdEquipo()))
-			if(!encryptador.matches(request.getDeviceId().toString(), out.getData().getLogin().getDeviceId().toString()))
-				out = new Response_<>(HttpStatus.UNAUTHORIZED, UserMessageConst.UNAUTHORIZED);
-		} 
-
-		return out;
+		return dao.login(request);
     }
 
 }

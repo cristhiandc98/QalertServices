@@ -20,6 +20,7 @@ import qalert.com.models.generic.Response_;
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.login.LoginResponse;
 import qalert.com.models.login.TokenResponse;
+import qalert.com.models.user.UserResponse;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
@@ -27,19 +28,21 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-		LoginRequest user = null;
+		LoginRequest login = null;
 
 		try {
-			user = new ObjectMapper().readValue(request.getReader(), LoginRequest.class);
-			user.joinUserNameAndDeviceId();
+			login = new ObjectMapper().readValue(request.getReader(), LoginRequest.class);
+			if(login.validateLogin())
+				login.joinUserNameAndDeviceId();
+			else 			
+				login = new LoginRequest();
 		} catch (Exception ex) {
-			user = new LoginRequest();
-
+			login = new LoginRequest();
             logger.error(new Response_<>(ex, request).getErrorMssg());
 		}
 		
 		UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(
-				user.getUserName(), user.getPassword(), Collections.emptyList());
+			login.getUserName(), login.getPassword(), Collections.emptyList());
 		
 		return getAuthenticationManager().authenticate(upat);
 	}
@@ -50,19 +53,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		//Recuperate claims data
 		UserDetailsImpl udi = (UserDetailsImpl) authentication.getPrincipal();
-		LoginResponse loginResponse = udi.getUser(); //UtilToken.crearToken());
+		UtilToken.createToken(udi.getUser());
 			
 		//Whiten login data
-		loginResponse.setPassword(null);
-		loginResponse.setUserName(null);
+		LoginResponse login = udi.getUser().getLogin();
+		login.setPassword(null);
+		login.setUserName(null);
 		
 		//Set token
 		TokenResponse tokenResponse = new TokenResponse();
-		tokenResponse.setToken(Consts.BEARER + loginResponse.getToken());
-		loginResponse.setToken(tokenResponse);
+		tokenResponse.setToken(Consts.BEARER + login.getToken().getToken());
+		login.setToken(tokenResponse);
 		
 		//Return
-		response.getWriter().write(new ObjectMapper().writeValueAsString(loginResponse));
+		response.setContentType("application/json");
+    	response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(new ObjectMapper().writeValueAsString(new Response_<UserResponse>(udi.getUser())));
 		response.getWriter().flush();
 		super.successfulAuthentication(request, response, filter, authentication);
 	}

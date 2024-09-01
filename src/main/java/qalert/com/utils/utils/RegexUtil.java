@@ -12,4 +12,6 @@ public class RegexUtil {
 
 	public static final Pattern PASSWORD = Pattern.compile("^(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\/-a-zA-Z0-9]).{8,30}$");
 	
+    public static final Pattern NUMBER = Pattern.compile("^[0-9]$");
+	
 }

@@ -44,7 +44,7 @@ public class UserDaoImpl implements IUser{
     		    .withProcedureName("sp_insert_user");
         	
         	SqlParameterSource input = new MapSqlParameterSource()
-                .addValue("vi_user_name", request.getLogin().getUserName())
+                .addValue("vi_username", request.getLogin().getUserName())
                 .addValue("vi_password", request.getLogin().getPassword())
                 .addValue("ni_device_id", request.getLogin().getDeviceId())
                 .addValue("vi_verification_code", request.getLogin().getVerificationCode())
@@ -53,11 +53,11 @@ public class UserDaoImpl implements IUser{
                 .addValue("ni_document_type_id", request.getDocumentTypeId())
                 .addValue("vi_document", request.getDocument());
         	
-            List<Map<String, Object>> dataset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
             
 			out = new Response_<>(HttpStatus.OK, 
-				DbUtil.getString(dataset.get(0), "user_mssg"), 
-				DbUtil.getBool(dataset.get(0), "status"));
+				DbUtil.getString(resultset.get(0), "user_mssg"), 
+				DbUtil.getBool(resultset.get(0), "status"));
 		
 		}catch (Exception ex) {
             logger.error((out = new Response_<>(ex, request, "Error al crear usuario")).getErrorMssg());
@@ -76,31 +76,26 @@ public class UserDaoImpl implements IUser{
         	SqlParameterSource input = new MapSqlParameterSource()
             .addValue("vi_username", request.getUserName())
             .addValue("vi_device_id", request.getDeviceId());
-
-            List<Map<String, Object>> dataSet = (List<Map<String, Object>>) jdbcCall.execute(input).entrySet().iterator().next().getValue();
         	
-            if(dataSet != null && dataSet.size() > 0){
-                Map<String, Object> map = dataSet.get(0);
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
+        	
+            if(resultset != null && resultset.size() > 0){
+                Map<String, Object> map = resultset.get(0);
 
                 UserResponse user = new UserResponse();
                 LoginResponse login = new LoginResponse();
 
                 user.setUserId(DbUtil.getInteger(map, "user_id"));
                 user.setFullName(DbUtil.getString(map, "full_name"));
-                user.setDocumentTypeId(DbUtil.getInteger(map, "document_type_id"));
-                user.setDocument(DbUtil.getString(map, "document"));
-                user.setEmail(DbUtil.getString(map, "email"));
-                user.setBirthDay(DbUtil.getString(map, "birthday"));
 
                 login.setPassword(DbUtil.getString(map, "username"));
                 login.setPassword(DbUtil.getString(map, "password"));
-                login.setDeviceId(DbUtil.getInteger(map, "device_id"));
 
                 user.setLogin(login);
 
                 out = new Response_<>(user);
             }
-            else out = new Response_<>(HttpStatus.UNAUTHORIZED, "Usuario no registrado", false);
+            else out = new Response_<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
 		
 		} catch (Exception ex) {
             logger.error((out = new Response_<>(ex, request, "Error iniciar sesión")).getErrorMssg());

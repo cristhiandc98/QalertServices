@@ -60,8 +60,8 @@ public class UserDetailsImpl implements UserDetails{
 		return true;
 	}
 	
-	public LoginResponse getUser() {
-		return user.getLogin();
+	public UserResponse getUser() {
+		return user;
 	}
 
 }

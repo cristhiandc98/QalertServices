@@ -60,7 +60,7 @@ public class UserDaoImpl implements IUser{
 				DbUtil.getBool(resultset.get(0), "status"));
 		
 		}catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, request, "Error al crear usuario")).getErrorMssg());
+            logger.error((out = new Response_<>(ex, request, "Ocurrió un problema al crear el usuario")).getErrorMssg());
         }	
 
     	return out;
@@ -75,7 +75,7 @@ public class UserDaoImpl implements IUser{
         	
         	SqlParameterSource input = new MapSqlParameterSource()
             .addValue("vi_username", request.getUserName())
-            .addValue("vi_device_id", request.getDeviceId());
+            .addValue("ni_device_id", request.getDeviceId());
         	
             List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
         	
@@ -98,8 +98,34 @@ public class UserDaoImpl implements IUser{
             else out = new Response_<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
 		
 		} catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, request, "Error iniciar sesión")).getErrorMssg());
+            logger.error((out = new Response_<>(ex, request, "Ocurrió un problema al iniciar sesión")).getErrorMssg());
         }		
+
+    	return out;
+    }
+
+    @Override
+    public Response_<String> update(UserRequest request) {
+        Response_<String> out = null;
+
+        try {
+			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+    		    .withProcedureName("sp_update_user");
+        	
+        	SqlParameterSource input = new MapSqlParameterSource()
+                .addValue("vi_username", request.getLogin().getUserName())
+                .addValue("vi_verification_code", request.getLogin().getVerificationCode())
+                .addValue("vi_password", request.getLogin().getPassword());
+        	
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
+            
+			out = new Response_<>(HttpStatus.OK, 
+				DbUtil.getString(resultset.get(0), "user_mssg"), 
+				DbUtil.getBool(resultset.get(0), "status"));
+		
+		}catch (Exception ex) {
+            logger.error((out = new Response_<>(ex, request, "Ocurrió un problema al actualizar el usuario")).getErrorMssg());
+        }	
 
     	return out;
     }

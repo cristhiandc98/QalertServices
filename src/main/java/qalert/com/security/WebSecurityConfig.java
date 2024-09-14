@@ -19,7 +19,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import qalert.com.utils.consts.Url;
 	
 @Configuration
-public class WebSecurityConfig implements WebMvcConfigurer{
+public class WebSecurityConfig{
     
 	@Autowired
 	private UserDetailsService userDetailsService;	
@@ -44,11 +44,11 @@ public class WebSecurityConfig implements WebMvcConfigurer{
 		return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> {
-					//requests.requestMatchers("/**").permitAll();
+					requests.requestMatchers("/**").permitAll();
 					requests.requestMatchers(mvc.pattern(Url.SECURITY + Url.GET_VERIFICATION_CODE)).permitAll();
 					requests.requestMatchers(mvc.pattern(Url.USER)).permitAll();
-					//requests.requestMatchers(mvc.pattern(Url.SECURITY + Url.RESET_DEVICE_ID)).permitAll();
-					//requests.requestMatchers(mvc.pattern(Url.SECURITY + "/")).permitAll();
+					requests.requestMatchers(mvc.pattern(Url.SECURITY + Url.RESET_DEVICE_ID)).permitAll();
+					requests.requestMatchers(mvc.pattern(Url.SECURITY + "/")).permitAll();
 					requests.anyRequest().authenticated();
 				})
                 .httpBasic()
@@ -69,13 +69,4 @@ public class WebSecurityConfig implements WebMvcConfigurer{
 				.and()
 				.build();
 	}	
-
-	@Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
 }

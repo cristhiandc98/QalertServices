@@ -32,7 +32,7 @@ public class LoginRequest {
 	}
 
     public boolean validatePassword() throws Exception {
-		if (password != null && RegexUtil.PASSWORD.matcher(password).matches() && password.length() <= 50) 
+		if (password != null && RegexUtil.PASSWORD.matcher(password).matches()) 
 			return true;
 		return false;
 	}

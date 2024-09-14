@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -26,7 +27,7 @@ import qalert.com.utils.consts.EnvironmentConst;
 
 @Configuration
 @ComponentScan
-public class AppConfig {
+public class AppConfig implements WebMvcConfigurer{
 	
 	@Autowired
 	private Environment env;

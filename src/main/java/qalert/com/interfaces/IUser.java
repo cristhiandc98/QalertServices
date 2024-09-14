@@ -8,6 +8,8 @@ import qalert.com.models.user.UserResponse;
 public interface IUser {
 
     Response_<String> insert(UserRequest request);
+
+    Response_<String> update(UserRequest request);
 	
     Response_<UserResponse> login(LoginRequest request);
 

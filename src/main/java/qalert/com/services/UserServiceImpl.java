@@ -30,12 +30,24 @@ public class UserServiceImpl implements IUser{
     public Response_<String> insert(UserRequest request) {
         request.getLogin().setDeviceId(Integer.parseInt(request.getLogin().getVerificationCode()));
         request.getLogin().setPassword(encryptador.encode(request.getLogin().getPassword()));
-        return dao.insert(request);
+        
+        Response_<String> out = dao.insert(request);
+
+        if(out.isStatus())
+          out.setData(request.getLogin().getVerificationCode());
+
+        return out;
     }
 
     @Override
     public Response_<UserResponse> login(LoginRequest request) {
 		return dao.login(request);
+    }
+
+    @Override
+    public Response_<String> update(UserRequest request) {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
 }

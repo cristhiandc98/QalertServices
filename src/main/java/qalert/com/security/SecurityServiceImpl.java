@@ -55,7 +55,7 @@ public class SecurityServiceImpl implements ISeguridad{
             else out = rptBD;
 
         } catch (Exception e) {
-            logger.error((out = new Response_<>(e, request, "Error al validar el código de verificación")).getErrorMssg());
+            logger.error((out = new Response_<>(e, request, "Error al generar el código de verificación")).getErrorMssg());
         }
 
         return out;

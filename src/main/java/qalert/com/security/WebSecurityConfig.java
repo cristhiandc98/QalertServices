@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-import qalert.com.utils.consts.Url;
+import qalert.com.utils.consts.ApiConst;
 	
 @Configuration
 public class WebSecurityConfig{
@@ -39,16 +39,16 @@ public class WebSecurityConfig{
 	SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager auth, MvcRequestMatcher.Builder mvc) throws Exception {
 		JwtAuthenticationFilter jwtAuthentication = new JwtAuthenticationFilter();
 		jwtAuthentication.setAuthenticationManager(auth);
-		jwtAuthentication.setFilterProcessesUrl(Url.SECURITY + Url.LOGIN);
+		jwtAuthentication.setFilterProcessesUrl(ApiConst.SECURITY + ApiConst.LOGIN);
 		
 		return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> {
 					requests.requestMatchers("/**").permitAll();
-					requests.requestMatchers(mvc.pattern(Url.SECURITY + Url.GET_VERIFICATION_CODE)).permitAll();
-					requests.requestMatchers(mvc.pattern(Url.USER)).permitAll();
-					requests.requestMatchers(mvc.pattern(Url.SECURITY + Url.RESET_DEVICE_ID)).permitAll();
-					requests.requestMatchers(mvc.pattern(Url.SECURITY + "/")).permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.GET_VERIFICATION_CODE)).permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.USER)).permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.RESET_DEVICE_ID)).permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + "/")).permitAll();
 					requests.anyRequest().authenticated();
 				})
                 .httpBasic()

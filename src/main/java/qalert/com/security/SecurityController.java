@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import qalert.com.interfaces.IUser;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.user.UserRequest;
-import qalert.com.utils.consts.Url;
+import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.UserMessageConst;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping(Url.SECURITY)
+@RequestMapping(ApiConst.SECURITY)
 public class SecurityController {
 
     @Qualifier(qalert.com.utils.consts.Consts.QALIFIER_SERVICE)
@@ -31,7 +31,7 @@ public class SecurityController {
     
 	private static final Logger logger = LogManager.getLogger(SecurityController.class);
 		
-	@PostMapping(Url.GET_VERIFICATION_CODE)
+	@PostMapping(ApiConst.GET_VERIFICATION_CODE)
 	public ResponseEntity<?> getVerificationCode(@RequestBody UserRequest request, @RequestParam boolean isChangeDevice) {
 		Response_<String> out = null;
 
@@ -47,7 +47,7 @@ public class SecurityController {
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
 	
-	@PostMapping(Url.RESET_DEVICE_ID)
+	@PostMapping(ApiConst.RESET_DEVICE_ID)
 	public ResponseEntity<?> resetIdDevice(@RequestBody UserRequest request) {
 		Response_<String> out = null;
 
@@ -63,7 +63,7 @@ public class SecurityController {
 		return ResponseEntity.status(out.getStatusCode()).body(out.getData());
 	}
 
-	@GetMapping(Url.ROOT)
+	@GetMapping(ApiConst.ROOT)
     public ResponseEntity<?> root() {
         return ResponseEntity.ok("¡Service running!");
 	}

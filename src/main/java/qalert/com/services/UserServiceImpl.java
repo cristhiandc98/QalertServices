@@ -2,7 +2,6 @@ package qalert.com.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +11,6 @@ import qalert.com.models.login.LoginRequest;
 import qalert.com.models.user.UserRequest;
 import qalert.com.models.user.UserResponse;
 import qalert.com.utils.consts.Consts;
-import qalert.com.utils.consts.UserMessageConst;
-import qalert.com.utils.utils.DateUtil;
 
 @Qualifier(Consts.QALIFIER_SERVICE)
 @Service
@@ -41,13 +38,17 @@ public class UserServiceImpl implements IUser{
 
     @Override
     public Response_<UserResponse> login(LoginRequest request) {
-		return dao.login(request);
+		  return dao.login(request);
     }
 
     @Override
-    public Response_<String> update(UserRequest request) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public Response_<String> updatePassword(UserRequest request) {
+		  Response_<String> out = dao.updatePassword(request);
+
+        if(out.isStatus())
+          out.setData(request.getLogin().getVerificationCode());
+
+        return out;
     }
 
 }

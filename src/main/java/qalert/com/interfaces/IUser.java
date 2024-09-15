@@ -9,7 +9,7 @@ public interface IUser {
 
     Response_<String> insert(UserRequest request);
 
-    Response_<String> update(UserRequest request);
+    Response_<String> updatePassword(UserRequest request);
 	
     Response_<UserResponse> login(LoginRequest request);
 

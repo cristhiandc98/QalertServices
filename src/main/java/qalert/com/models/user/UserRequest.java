@@ -44,7 +44,18 @@ public class UserRequest extends PersonRequest{
 		return false;
 	}
 
-    
+    public boolean validateUpdatePassword() throws Exception {
+        if(getLogin() == null) return false;
+
+		if (getLogin().validateUserName() 
+            && getLogin().validatePassword()
+            && getLogin().validateVerificationCode()
+            ) 
+			return true;
+		return false;
+	}
+
+
     //***************************************************************
     //*********************************************GETTERS AND SETTER
     //***************************************************************

@@ -1,6 +1,5 @@
 package qalert.com.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -105,12 +103,12 @@ public class UserDaoImpl implements IUser{
     }
 
     @Override
-    public Response_<String> update(UserRequest request) {
+    public Response_<String> updatePassword(UserRequest request) {
         Response_<String> out = null;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName("sp_update_user");
+    		    .withProcedureName("sp_update_password");
         	
         	SqlParameterSource input = new MapSqlParameterSource()
                 .addValue("vi_username", request.getLogin().getUserName())

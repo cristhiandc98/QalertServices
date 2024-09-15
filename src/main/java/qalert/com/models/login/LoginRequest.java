@@ -2,6 +2,8 @@ package qalert.com.models.login;
 
 import qalert.com.utils.utils.RegexUtil;
 
+import java.util.regex.Pattern;
+
 public class LoginRequest {
 
     private String userName;
@@ -39,6 +41,12 @@ public class LoginRequest {
 
     public boolean validateDeviceId() throws Exception {
 		if (deviceId != null && deviceId.toString().length() == 3) 
+			return true;
+		return false;
+	}
+
+    public boolean validateVerificationCode() throws Exception {
+		if (verificationCode != null && Pattern.compile("^[0-9]{3}$").matcher(verificationCode).matches()) 
 			return true;
 		return false;
 	}

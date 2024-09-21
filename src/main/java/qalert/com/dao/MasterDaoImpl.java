@@ -59,15 +59,52 @@ public class MasterDaoImpl implements IMaster{
                 if(list.size() > 0)
                     out = new Response_<>(list);
                 else 
-                    out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", true);
+                    out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
             }
-            else out = new Response_<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
+            else out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
 		
 		} catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, null, "Ocurrió un problema al iniciar sesión")).getErrorMssg());
+            logger.error((out = new Response_<>(ex, null, "Ocurrió un problema al obtener la configuración")).getErrorMssg());
         }		
 
     	return out;
     }
 
+    
+    public Response_<MasterResponse> getTermsAndConditions(){
+        Response_<MasterResponse> out = null;
+
+        try {
+			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+    		    .withProcedureName("sp_get_terms_and_conditions");
+        	
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET);
+        	
+            if(resultset != null && resultset.size() > 0){
+
+                MasterResponse model = null;
+                
+                for (Map<String,Object> map : resultset) {
+                    model = new MasterResponse();
+
+                    model.setTableId(DbUtil.getInteger(map, "table_id"));
+                    model.setFieldId(DbUtil.getInteger(map, "field_id"));
+                    model.setSequence(DbUtil.getInteger(map, "sequence"));
+                    model.setValueInt(DbUtil.getInteger(map, "value_int"));
+                    model.setValueVarchar(DbUtil.getString(map, "value_varchar"));
+                }
+                
+                if(model != null)
+                    out = new Response_<>(model);
+                else 
+                    out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
+            }
+            else out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
+		
+		} catch (Exception ex) {
+            logger.error((out = new Response_<>(ex, null, "Ocurrió un problema al obtener la configuración")).getErrorMssg());
+        }		
+
+    	return out;
+    }
 }

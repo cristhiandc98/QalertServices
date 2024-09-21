@@ -24,4 +24,9 @@ public class MasterServicesImpl implements IMaster{
         return dao.listAppSettings();
     }
 
+    @Override
+    public Response_<MasterResponse> getTermsAndConditions() {
+        return dao.getTermsAndConditions();
+    }
+
 }

@@ -1,44 +1,89 @@
-2024-09-08 09:09:32.371 | qalert.com.services.EmailServiceImpl.sendSimpleEmail | idError: 20240908093932 | error: Could not convert socket to TLS | json: {"to":"CRDC98CRDC@GMAIL.COM","subject":"Q'ALERT - VERIFICACIÓN DE CORREO","body":"Su código de verificación es: 575"}
-2024-09-08 09:09:54.443 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@6bd15e62 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 09:09:54.457 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@7cee1a9d (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 09:09:54.466 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@6dc30031 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 09:09:54.472 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@6006630 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 09:09:54.480 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@11ecedf4 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 09:09:54.486 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@1dda27a6 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 09:09:54.491 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@686d6ea4 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 09:09:54.497 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@6dd9b47f (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 09:09:54.502 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@1b2c677d (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 09:09:54.509 | com.zaxxer.hikari.pool.PoolBase.isConnectionDead HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@570784a9 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
-2024-09-08 10:09:08.753 | qalert.com.services.EmailServiceImpl.sendSimpleEmail | idError: 20240908102808 | error: Could not convert socket to TLS | json: {"to":"CRDC98CRDC@GMAIL.COM","subject":"Q'ALERT - VERIFICACIÓN DE CORREO","body":"Su código de verificación es: 407"}
-2024-09-08 10:09:54.765 | qalert.com.services.EmailServiceImpl.sendSimpleEmail | idError: 20240908104554 | error: Could not convert socket to TLS | json: {"to":"CRDC98CRDC@GMAIL.COM","subject":"Q'ALERT - VERIFICACIÓN DE CORREO","body":"Su código de verificación es: 433"}
-2024-09-08 10:09:02.555 | qalert.com.services.EmailServiceImpl.sendSimpleEmail | idError: 20240908105802 | error: Could not convert socket to TLS | json: {"to":"ANCHIGALLARDO96@GMAIL.COM","subject":"Q'ALERT - VERIFICACIÓN DE CORREO","body":"Su código de verificación es: 904"}
-2024-09-08 13:09:51.182 | qalert.com.services.EmailServiceImpl.sendSimpleEmail | idError: 20240908133751 | error: Could not convert socket to TLS | json: {"to":"CRISTHIAN.DIAZ@LABROE.COM","subject":"Q'ALERT - VERIFICACIÓN DE CORREO","body":"Su código de verificación es: 701"}
-2024-09-08 13:09:44.673 | qalert.com.security.SecurityServiceImpl.saveVerificationCode | idError: 20240908135344 | error: Access to default session denied | json: {"fullName":"CRISTHIAN ROBERTO","documentTypeId":1,"document":"ACM74830383","email":"ALT.V4-B77TI9Q@YOPMAIL.COM","birthDay":null,"userId":null,"login":{"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":"LabRoe123##4","deviceId":null,"verificationCode":"844"}}
-2024-09-08 13:09:55.643 | qalert.com.security.SecurityServiceImpl.saveVerificationCode | idError: 20240908135455 | error: Access to default session denied | json: {"fullName":"CRISTHIAN ROBERTO","documentTypeId":1,"document":"ACM74830383","email":"ALT.V4-B77TI9Q@YOPMAIL.COM","birthDay":null,"userId":null,"login":{"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":"LabRoe123##4","deviceId":null,"verificationCode":"773"}}
-2024-09-08 13:09:32.017 | qalert.com.security.SecurityServiceImpl.saveVerificationCode | idError: 20240908135732 | error: Access to default session denied | json: {"fullName":"CRISTHIAN ROBERTO","documentTypeId":1,"document":"ACM74830383","email":"ALT.V4-B77TI9Q@YOPMAIL.COM","birthDay":null,"userId":null,"login":{"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":"LabRoe123##4","deviceId":null,"verificationCode":"732"}}
-2024-09-08 13:09:47.398 | qalert.com.security.SecurityServiceImpl.saveVerificationCode | idError: 20240908135747 | error: Access to default session denied | json: {"fullName":"CRISTHIAN ROBERTO","documentTypeId":1,"document":"ACM74830383","email":"ALT.V4-B77TI9Q@YOPMAIL.COM","birthDay":null,"userId":null,"login":{"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":"LabRoe123##4","deviceId":null,"verificationCode":"382"}}
-2024-09-08 13:09:14.403 | qalert.com.security.SecurityServiceImpl.saveVerificationCode | idError: 20240908135814 | error: Access to default session denied | json: {"fullName":"CRISTHIAN ROBERTO","documentTypeId":1,"document":"ACM74830383","email":"ALT.V4-B77TI9Q@YOPMAIL.COM","birthDay":null,"userId":null,"login":{"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":"LabRoe123##4","deviceId":null,"verificationCode":"173"}}
-2024-09-08 14:09:04.506 | qalert.com.services.EmailServiceImpl.sendSimpleEmail | idError: 20240908142304 | error: Could not convert socket to TLS | json: {"to":"ALT.V4-B77TI9Q@YOPMAIL.COM","subject":"Q'ALERT - VERIFICACIÓN DE CORREO","body":"Su código de verificación es: 765"}
-2024-09-08 14:09:40.009 | qalert.com.services.EmailServiceImpl.sendSimpleEmail | idError: 20240908143440 | error: Could not convert socket to TLS | json: {"to":"ALT.V4-B77TI9Q@YOPMAIL.COM","subject":"Q'ALERT - VERIFICACIÓN DE CORREO","body":"Su código de verificación es: 576"}
-2024-09-08 14:09:39.845 | qalert.com.services.EmailServiceImpl.sendSimpleEmail | idError: 20240908144639 | error: Could not convert socket to TLS | json: {"to":"ALT.V4-B77TI9Q@YOPMAIL.COM","subject":"Q'ALERT - VERIFICACIÓN DE CORREO","body":"Su código de verificación es: 884"}
-2024-09-08 15:09:25.925 | qalert.com.services.EmailServiceImpl.sendSimpleEmail | idError: 20240908151225 | error: Could not convert socket to TLS | json: {"to":"ALT.V4-B77TI9Q@YOPMAIL.COM","subject":"Q'ALERT - VERIFICACIÓN DE CORREO","body":"Su código de verificación es: 457"}
-2024-09-08 16:09:32.888 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160432 | error: Required input parameter 'ni_devide_id' is missing | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:33.501 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160433 | error: Required input parameter 'ni_devide_id' is missing | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:57.143 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160457 | error: Required input parameter 'ni_devide_id' is missing | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:57.767 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160457 | error: Required input parameter 'ni_devide_id' is missing | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:30.893 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160630 | error: Required input parameter 'ni_devide_id' is missing | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:31.494 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160631 | error: Required input parameter 'ni_devide_id' is missing | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:14.008 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160714 | error: Required input parameter 'ni_devide_id' is missing | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:14.770 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160714 | error: Required input parameter 'ni_devide_id' is missing | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:43.703 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160843 | error: CallableStatementCallback; bad SQL grammar [{call sp_login(?, ?)}] | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:44.554 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160844 | error: CallableStatementCallback; bad SQL grammar [{call sp_login(?, ?)}] | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:38.307 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160938 | error: CallableStatementCallback; bad SQL grammar [{call sp_login(?, ?)}] | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:39.253 | qalert.com.dao.UserDaoImpl.login | idError: 20240908160939 | error: CallableStatementCallback; bad SQL grammar [{call sp_login(?, ?)}] | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:04.723 | qalert.com.dao.UserDaoImpl.login | idError: 20240908161504 | error: Unable to determine the correct call signature - no procedure/function/signature for 'sp_login' | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-08 16:09:05.205 | qalert.com.dao.UserDaoImpl.login | idError: 20240908161505 | error: Unable to determine the correct call signature - no procedure/function/signature for 'sp_login' | json: {"userName":"ALT.V4-B77TI9Q@YOPMAIL.COM","password":null,"deviceId":431,"verificationCode":null}
-2024-09-14 17:09:03.795 | qalert.com.dao.UserDaoImpl.updatePassword | idError: 20240914170403 | error: Unable to determine the correct call signature - no procedure/function/signature for 'sp_update_password' | json: {"fullName":null,"documentTypeId":null,"document":null,"email":null,"birthDay":null,"userId":null,"login":{"userName":"CRISTHIANDC98@GMAIL.COM","password":"1234567890lll","deviceId":null,"verificationCode":"220"}}
-2024-09-14 17:09:29.636 | qalert.com.dao.UserDaoImpl.updatePassword | idError: 20240914170529 | error: For input string: "1234567890lll" | json: {"fullName":null,"documentTypeId":null,"document":null,"email":null,"birthDay":null,"userId":null,"login":{"userName":"CRISTHIANDC98@GMAIL.COM","password":"1234567890lll","deviceId":null,"verificationCode":"220"}}
-2024-09-14 19:09:29.816 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unrecognized field "userName" (class qalert.com.models.user.UserRequest), not marked as ignorable]
-2024-09-14 19:09:50.083 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unrecognized field "userName" (class qalert.com.models.user.UserRequest), not marked as ignorable]
-2024-09-14 19:09:34.940 | qalert.com.dao.UserDaoImpl.updatePassword | idError: 20240914192834 | error: Unable to determine the correct call signature - no procedure/function/signature for 'sp_update_password' | json: {"fullName":null,"documentTypeId":null,"document":null,"email":"CRISTHIANDC98@GMAIL.COM","birthDay":null,"userId":null,"login":{"userName":"CRISTHIANDC98@GMAIL.COM","password":"12345678","deviceId":null,"verificationCode":"689"}}
-2024-09-14 19:09:04.353 | qalert.com.dao.UserDaoImpl.updatePassword | idError: 20240914192904 | error: Unable to determine the correct call signature - no procedure/function/signature for 'sp_update_password' | json: {"fullName":null,"documentTypeId":null,"document":null,"email":"CRISTHIANDC98@GMAIL.COM","birthDay":null,"userId":null,"login":{"userName":"CRISTHIANDC98@GMAIL.COM","password":"12345678","deviceId":null,"verificationCode":"689"}}
+2024-09-18 07:09:04.543 | org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext.refresh Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'mvc' defined in class path resource [qalert/com/security/WebSecurityConfig.class]: Unsatisfied dependency expressed through method 'mvc' parameter 0: Error creating bean with name 'mvcHandlerMappingIntrospector' defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]: Ambiguous mapping. Cannot map 'userController' method 
+qalert.com.controller.UserController#insert(UserRequest)
+to {POST [/user], produces [application/json;charset=UTF-8]}: There is already 'masterController' bean method
+qalert.com.controller.MasterController#listAppSettings() mapped.
+2024-09-18 07:09:05.198 | org.springframework.boot.SpringApplication.reportFailure Application run failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'mvc' defined in class path resource [qalert/com/security/WebSecurityConfig.class]: Unsatisfied dependency expressed through method 'mvc' parameter 0: Error creating bean with name 'mvcHandlerMappingIntrospector' defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]: Ambiguous mapping. Cannot map 'userController' method 
+qalert.com.controller.UserController#insert(UserRequest)
+to {POST [/user], produces [application/json;charset=UTF-8]}: There is already 'masterController' bean method
+qalert.com.controller.MasterController#listAppSettings() mapped.
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:542)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at qalert.com.QalertServicesApplication.main(QalertServicesApplication.java:10)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'mvcHandlerMappingIntrospector' defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]: Ambiguous mapping. Cannot map 'userController' method 
+qalert.com.controller.UserController#insert(UserRequest)
+to {POST [/user], produces [application/json;charset=UTF-8]}: There is already 'masterController' bean method
+qalert.com.controller.MasterController#listAppSettings() mapped.
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1806)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 22 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]: Ambiguous mapping. Cannot map 'userController' method 
+qalert.com.controller.UserController#insert(UserRequest)
+to {POST [/user], produces [application/json;charset=UTF-8]}: There is already 'masterController' bean method
+qalert.com.controller.MasterController#listAppSettings() mapped.
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1806)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeansOfType(DefaultListableBeanFactory.java:665)
+	at org.springframework.context.support.AbstractApplicationContext.getBeansOfType(AbstractApplicationContext.java:1397)
+	at org.springframework.beans.factory.BeanFactoryUtils.beansOfTypeIncludingAncestors(BeanFactoryUtils.java:368)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.initHandlerMappings(HandlerMappingIntrospector.java:130)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.afterPropertiesSet(HandlerMappingIntrospector.java:118)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802)
+	... 33 common frames omitted
+Caused by: java.lang.IllegalStateException: Ambiguous mapping. Cannot map 'userController' method 
+qalert.com.controller.UserController#insert(UserRequest)
+to {POST [/user], produces [application/json;charset=UTF-8]}: There is already 'masterController' bean method
+qalert.com.controller.MasterController#listAppSettings() mapped.
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping$MappingRegistry.validateMethodMapping(AbstractHandlerMethodMapping.java:674)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping$MappingRegistry.register(AbstractHandlerMethodMapping.java:636)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.registerHandlerMethod(AbstractHandlerMethodMapping.java:331)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping.registerHandlerMethod(RequestMappingHandlerMapping.java:508)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping.registerHandlerMethod(RequestMappingHandlerMapping.java:84)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.lambda$detectHandlerMethods$2(AbstractHandlerMethodMapping.java:298)
+	at java.base/java.util.LinkedHashMap.forEach(LinkedHashMap.java:986)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.detectHandlerMethods(AbstractHandlerMethodMapping.java:296)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.processCandidateBean(AbstractHandlerMethodMapping.java:265)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.initHandlerMethods(AbstractHandlerMethodMapping.java:224)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.afterPropertiesSet(AbstractHandlerMethodMapping.java:212)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping.afterPropertiesSet(RequestMappingHandlerMapping.java:239)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802)
+	... 46 common frames omitted
+2024-09-18 07:09:53.967 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2024-09-18 11:09:24.596 | com.zaxxer.hikari.pool.HikariPool.run HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=7m58s445ms922µs100ns).

@@ -43,9 +43,10 @@ public class UserServiceImpl implements IUser{
 
     @Override
     public Response_<String> updatePassword(UserRequest request) {
+      request.getLogin().setPassword(encryptador.encode(request.getLogin().getPassword()));
 		  Response_<String> out = dao.updatePassword(request);
 
-        if(out.isStatus())
+        if( out.isStatus())
           out.setData(request.getLogin().getVerificationCode());
 
         return out;

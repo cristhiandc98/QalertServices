@@ -47,8 +47,8 @@ public class WebSecurityConfig{
 					//requests.requestMatchers("/**").permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.GET_VERIFICATION_CODE)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.USER)).permitAll();
-					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.RESET_DEVICE_ID)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.MASTER + ApiConst.GET_TERMS_AND_CONDITIONS)).permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.USER + ApiConst.UPDATE_PASSWORD)).permitAll();
 					requests.anyRequest().authenticated();
 				})
                 .httpBasic()

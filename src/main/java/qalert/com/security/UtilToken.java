@@ -1,9 +1,9 @@
 package qalert.com.security;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
@@ -19,7 +19,7 @@ import qalert.com.utils.utils.DateUtil;
 public class UtilToken {
     
     private static final String ACCES_TOKEN_SECRET = "$2a$10$ZTBFEpVID1vf5Luffx1mbeFedEHhaBsEJcC20t1kHLOt5BPTqOS9C"; //new BCryptPasswordEncoder().encode("M0QS9APGC+1FGG*/3DIGUV8BYB7"); Se utilizó esta cadena para encryptar y pasarla como clave para generar el token
-	private static final Long TIME_EXPIRATION = 300L * 1000;
+	private static final Long TIME_EXPIRATION = 600L * 1000;
 	
 	public static void createToken(UserResponse user) {
 		Date expirationDate = new Date(System.currentTimeMillis() + TIME_EXPIRATION);

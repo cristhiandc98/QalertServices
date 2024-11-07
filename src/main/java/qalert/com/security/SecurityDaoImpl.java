@@ -16,11 +16,11 @@ import org.springframework.stereotype.Repository;
 
 import qalert.com.models.generic.Response_;
 import qalert.com.models.user.UserRequest;
-import qalert.com.utils.consts.Consts;
+import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.DbConst;
 import qalert.com.utils.utils.DbUtil;
 
-@Qualifier(Consts.QALIFIER_DAO)
+@Qualifier(CommonConsts.QALIFIER_DAO)
 @Repository
 public class SecurityDaoImpl implements ISeguridad{
 	

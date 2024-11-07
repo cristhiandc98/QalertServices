@@ -25,7 +25,7 @@ import qalert.com.utils.consts.UserMessageConst;
 @RequestMapping(ApiConst.SECURITY)
 public class SecurityController {
 
-    @Qualifier(qalert.com.utils.consts.Consts.QALIFIER_SERVICE)
+    @Qualifier(qalert.com.utils.consts.CommonConsts.QALIFIER_SERVICE)
     @Autowired
     private ISeguridad service;
     

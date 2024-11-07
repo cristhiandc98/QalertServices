@@ -368,12 +368,13 @@ GRANT execute on procedure sp_get_terms_and_conditions   to 'qalert_app'@'%';
 
 
 
-drop procedure if exists sp_insert_service_log;
+drop procedure if exists sp_insert_log_service;
 DELIMITER ;;
-CREATE PROCEDURE sp_insert_service_log(
+CREATE PROCEDURE sp_insert_log_service(
     request_code varchar(20),
     key_ int,
     key_type int,
+    method int,
     end_point varchar(200),
     http_status_code int,
     begin_datetime datetime,
@@ -405,6 +406,7 @@ sp:BEGIN
 		(`request_code`,
 		`key_`,
 		`key_type`,
+		`method`,        
 		`end_point`,
 		`http_status_code`,
 		`begin_date`,
@@ -421,6 +423,7 @@ sp:BEGIN
 		request_code,
 		key_,
 		key_type,
+		method,
 		end_point,
 		http_status_code,
 		date(begin_datetime),
@@ -438,4 +441,4 @@ sp:BEGIN
 END ;;
 DELIMITER ;
 
-GRANT execute on procedure sp_insert_service_log   to 'qalert_app'@'%';
+GRANT execute on procedure sp_insert_log_service   to 'qalert_app'@'%';

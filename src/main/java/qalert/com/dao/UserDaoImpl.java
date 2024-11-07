@@ -20,11 +20,11 @@ import qalert.com.models.login.LoginRequest;
 import qalert.com.models.login.LoginResponse;
 import qalert.com.models.user.UserRequest;
 import qalert.com.models.user.UserResponse;
-import qalert.com.utils.consts.Consts;
+import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.DbConst;
 import qalert.com.utils.utils.DbUtil;
 
-@Qualifier(Consts.QALIFIER_DAO)
+@Qualifier(CommonConsts.QALIFIER_DAO)
 @Repository
 public class UserDaoImpl implements IUser{
 

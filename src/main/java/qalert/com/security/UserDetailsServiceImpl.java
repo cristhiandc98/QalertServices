@@ -14,7 +14,7 @@ import qalert.com.models.user.UserResponse;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService{
 	
-	@Qualifier(qalert.com.utils.consts.Consts.QALIFIER_SERVICE)
+	@Qualifier(qalert.com.utils.consts.CommonConsts.QALIFIER_SERVICE)
 	@Autowired
 	private IUser userService;
 

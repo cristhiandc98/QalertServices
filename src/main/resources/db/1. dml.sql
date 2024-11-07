@@ -19,7 +19,7 @@ drop table if exists status;
 drop table if exists status_type;
 drop table if exists tmp_validate_email;
 drop table if exists master;
-drop table if exists service_log;
+drop table if exists log_service;
 
 create table status_type(
 	status_type_id int,
@@ -115,11 +115,12 @@ create table master(
     constraint uk_master unique(table_id, field_id)
 );
 
-create table service_log(
-	service_log_id bigint NOT NULL AUTO_INCREMENT,
+create table log_service(
+	log_service_id bigint NOT NULL AUTO_INCREMENT,
     request_code varchar(20),
     key_ int,
     key_type int,
+    method int,
     end_point varchar(200),
     http_status_code int,
     begin_date date,
@@ -131,7 +132,7 @@ create table service_log(
     request_body text,
     response_body text,
     error_ text,
-	constraint pk_service_log_id PRIMARY KEY (service_log_id)
+	constraint pk_log_service_id PRIMARY KEY (log_service_id)
 );
 
 -- ***********************************************************************

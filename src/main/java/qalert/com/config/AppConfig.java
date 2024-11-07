@@ -19,7 +19,11 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -56,7 +60,16 @@ public class AppConfig implements WebMvcConfigurer{
 
 	@Bean
 	ObjectMapper objectMapper() {
-		return new ObjectMapper();
+		JsonFactory jsonFactory = new JsonFactory();
+        jsonFactory.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
+
+        ObjectMapper objectMapper = new ObjectMapper(jsonFactory);
+            
+		// Ignora los campos nulos
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
+		return objectMapper;
 	}
 	
 	@Bean

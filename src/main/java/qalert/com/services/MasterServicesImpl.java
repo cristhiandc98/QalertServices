@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import qalert.com.interfaces.IMaster;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.master.MasterResponse;
-import qalert.com.utils.consts.Consts;
+import qalert.com.utils.consts.CommonConsts;
 
-@Qualifier(Consts.QALIFIER_SERVICE)
+@Qualifier(CommonConsts.QALIFIER_SERVICE)
 @Service
 public class MasterServicesImpl implements IMaster{
 
-    @Qualifier(Consts.QALIFIER_DAO)
+    @Qualifier(CommonConsts.QALIFIER_DAO)
     @Autowired
     private IMaster dao;
 

@@ -3,15 +3,17 @@ package qalert.com.models.service_log;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class ServiceLogRequest implements Serializable {
+public class LogServiceRequest implements Serializable {
 
-    private int serviceLogId;
+    private int logServiceId;
 
     private String requestCode;
 
     private Integer key_;
 
     private Integer keyType;
+
+    private String method;
 
     private String endPoint;
 
@@ -27,17 +29,17 @@ public class ServiceLogRequest implements Serializable {
 
     private String error;
 
-    public ServiceLogRequest() {
+    public LogServiceRequest() {
     }
 
 
 
-    public int getServiceLogId() {
-        return serviceLogId;
+    public int getLogServiceId() {
+        return logServiceId;
     }
 
-    public void setServiceLogId(int serviceLogId) {
-        this.serviceLogId = serviceLogId;
+    public void setLogServiceId(int serviceLogId) {
+        this.logServiceId = serviceLogId;
     }
 
     public String getRequestCode() {
@@ -122,6 +124,18 @@ public class ServiceLogRequest implements Serializable {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+
+
+    public String getMethod() {
+        return method;
+    }
+
+
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 
 

@@ -19,9 +19,9 @@ public class Response_<T> {
 
     private String errorId;
 
-    private HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+    private HttpStatus statusCode;
 
-    //@JsonIgnore
+    @JsonIgnore
     private String errorMssg;
 
 
@@ -29,24 +29,56 @@ public class Response_<T> {
     //***************************************************CONSTRUCTORS
     //***************************************************************
     public Response_() {
+        status = true;
+        this.userMssg = UserMessageConst.SUCCESS;
+        statusCode = HttpStatus.OK;
     }
     
-    public Response_(T data) {
+    public Response_(HttpStatus statusCode, String userMssg, boolean status) {
+        this.statusCode = statusCode;
+        this.userMssg = userMssg;
+        this.status = status;
+    }
+
+    public Response_(Exception exception) {
+        this(HttpStatus.INTERNAL_SERVER_ERROR, UserMessageConst.INTERNAL_SERVER_ERROR, false);
+    } 
+
+    public String setError(Exception exception)
+    {
+        errorId = DateUtil.generateId();
+        
+        errorMssg = " codError: " + errorId;
+
+        try {
+            errorMssg += " | class: " + "lineSearch" +
+                " | error: " + exception.getMessage();
+        } catch (Exception e) {
+            errorMssg += " | json: -";
+        }
+
+        return errorMssg;
+    }
+
+    //***************************************************************
+    public Response_(T data, String userMessage) {
         this.data = data;
-        this.userMssg = UserMessageConst.SUCCESS;
-        this.status = true;
+        this.status = data != null;
+        this.userMssg = userMessage;
         this.statusCode = HttpStatus.OK;
+    }
+
+    public Response_(T data) {
+        this.statusCode = HttpStatus.OK;
+        this.userMssg = UserMessageConst.SUCCESS;
+        this.data = data;
+        this.status = data != null;
     }
 
     public Response_(HttpStatus statusCode, String userMssg) {
         this.statusCode = statusCode;
         this.userMssg = userMssg;
         this.status = statusCode == HttpStatus.OK;
-    }
-    
-    public Response_(HttpStatus statusCode, String userMssg, boolean status) {
-        this(statusCode, userMssg);
-        this.status = status;
     }
     
     //Exception

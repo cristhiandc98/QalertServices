@@ -6,6 +6,7 @@ import qalert.com.interfaces.IUser;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.ApiConst;
+import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.UserMessageConst;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,19 +20,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.servlet.http.HttpServletRequest;
+import qalert.com.interfaces.ILogService;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(ApiConst.USER)
 public class UserController {
 
-    @Qualifier(qalert.com.utils.consts.Consts.QALIFIER_SERVICE)
+    @Qualifier(CommonConsts.QALIFIER_SERVICE)
     @Autowired
     private IUser service;
-    
-	private static final Logger logger = LogManager.getLogger(UserController.class);
+
+    @Qualifier(CommonConsts.QALIFIER_SERVICE)
+    @Autowired
+    private ILogService serviceLog;
+	
+
 
     @PostMapping(produces = ApiConst.PRODUCES)
-	public ResponseEntity<?> insert(@RequestBody UserRequest request) {
+	public ResponseEntity<?> insert(HttpServletRequest http, @RequestBody UserRequest request) {
+		serviceLog.setRequestData(http, request);
 		Response_<String> out = null;
 
 		try {		
@@ -40,8 +49,10 @@ public class UserController {
 			else
 				out = new Response_<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
 		} catch (Exception e) {
-            logger.error((out = new Response_<>(e, request)).getErrorMssg());
+            out = new Response_<>(e);
 		}
+
+		serviceLog.save(out);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
@@ -56,7 +67,7 @@ public class UserController {
 			else
 				out = new Response_<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
 		} catch (Exception e) {
-            logger.error((out = new Response_<>(e, request)).getErrorMssg());
+            //logger.error((out = new Response_<>(e, request)).getErrorMssg());
 		}
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);

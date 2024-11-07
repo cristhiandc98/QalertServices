@@ -28,7 +28,7 @@ import qalert.com.utils.consts.UserMessageConst;
 @RequestMapping(ApiConst.MASTER)
 public class MasterController {
 
-    @Qualifier(qalert.com.utils.consts.Consts.QALIFIER_SERVICE)
+    @Qualifier(qalert.com.utils.consts.CommonConsts.QALIFIER_SERVICE)
     @Autowired
     private IMaster service;
     
@@ -41,7 +41,7 @@ public class MasterController {
 		try {		
             out = service.getTermsAndConditions();
 		} catch (Exception e) {
-            logger.error((out = new Response_<>(e, null)).getErrorMssg());
+            //logger.error((out = new Response_<>(e, null)).getErrorMssg());
 		}
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
@@ -54,7 +54,7 @@ public class MasterController {
 		try {		
             out = service.listAppSettings();
 		} catch (Exception e) {
-            logger.error((out = new Response_<>(e, null)).getErrorMssg());
+            //logger.error((out = new Response_<>(e, null)).getErrorMssg());
 		}
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);

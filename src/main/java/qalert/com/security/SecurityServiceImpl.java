@@ -11,18 +11,18 @@ import qalert.com.interfaces.IEmailService;
 import qalert.com.models.email.SendEmailRequest;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.user.UserRequest;
-import qalert.com.utils.consts.Consts;
+import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.EnvironmentConst;
 import qalert.com.utils.utils.DateUtil;
 
-@Qualifier(Consts.QALIFIER_SERVICE)
+@Qualifier(CommonConsts.QALIFIER_SERVICE)
 @Service
 public class SecurityServiceImpl implements ISeguridad{
 	
 	@Autowired
 	private Environment env;
 
-    @Qualifier(Consts.QALIFIER_DAO)
+    @Qualifier(CommonConsts.QALIFIER_DAO)
     @Autowired
     private ISeguridad dao;
 

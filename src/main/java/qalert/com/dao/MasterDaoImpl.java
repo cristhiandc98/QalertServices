@@ -16,11 +16,11 @@ import org.springframework.stereotype.Repository;
 import qalert.com.interfaces.IMaster;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.master.MasterResponse;
-import qalert.com.utils.consts.Consts;
+import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.DbConst;
 import qalert.com.utils.utils.DbUtil;
 
-@Qualifier(Consts.QALIFIER_DAO)
+@Qualifier(CommonConsts.QALIFIER_DAO)
 @Repository
 public class MasterDaoImpl implements IMaster{
 

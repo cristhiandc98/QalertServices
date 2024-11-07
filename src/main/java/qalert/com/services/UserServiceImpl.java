@@ -10,13 +10,13 @@ import qalert.com.models.generic.Response_;
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.user.UserRequest;
 import qalert.com.models.user.UserResponse;
-import qalert.com.utils.consts.Consts;
+import qalert.com.utils.consts.CommonConsts;
 
-@Qualifier(Consts.QALIFIER_SERVICE)
+@Qualifier(CommonConsts.QALIFIER_SERVICE)
 @Service
 public class UserServiceImpl implements IUser{
 
-    @Qualifier(Consts.QALIFIER_DAO)
+    @Qualifier(CommonConsts.QALIFIER_DAO)
     @Autowired
     private IUser dao;
 

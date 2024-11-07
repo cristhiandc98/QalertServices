@@ -1,6 +1,6 @@
 package qalert.com.utils.consts;
 
-public class Consts {
+public class CommonConsts {
 
     public static final String QALIFIER_SERVICE = "SERVICE";
     public static final String QALIFIER_DAO = "DAO";

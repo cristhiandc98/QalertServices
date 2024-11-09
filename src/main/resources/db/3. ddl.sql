@@ -368,13 +368,14 @@ GRANT execute on procedure sp_get_terms_and_conditions   to 'qalert_app'@'%';
 
 
 
+
 drop procedure if exists sp_insert_log_service;
 DELIMITER ;;
 CREATE PROCEDURE sp_insert_log_service(
     request_code varchar(20),
     key_ int,
     key_type int,
-    method int,
+    method varchar(10),
     end_point varchar(200),
     http_status_code int,
     begin_datetime datetime,
@@ -402,7 +403,7 @@ sp:BEGIN
     
     declare current_datetime datetime default current_timestamp();
 	
-	INSERT INTO `qalert_bd`.`service_log`
+	INSERT INTO `qalert_bd`.`log_service`
 		(`request_code`,
 		`key_`,
 		`key_type`,
@@ -419,8 +420,7 @@ sp:BEGIN
 		`response_body`,
 		`error_`)
 		VALUES 
-		(service_log_id,
-		request_code,
+		(request_code,
 		key_,
 		key_type,
 		method,
@@ -431,8 +431,6 @@ sp:BEGIN
         cast(TIMESTAMPDIFF(MICROSECOND, begin_datetime, current_datetime) / 1000 as UNSIGNED),
 		date(current_datetime),
 		time(current_datetime),
-		end_date,
-		end_time,
 		request_header,
 		request_body,
 		response_body,
@@ -442,3 +440,4 @@ END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_insert_log_service   to 'qalert_app'@'%';
+

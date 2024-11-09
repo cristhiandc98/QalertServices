@@ -66,7 +66,9 @@ public class ServiceLogServiceImpl implements ILogService{
         serviceLogModel.setBeginDateTime(LocalDateTime.now());
         serviceLogModel.setMethod(httpRequest.getMethod());
         serviceLogModel.setEndPoint(httpRequest.getRequestURI());
-        serviceLogModel.setRequestHeader(httpRequest.getHeader("null"));
+
+        serviceLogModel.setKey_(httpRequest.getHeader("key_") == null ? null : Integer.valueOf(httpRequest.getHeader("key_")));
+        serviceLogModel.setKeyType(httpRequest.getHeader("key_type") == null ? null : Integer.valueOf(httpRequest.getHeader("key_type")));
 
         try
         {

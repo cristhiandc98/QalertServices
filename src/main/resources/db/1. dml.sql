@@ -119,7 +119,7 @@ create table log_service(
 	log_service_id bigint NOT NULL AUTO_INCREMENT,
     request_code varchar(20),
     profile_id int,
-    method int,
+    method varchar(10),
     end_point varchar(200),
     http_status_code int,
     begin_date date,

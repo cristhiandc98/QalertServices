@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.login.LoginRequest;
+import qalert.com.models.master.MasterResponse;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.user.UserResponse;
 import qalert.com.utils.consts.CommonConsts;
@@ -40,9 +41,9 @@ public class ServiceLogServiceImpl implements ILogService{
     @Override
     public <T> CompletableFuture<Void> save(Response_<T> response)
     {
-        return CompletableFuture.runAsync(() -> {
-            setResponseData(response);
-    
+        setResponseData(response);
+
+        return CompletableFuture.runAsync(() -> {    
             insert(serviceLogModel);
         });
     }
@@ -50,11 +51,20 @@ public class ServiceLogServiceImpl implements ILogService{
     @Override
     public <T> void savePrivate(Response_<T> response) {
         if (response.getData() != null){
+            String data;
+            //Not save token
             if (response.getData() instanceof UserResponse user){
-                String token = user.getLogin().getToken().getToken();
                 user.getLogin().getToken().setToken(null);
                 save(response);
-                //user.getLogin().getToken().setToken(token);
+            }
+            //Not save Terms and conditions
+            else if (response.getData() instanceof MasterResponse master){
+                if(master.getTableId() == 1 && master.getFieldId() == 1){
+                    data = master.getValueVarchar();
+                    master.setValueVarchar("This field is too big.");
+                    save(response);
+                    master.setValueVarchar(data);
+                }
             }
         }
         else save(response);

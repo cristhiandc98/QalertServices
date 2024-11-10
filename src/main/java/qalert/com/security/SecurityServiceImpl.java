@@ -17,14 +17,14 @@ import qalert.com.utils.utils.DateUtil;
 
 @Qualifier(CommonConsts.QALIFIER_SERVICE)
 @Service
-public class SecurityServiceImpl implements ISeguridad{
+public class SecurityServiceImpl implements ISecurity{
 	
 	@Autowired
 	private Environment env;
 
     @Qualifier(CommonConsts.QALIFIER_DAO)
     @Autowired
-    private ISeguridad dao;
+    private ISecurity dao;
 
     @Autowired
     private IEmailService emailService;
@@ -33,11 +33,11 @@ public class SecurityServiceImpl implements ISeguridad{
 	
     @Override
     public Response_<String> saveVerificationCode(UserRequest request, boolean isChangeDevice) {
-        Response_<String> out = null;
+        Response_<String> out;
 
         try {
             //Generate verification code
-            int codMin = 101, codMax = 999, randomCode = 0;
+            int codMin = 101, codMax = 999, randomCode;
             randomCode = (int)Math.floor(Math.random() * (codMax - codMin + 1) + codMin);
             request.getLogin().setVerificationCode(String.valueOf(randomCode));
 
@@ -54,7 +54,7 @@ public class SecurityServiceImpl implements ISeguridad{
             }
             else out = rptBD;
 
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             logger.error((out = new Response_<>(e, request, "Error al generar el código de verificación")).getErrorMssg());
         }
 
@@ -63,7 +63,7 @@ public class SecurityServiceImpl implements ISeguridad{
 
 	@Override
 	public Response_<String> resetIdDevice(UserRequest request) {
-		request.getLogin().setDeviceId(Integer.parseInt(DateUtil.generateId()));
+		request.getLogin().setDeviceId(Integer.valueOf(DateUtil.generateId()));
 		return dao.resetIdDevice(request);
 	}
 }

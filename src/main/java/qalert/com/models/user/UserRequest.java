@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.person.PersonRequest;
-import qalert.com.utils.utils.RegexUtil;
 
 public class UserRequest extends PersonRequest{
 
@@ -16,43 +15,45 @@ public class UserRequest extends PersonRequest{
     //***************************************************************
     //********************************************************METHODS
     //***************************************************************    
-    public boolean validateFormVerificationCode() throws Exception {
-        String email = getEmail();
-        if(getLogin() != null
-            && getLogin().validateUserName()
-            && email != null && RegexUtil.EMAIL.matcher(email).matches() && email.length() <= 50)
-            return true;
-        return false;
+    public String validateLogin(){
+        return (getLogin() == null) ? "Credenciales inválidas." : null;
     }
 
-    public boolean validateUserRegister() throws Exception {
-        if(getLogin() == null) return false;
-        
-        String email = getEmail();
+    public String validateFormVerificationCode() {         
+        String error;
+
+        if((error = validateLogin()) == null
+            && (error = getLogin().validateUserName()) == null
+            && (error = validateEmail()) == null)
+            return null;
+        return error;
+    }
+
+    public String validateUserRegister() {            
+        String error;
         String fullName = getFullName();
         Integer documentTypeId = getDocumentTypeId();
         String document = getDocument();
 
-		if (getLogin().validateUserName() 
-            && email != null && RegexUtil.EMAIL.matcher(email).matches() && email.length() <= 50
-            && getLogin().validatePassword()
-            && fullName != null && Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ' -]{2,50}$").matcher(fullName).matches()
-            && documentTypeId != null && documentTypeId > 0
-            && document != null && Pattern.compile("^[a-zA-Z0-9:;<>,\\!\\@#\\$\\%\\^&\\*\\(\\)_\\+\\{\\}\\[\\]\\.\\?\\/\\-]{6,20}$").matcher(document).matches()
-            ) 
-			return true;
-		return false;
+        if ((error = validateLogin()) == null
+            && (error = getLogin().validateUserName()) == null
+            && (error = validateEmail()) == null
+            && (error = getLogin().validatePassword()) == null
+            && (error = (fullName != null && Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ' -]{2,50}$").matcher(fullName).matches()) ? null : "Nombre inválido") == null
+            && (error = (documentTypeId != null && documentTypeId > 0) ? null : "Tipo de documento inválido") == null
+            && (error = (document != null && Pattern.compile("^[a-zA-Z0-9:;<>,\\!\\@#\\$\\%\\^&\\*\\(\\)_\\+\\{\\}\\[\\]\\.\\?\\/\\-]{6,20}$").matcher(document).matches()) ? null : "Documento inválido") == null) 
+            return null;
+		return error;
 	}
 
-    public boolean validateUpdatePassword() throws Exception {
-        if(getLogin() == null) return false;
-
-		if (getLogin().validateUserName() 
-            && getLogin().validatePassword()
-            && getLogin().validateVerificationCode()
-            ) 
-			return true;
-		return false;
+    public String validateUpdatePassword() {
+        String error;
+		if ((error = validateLogin()) == null
+            && (error = getLogin().validateUserName()) == null
+            && (error = getLogin().validatePassword()) == null
+            && (error = getLogin().validateVerificationCode()) == null) 
+			return null;
+		return error;
 	}
 
 

@@ -10,6 +10,8 @@ public interface  ILogService {
 
     void setRequestData(HttpServletRequest httpRequest, Object request);
 
+    void setRequestPrivateData(HttpServletRequest httpRequest, Object request);
+
     void insert(LogServiceRequest request);
 
     <T> CompletableFuture<Void> save(Response_<T> response);

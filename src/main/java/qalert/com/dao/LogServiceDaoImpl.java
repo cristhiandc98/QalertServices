@@ -41,8 +41,7 @@ public class LogServiceDaoImpl implements ILogService{
             
             SqlParameterSource input = new MapSqlParameterSource()
                 .addValue("request_code", request.getRequestCode())
-                .addValue("key_", request.getKey_())
-                .addValue("key_type", request.getKeyType())
+                .addValue("profile_id", request.getProfileId())
                 .addValue("method", request.getMethod())
                 .addValue("end_point", request.getEndPoint())
                 .addValue("http_status_code", request.getHttpStatusCode())
@@ -95,6 +94,12 @@ public class LogServiceDaoImpl implements ILogService{
     public void setRequestData(HttpServletRequest httpRequest, Object request) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setRequestData'");
+    }
+
+    @Override
+    public void setRequestPrivateData(HttpServletRequest httpRequest, Object request) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setRequestPrivateData'");
     }
 
 }

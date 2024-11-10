@@ -1,5 +1,7 @@
 package qalert.com.models.person;
 
+import qalert.com.utils.utils.RegexUtil;
+
 public class PersonRequest {
 
     private String fullName;
@@ -11,6 +13,14 @@ public class PersonRequest {
     private String email;
 
     private String birthDay;
+    
+    //***************************************************************
+    //*********************************************METHODS
+    //***************************************************************
+    public String validateEmail() {
+        return (email != null && RegexUtil.EMAIL.matcher(email).matches() && email.length() <= 50) ? null : "Email inválido.";
+    }
+
     
     //***************************************************************
     //*********************************************GETTERS AND SETTER

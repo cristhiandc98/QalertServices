@@ -9,9 +9,7 @@ public class LogServiceRequest implements Serializable {
 
     private String requestCode;
 
-    private Integer key_;
-
-    private Integer keyType;
+    private Integer profileId;
 
     private String method;
 
@@ -50,20 +48,12 @@ public class LogServiceRequest implements Serializable {
         this.requestCode = requestCode;
     }
 
-    public Integer getKey_() {
-        return key_;
+    public Integer getProfileId() {
+        return profileId;
     }
 
-    public void setKey_(Integer key_) {
-        this.key_ = key_;
-    }
-
-    public Integer getKeyType() {
-        return keyType;
-    }
-
-    public void setKeyType(Integer keyType) {
-        this.keyType = keyType;
+    public void setProfileId(Integer key_) {
+        this.profileId = key_;
     }
 
     public String getEndPoint() {

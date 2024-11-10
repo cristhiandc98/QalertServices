@@ -1,8 +1,8 @@
 package qalert.com.models.login;
 
-import qalert.com.utils.utils.RegexUtil;
-
 import java.util.regex.Pattern;
+
+import qalert.com.utils.utils.RegexUtil;
 
 public class LoginRequest {
 
@@ -27,36 +27,37 @@ public class LoginRequest {
         deviceId = Integer.parseInt(x[1]);
     }
 
-    public boolean validateUserName() throws Exception {
+    public String validateUserName() {
 		if (userName != null && RegexUtil.EMAIL.matcher(userName).matches() && userName.length() <= 50) 
-			return true;
-		return false;
+			return null;
+		return "Credenciales inválidas.";
 	}
 
-    public boolean validatePassword() throws Exception {
+    public String validatePassword() {
 		if (password != null && RegexUtil.PASSWORD.matcher(password).matches()) 
-			return true;
-		return false;
+            return null;
+		return "Credenciales inválidas.";
 	}
 
-    public boolean validateDeviceId() throws Exception {
+    public String validateDeviceId() {
 		if (deviceId != null && deviceId.toString().length() == 3) 
-			return true;
-		return false;
+            return null;
+		return "Dispositivo inválido.";
 	}
 
-    public boolean validateVerificationCode() throws Exception {
+    public String validateVerificationCode() {
 		if (verificationCode != null && Pattern.compile("^[0-9]{3}$").matcher(verificationCode).matches()) 
-			return true;
-		return false;
+            return null;
+		return "Código de verifición inválido.";
 	}
 
-    public boolean validateLogin() throws Exception {
-		if (validateUserName()
-            && validatePassword()
-            && validateDeviceId()) 
-			return true;
-		return false;
+    public String validateLogin() throws Exception {
+        String error;
+		if ((error = validateUserName()) == null
+            && (error = validatePassword()) == null
+            && (error = validateDeviceId()) == null) 
+			return null;
+		return error;
 	}
 
 

@@ -22,7 +22,7 @@ import qalert.com.utils.utils.DbUtil;
 
 @Qualifier(CommonConsts.QALIFIER_DAO)
 @Repository
-public class SecurityDaoImpl implements ISeguridad{
+public class SecurityDaoImpl implements ISecurity{
 	
 	private static final Logger logger = LogManager.getLogger(SecurityDaoImpl.class);
 

@@ -373,8 +373,7 @@ drop procedure if exists sp_insert_log_service;
 DELIMITER ;;
 CREATE PROCEDURE sp_insert_log_service(
     request_code varchar(20),
-    key_ int,
-    key_type int,
+    profile_id int,
     method varchar(10),
     end_point varchar(200),
     http_status_code int,
@@ -405,8 +404,7 @@ sp:BEGIN
 	
 	INSERT INTO `qalert_bd`.`log_service`
 		(`request_code`,
-		`key_`,
-		`key_type`,
+		`profile_id`,
 		`method`,        
 		`end_point`,
 		`http_status_code`,
@@ -421,8 +419,7 @@ sp:BEGIN
 		`error_`)
 		VALUES 
 		(request_code,
-		key_,
-		key_type,
+		profile_id,
 		method,
 		end_point,
 		http_status_code,
@@ -440,4 +437,3 @@ END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_insert_log_service   to 'qalert_app'@'%';
-

@@ -1,7 +1,5 @@
 package qalert.com.security;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -14,53 +12,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import qalert.com.interfaces.IUser;
+import jakarta.servlet.http.HttpServletRequest;
+import qalert.com.interfaces.ILogService;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.ApiConst;
-import qalert.com.utils.consts.UserMessageConst;
+import qalert.com.utils.consts.CommonConsts;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(ApiConst.SECURITY)
 public class SecurityController {
 
-    @Qualifier(qalert.com.utils.consts.CommonConsts.QALIFIER_SERVICE)
+    @Qualifier(CommonConsts.QALIFIER_SERVICE)
     @Autowired
-    private ISeguridad service;
-    
-	private static final Logger logger = LogManager.getLogger(SecurityController.class);
+    private ISecurity securityService;
+
+    @Qualifier(CommonConsts.QALIFIER_SERVICE)
+    @Autowired
+    private ILogService serviceLog;
+	
 		
 	@PostMapping(ApiConst.GET_VERIFICATION_CODE)
-	public ResponseEntity<?> getVerificationCode(@RequestBody UserRequest request, @RequestParam boolean isChangeDevice) {
-		Response_<String> out = null;
+	public ResponseEntity<?> getVerificationCode(HttpServletRequest http, @RequestBody UserRequest request, @RequestParam boolean isChangeDevice) {
+		serviceLog.setRequestData(http, request);
+		
+		Response_<String> out;
+		
+		String error;
+		if((error = request.validateFormVerificationCode()) == null)
+			out = securityService.saveVerificationCode(request, isChangeDevice);
+		else
+			out = new Response_<>(HttpStatus.BAD_REQUEST, error);
 
-		try {		
-			if(request.validateFormVerificationCode())
-				out = service.saveVerificationCode(request, isChangeDevice);
-			else
-				out = new Response_<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
-		} catch (Exception e) {
-            logger.error((out = new Response_<>(e, request)).getErrorMssg());
-		}
+		serviceLog.save(out);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
-	}
-	
-	@PostMapping(ApiConst.RESET_DEVICE_ID)
-	public ResponseEntity<?> resetIdDevice(@RequestBody UserRequest request) {
-		Response_<String> out = null;
-
-		try {		
-			if(request.validateUserRegister())
-				out = service.resetIdDevice(request);
-			else
-				out = new Response_<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
-		} catch (Exception e) {
-            logger.error((out = new Response_<>(e, request)).getErrorMssg());
-		}
-
-		return ResponseEntity.status(out.getStatusCode()).body(out.getData());
 	}
 
 	@GetMapping(ApiConst.ROOT)

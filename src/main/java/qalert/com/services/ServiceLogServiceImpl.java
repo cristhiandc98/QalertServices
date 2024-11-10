@@ -7,13 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.models.generic.Response_;
-import qalert.com.models.login.LoginResponse;
+import qalert.com.models.login.LoginRequest;
 import qalert.com.models.service_log.LogServiceRequest;
+import qalert.com.models.user.UserResponse;
 import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.utils.DateUtil;
 
@@ -48,12 +50,11 @@ public class ServiceLogServiceImpl implements ILogService{
     @Override
     public <T> void savePrivate(Response_<T> response) {
         if (response.getData() != null){
-            if (response.getData().getClass() == LoginResponse.class){
-                LoginResponse loginResponse = (LoginResponse)response.getData();
-                String token = loginResponse.getToken().getToken();
-                loginResponse.getToken().setToken(null);
+            if (response.getData() instanceof UserResponse user){
+                String token = user.getLogin().getToken().getToken();
+                user.getLogin().getToken().setToken(null);
                 save(response);
-                loginResponse.getToken().setToken(token);
+                //user.getLogin().getToken().setToken(token);
             }
         }
         else save(response);
@@ -67,19 +68,29 @@ public class ServiceLogServiceImpl implements ILogService{
         serviceLogModel.setMethod(httpRequest.getMethod());
         serviceLogModel.setEndPoint(httpRequest.getRequestURI());
 
-        serviceLogModel.setKey_(httpRequest.getHeader("key_") == null ? null : Integer.valueOf(httpRequest.getHeader("key_")));
-        serviceLogModel.setKeyType(httpRequest.getHeader("key_type") == null ? null : Integer.valueOf(httpRequest.getHeader("key_type")));
-
+        serviceLogModel.setProfileId(httpRequest.getHeader("profile_id") == null ? null : Integer.valueOf(httpRequest.getHeader("profile_id")));
+        
         try
         {
             serviceLogModel.setRequestBody(request == null ? null : objectMapper.writeValueAsString(request));
-
-            //serviceLogModel.Llave = context.Request.Headers[CommonConst.HEADER_REFERENCE_KEY].ToString().Trim();
         }
-        catch (Exception ex)
+        catch (JsonProcessingException ex)
         {
             serviceLogModel.setRequestBody(ex.getMessage());
         }
+    }
+
+    @Override
+    public void setRequestPrivateData(HttpServletRequest httpRequest, Object request) {
+        if (request != null){
+            if (request instanceof LoginRequest login){
+                String password = login.getPassword();
+                login.setPassword(null);
+                setRequestData(httpRequest, request);
+                login.setPassword(password);
+            }
+        } 
+        else setRequestData(httpRequest, request);
     }
 
     private <T> void setResponseData(Response_<T> response)
@@ -91,26 +102,10 @@ public class ServiceLogServiceImpl implements ILogService{
         try
         {
             serviceLogModel.setResponseBody(objectMapper.writeValueAsString(response));
-
-            // if(response!.StatusCode == HttpStatusCode.InternalServerError) 
-            //     _ = SendEmailApiClient.Simple(appSettings.Value, GenerateEmailRequest(response.CodRequest!));
         }
-        catch (Exception ex)
+        catch (JsonProcessingException ex)
         {
             serviceLogModel.setResponseBody(ex.getMessage());
         }
     }
-
-
-    //     private SendEmailRequest GenerateEmailRequest(string idError)
-    //     {
-    //         SendEmailRequest out_ = new SendEmailRequest();
-
-    //         out_.Destinatario = appSettings.Value.Notifications!.Error_!.Addressees;
-    //         out_.Asunto = appSettings.Value.Notifications!.Error_!.Subject;
-    //         out_.MensajeHtml = "Código de la solicitud: " + idError;
-
-    //         return out_;
-    //     }
-
 }

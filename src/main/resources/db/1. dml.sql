@@ -6,7 +6,7 @@ drop procedure if exists sp_login;
 drop procedure if exists sp_update_password;
 drop procedure if exists sp_list_app_settings;
 drop procedure if exists sp_get_terms_and_conditions;
-drop procedure if exists sp_insert_service_log;
+drop procedure if exists sp_insert_log_service;
 
 -- ***********************************************************************
 -- ********************************************************************DDL
@@ -118,8 +118,7 @@ create table master(
 create table log_service(
 	log_service_id bigint NOT NULL AUTO_INCREMENT,
     request_code varchar(20),
-    key_ int,
-    key_type int,
+    profile_id int,
     method int,
     end_point varchar(200),
     http_status_code int,

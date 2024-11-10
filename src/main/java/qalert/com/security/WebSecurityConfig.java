@@ -1,6 +1,7 @@
 package qalert.com.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +17,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import qalert.com.interfaces.ILogService;
 import qalert.com.utils.consts.ApiConst;
+import qalert.com.utils.consts.CommonConsts;
 	
 @Configuration
 public class WebSecurityConfig{
@@ -26,6 +29,10 @@ public class WebSecurityConfig{
 
 	@Autowired
 	private JwtAuthorizationFilter jwtAuthorizationFilter;
+	
+    @Qualifier(CommonConsts.QALIFIER_SERVICE)
+    @Autowired
+    private ILogService serviceLog;
 
 	@Bean
 	MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
@@ -37,7 +44,7 @@ public class WebSecurityConfig{
 	
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager auth, MvcRequestMatcher.Builder mvc) throws Exception {
-		JwtAuthenticationFilter jwtAuthentication = new JwtAuthenticationFilter();
+		JwtAuthenticationFilter jwtAuthentication = new JwtAuthenticationFilter(serviceLog);
 		jwtAuthentication.setAuthenticationManager(auth);
 		jwtAuthentication.setFilterProcessesUrl(ApiConst.SECURITY + ApiConst.LOGIN);
 		

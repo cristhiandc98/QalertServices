@@ -3,8 +3,6 @@ package qalert.com.security;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -23,19 +21,17 @@ import qalert.com.utils.utils.DbUtil;
 @Qualifier(CommonConsts.QALIFIER_DAO)
 @Repository
 public class SecurityDaoImpl implements ISecurity{
-	
-	private static final Logger logger = LogManager.getLogger(SecurityDaoImpl.class);
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
 	@Override
 	public Response_<String> saveVerificationCode(UserRequest request, boolean isChangeDevice) {
-		Response_<String> out = null;
+		Response_<String> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName("sp_save_verification_code");
+    		    .withProcedureName(DbConst.SP_SAVE_VERIFICATION_CODE);
         	
         	SqlParameterSource input = new MapSqlParameterSource()
                 .addValue("vi_username", request.getLogin().getUserName())
@@ -50,7 +46,7 @@ public class SecurityDaoImpl implements ISecurity{
 				DbUtil.getBool(dataset.get(0), "status"));
 		
 		} catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, request, "Error al guardar el código de verificación")).getErrorMssg());
+            out = new Response_<>(ex, request, "Error al guardar el código de verificación");
         }		
 
     	return out;

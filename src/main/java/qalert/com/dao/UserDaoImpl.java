@@ -3,8 +3,6 @@ package qalert.com.dao;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -31,15 +29,14 @@ public class UserDaoImpl implements IUser{
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	private static final Logger logger = LogManager.getLogger(UserDaoImpl.class);
-
+    
     @Override
     public Response_<String> insert(UserRequest request) {
-		Response_<String> out = null;
+		Response_<String> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName("sp_insert_user");
+    		    .withProcedureName(DbConst.SP_INSERT_USER);
         	
         	SqlParameterSource input = new MapSqlParameterSource()
                 .addValue("vi_username", request.getLogin().getUserName())
@@ -53,23 +50,25 @@ public class UserDaoImpl implements IUser{
         	
             List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
             
-			out = new Response_<>(HttpStatus.OK, 
+			out = new Response_<>(HttpStatus.CREATED, 
 				DbUtil.getString(resultset.get(0), "user_mssg"), 
 				DbUtil.getBool(resultset.get(0), "status"));
 		
 		}catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, request, "Ocurrió un problema al crear el usuario")).getErrorMssg());
+            out = new Response_<>(ex, request, "Ocurrió un problema al crear el usuario");
         }	
 
     	return out;
     }
 
+
+    @Override
     public Response_<UserResponse> login(LoginRequest request){
-        Response_<UserResponse> out = null;
+        Response_<UserResponse> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName("sp_login");
+    		    .withProcedureName(DbConst.SP_LOGIN);
         	
         	SqlParameterSource input = new MapSqlParameterSource()
             .addValue("vi_username", request.getUserName())
@@ -77,7 +76,7 @@ public class UserDaoImpl implements IUser{
         	
             List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
         	
-            if(resultset != null && resultset.size() > 0){
+            if(resultset != null && !resultset.isEmpty()){
                 Map<String, Object> map = resultset.get(0);
 
                 UserResponse user = new UserResponse();
@@ -96,15 +95,16 @@ public class UserDaoImpl implements IUser{
             else out = new Response_<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
 		
 		} catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, request, "Ocurrió un problema al iniciar sesión")).getErrorMssg());
+            out = new Response_<>(ex, request, "Ocurrió un problema al iniciar sesión");
         }		
 
     	return out;
     }
 
+
     @Override
     public Response_<String> updatePassword(UserRequest request) {
-        Response_<String> out = null;
+        Response_<String> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
@@ -122,7 +122,7 @@ public class UserDaoImpl implements IUser{
 				DbUtil.getBool(resultset.get(0), "status"));
 		
 		}catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, request, "Ocurrió un problema al actualizar el usuario")).getErrorMssg());
+            out = new Response_<>(ex, request, "Ocurrió un problema al actualizar el usuario");
         }	
 
     	return out;

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -26,12 +24,11 @@ public class MasterDaoImpl implements IMaster{
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
-	private static final Logger logger = LogManager.getLogger(MasterDaoImpl.class);
+    
 
     @Override
     public Response_<List<MasterResponse>> listAppSettings() {
-        Response_<List<MasterResponse>> out = null;
+        Response_<List<MasterResponse>> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
@@ -39,7 +36,7 @@ public class MasterDaoImpl implements IMaster{
         	
             List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET);
         	
-            if(resultset != null && resultset.size() > 0){
+            if(resultset != null && !resultset.isEmpty()){
 
                 List<MasterResponse> list = new ArrayList<>();
                 MasterResponse model;
@@ -56,7 +53,7 @@ public class MasterDaoImpl implements IMaster{
                     list.add(model);
                 }
                 
-                if(list.size() > 0)
+                if(!list.isEmpty())
                     out = new Response_<>(list);
                 else 
                     out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
@@ -64,7 +61,7 @@ public class MasterDaoImpl implements IMaster{
             else out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
 		
 		} catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, null, "Ocurrió un problema al obtener la configuración")).getErrorMssg());
+            out = new Response_<>(ex, null, "Ocurrió un problema al obtener la configuración");
         }		
 
     	return out;
@@ -72,7 +69,7 @@ public class MasterDaoImpl implements IMaster{
 
     
     public Response_<MasterResponse> getTermsAndConditions(){
-        Response_<MasterResponse> out = null;
+        Response_<MasterResponse> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
@@ -102,7 +99,7 @@ public class MasterDaoImpl implements IMaster{
             else out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
 		
 		} catch (Exception ex) {
-            logger.error((out = new Response_<>(ex, null, "Ocurrió un problema al obtener la configuración")).getErrorMssg());
+            out = new Response_<>(ex, null, "Ocurrió un problema al obtener la configuración");
         }		
 
     	return out;

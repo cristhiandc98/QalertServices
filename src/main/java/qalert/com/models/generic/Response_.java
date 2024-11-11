@@ -3,8 +3,6 @@ package qalert.com.models.generic;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import qalert.com.utils.consts.UserMessageConst;
 import qalert.com.utils.utils.DateUtil;
@@ -88,7 +86,6 @@ public class Response_<T> {
         statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         userMssg = UserMessageConst.INTERNAL_SERVER_ERROR;
         errorMssg = " | error: " + exception.getLocalizedMessage();
-        setError(object);
     }   
     
     //Exception
@@ -96,18 +93,6 @@ public class Response_<T> {
         this(exception, object);
         this.userMssg = userMssg;
     }    
-
-    //***************************************************************
-    //*********************************************GETTERS AND SETTER
-    //***************************************************************
-    public String setError(Object object){
-        try {
-            errorMssg += " | json: " + new ObjectMapper().writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            errorMssg += " | json: -";
-        }
-        return errorMssg = "| idError: " + errorId + errorMssg;
-    }
 
     //***************************************************************
     //*********************************************GETTERS AND SETTER

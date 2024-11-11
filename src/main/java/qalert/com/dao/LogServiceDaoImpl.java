@@ -66,7 +66,9 @@ public class LogServiceDaoImpl implements ILogService{
 
                 String json = objectMapper.writeValueAsString(request);
 
-                logger.error(json +
+                logger.error(
+                        " | requestCode: " + request.getRequestCode() +
+                        " | jsonError: " + json +
                         " | cuerpoSolicitud: " + cuerpoSolicitud +
                         " | cuerpoRespuesta: " + cuerpoRespuesta +
                         " | error: " + request.getError());

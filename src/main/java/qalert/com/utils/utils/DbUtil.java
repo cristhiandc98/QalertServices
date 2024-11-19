@@ -21,10 +21,10 @@ public class DbUtil {
         return (String)data.get(key);
     }
 
-    public static boolean getBool(Map<String, Object> data, String key){
+    public static boolean getBoolean(Map<String, Object> data, String key){
         if(data.get(key) == null)
             return false;
-        return ((String)data.get(key)).equals("1");
+        return (boolean)data.get(key);
     }
 
 }

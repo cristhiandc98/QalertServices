@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import qalert.com.interfaces.IUser;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.login.LoginRequest;
-import qalert.com.models.login.LoginResponse;
+import qalert.com.models.profile.ProfileResponse;
 import qalert.com.models.user.UserRequest;
 import qalert.com.models.user.UserResponse;
 import qalert.com.utils.consts.CommonConsts;
@@ -48,11 +48,11 @@ public class UserDaoImpl implements IUser{
                 .addValue("ni_document_type_id", request.getDocumentTypeId())
                 .addValue("vi_document", request.getDocument());
         	
-            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET_1);
             
 			out = new Response_<>(HttpStatus.CREATED, 
 				DbUtil.getString(resultset.get(0), "user_mssg"), 
-				DbUtil.getBool(resultset.get(0), "status"));
+				DbUtil.getBoolean(resultset.get(0), "status"));
 		
 		}catch (Exception ex) {
             out = new Response_<>(ex, request, "Ocurrió un problema al crear el usuario");
@@ -73,24 +73,45 @@ public class UserDaoImpl implements IUser{
         	SqlParameterSource input = new MapSqlParameterSource()
             .addValue("vi_username", request.getUserName())
             .addValue("ni_device_id", request.getDeviceId());
+
+            Map<String, Object> dbData = jdbcCall.execute(input);
         	
-            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
-        	
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) dbData.get(DbConst.RESUL_SET_2);
+
+            UserResponse user = new UserResponse();
+            boolean continue_ = false;
+
             if(resultset != null && !resultset.isEmpty()){
-                Map<String, Object> map = resultset.get(0);
 
-                UserResponse user = new UserResponse();
-                LoginResponse login = new LoginResponse();
+                ProfileResponse profile;
 
-                user.setUserId(DbUtil.getInteger(map, "user_id"));
-                user.setFullName(DbUtil.getString(map, "full_name"));
+                for (Map<String,Object> row : resultset) {
+                    profile = new ProfileResponse();
+                    
+                    profile.setProfileId(DbUtil.getInteger(row, "profile_id"));        
+                    profile.setName(DbUtil.getString(row, "name"));
+                    profile.setIsPrincipal(DbUtil.getBoolean(row, "is_principal"));
 
-                login.setPassword(DbUtil.getString(map, "username"));
-                login.setPassword(DbUtil.getString(map, "password"));
+                    user.getProfileList().add(profile);
+                    continue_ = true;
+                }
+            }
 
-                user.setLogin(login);
-
-                out = new Response_<>(user);
+            if(continue_){
+        	
+                resultset = (List<Map<String, Object>>) dbData.get(DbConst.RESUL_SET_1);
+                
+                if(resultset != null && !resultset.isEmpty()){
+                    Map<String, Object> map = resultset.get(0);
+    
+                    user.setUserId(DbUtil.getInteger(map, "user_id"));
+                        
+                    user.getLogin().setUserName(DbUtil.getString(map, "username"));
+                    user.getLogin().setPassword(DbUtil.getString(map, "password"));
+    
+                    out = new Response_<>(user);
+                }
+                else out = new Response_<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
             }
             else out = new Response_<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
 		
@@ -115,11 +136,11 @@ public class UserDaoImpl implements IUser{
                 .addValue("vi_verification_code", request.getLogin().getVerificationCode())
                 .addValue("vi_password", request.getLogin().getPassword());
         	
-            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET_1);
             
 			out = new Response_<>(HttpStatus.OK, 
 				DbUtil.getString(resultset.get(0), "user_mssg"), 
-				DbUtil.getBool(resultset.get(0), "status"));
+				DbUtil.getBoolean(resultset.get(0), "status"));
 		
 		}catch (Exception ex) {
             out = new Response_<>(ex, request, "Ocurrió un problema al actualizar el usuario");

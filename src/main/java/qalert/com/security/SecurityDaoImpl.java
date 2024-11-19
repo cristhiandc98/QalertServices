@@ -39,11 +39,11 @@ public class SecurityDaoImpl implements ISecurity{
                 .addValue("vi_verification_code", request.getLogin().getVerificationCode())
                 .addValue("is_change_device", isChangeDevice);
         	
-			List<Map<String, Object>> dataset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET);
+			List<Map<String, Object>> dataset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET_1);
             
 			out = new Response_<>(HttpStatus.OK, 
 				DbUtil.getString(dataset.get(0), "user_mssg"), 
-				DbUtil.getBool(dataset.get(0), "status"));
+				DbUtil.getBoolean(dataset.get(0), "status"));
 		
 		} catch (Exception ex) {
             out = new Response_<>(ex, request, "Error al guardar el código de verificación");

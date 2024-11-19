@@ -57,7 +57,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				login = new LoginRequest();
 		} catch (Exception ex) {
 			login = new LoginRequest();
-            logger.error(new Response_<>(ex, request).getErrorMssg());
 		}
 		
 		UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(
@@ -73,6 +72,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         
         //Return
 		Response_<UserResponse> out = new Response_<UserResponse>(HttpStatus.UNAUTHORIZED, UserMessageConst.UNAUTHORIZED);
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(CommonConsts.CONTENT_TYPE);
     	response.setCharacterEncoding(CommonConsts.ENCODING);
 		response.getWriter().write(new ObjectMapper().writeValueAsString(out));

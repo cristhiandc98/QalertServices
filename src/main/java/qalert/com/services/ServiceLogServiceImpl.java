@@ -1,6 +1,5 @@
 package qalert.com.services;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +73,7 @@ public class ServiceLogServiceImpl implements ILogService{
     public void setRequestData(HttpServletRequest httpRequest, Object request)
     {
         serviceLogModel = new LogServiceRequest();
-        serviceLogModel.setBeginDateTime(LocalDateTime.now());
+        serviceLogModel.setBeginDateTime(DateUtil.getCurrentDateTime());
         serviceLogModel.setMethod(httpRequest.getMethod());
         serviceLogModel.setEndPoint(httpRequest.getRequestURI());
 

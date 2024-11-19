@@ -34,7 +34,7 @@ public class MasterDaoImpl implements IMaster{
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
     		    .withProcedureName("sp_list_app_settings");
         	
-            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET);
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET_1);
         	
             if(resultset != null && !resultset.isEmpty()){
 
@@ -75,7 +75,7 @@ public class MasterDaoImpl implements IMaster{
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
     		    .withProcedureName("sp_get_terms_and_conditions");
         	
-            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET);
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET_1);
         	
             if(resultset != null && resultset.size() > 0){
 

@@ -2,6 +2,7 @@ package qalert.com.utils.utils;
 
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,24 +12,28 @@ public class DateUtil {
 
     private static final ZoneId TIME_ZONE = ZoneId.of("America/Lima");
 	
-	public static ZonedDateTime getCurrentDateTime() {      
+	public static ZonedDateTime getZoneDateTime() {      
         return ZonedDateTime.now(TIME_ZONE);
 	}
 
+	public static LocalDateTime getCurrentDateTime() {
+        return getZoneDateTime().toLocalDateTime();
+    }
+
 	public static String generateId() {
-        return getCurrentDateTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        return getZoneDateTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
     }
 	
 	public static String getStringCurrentDateTime() {
-        return getCurrentDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return getZoneDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}
 	
 	public static String getStringFirstMonthDay(String cadenafecha) {
-		return getCurrentDateTime().withDayOfMonth(1).toString();
+		return getZoneDateTime().withDayOfMonth(1).toString();
 	}
 	
 	public static String getStringFirstWeekDay(String cadenafecha) {
-		return getCurrentDateTime().with(DayOfWeek.MONDAY).toString();
+		return getZoneDateTime().with(DayOfWeek.MONDAY).toString();
 	}
 	
 	public static String getStringDateTimeFromDate(Date date) {

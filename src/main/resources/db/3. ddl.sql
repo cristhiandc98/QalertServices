@@ -82,15 +82,13 @@ sp:BEGIN
 	
 	insert into person(person_id
 		,full_name, email
-		,document_type_id, document
-		,status_type_id, status_id)
+		,document_type_id, document)
 	values(n_id
 		,vi_full_name, vi_email
-		,ni_document_type_id, vi_document
-		,1, 1);
+		,ni_document_type_id, vi_document);
 		
-	insert into profile(user_id, name, is_principal)
-	values(n_id, 'Yo', 1);
+	insert into profile(user_id, name, is_principal, status_id)
+	values(n_id, vi_full_name, 1, 3);
 	
     commit;
     
@@ -184,6 +182,7 @@ grant execute on procedure sp_save_verification_code to 'qalert_app'@'%';
 
 
 
+
 drop procedure if exists sp_login;
 DELIMITER ;;
 CREATE PROCEDURE `sp_login`(
@@ -207,25 +206,43 @@ sp:BEGIN
 	-- Fecha			Autor		Cod. Mod.	Comentarios
     -- 
 	-- ***************************************************************************
-	declare n_status_id__active		int default 1;
+	declare n_user_status_id__active		int default 2;
+	declare n_profile_status_id__active		int default 3;
+	declare n_user_id						int;
+    declare v_username						varchar(50);
+	declare	v_password						varchar(500);
 
 	select u.user_id
-		,u.username
-		,u.password
-		,p.full_name
+		, u.username
+		, u.password
+	into n_user_id
+		, v_username
+        , v_password
     from user u
 		inner join person p on p.person_id = u.user_id
-			and p.status_id = n_status_id__active
-		-- inner join profile pf on pf.status_id = n_status_id__active
-	where u.status_id = n_status_id__active
+			and p.status_id = n_user_status_id__active
+	where u.status_id = n_user_status_id__active
 		and u.username = vi_username
         and u.device_id = ni_device_id
+    ;
+    
+    select n_user_id  as user_id
+		, v_username  as username
+        , v_password  as password;
+        
+	select p.profile_id
+		, p.name
+		, p.is_principal
+    from profile p 
+    where p.status_id = n_profile_status_id__active
+		and p.user_id = n_user_id
     ;
     
 END ;;
 DELIMITER ;
 
 grant execute on procedure sp_login to 'qalert_app'@'%';
+
 
 
 drop procedure if exists sp_update_password;

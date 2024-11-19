@@ -28,12 +28,12 @@ create table status_type(
     constraint pk_status primary key (status_type_id)
 );
 create table status(
-	status_id int,
+	status_id int NOT NULL AUTO_INCREMENT,
 	status_type_id int,
     name varchar(50),
     status bit DEFAULT b'1',
-    constraint pk_status primary key (status_type_id, status_id),
-    constraint fk_status__status foreign key(status_type_id) references status_type(status_type_id)
+    constraint pk_status primary key (status_id),
+    constraint fk_status__status_type foreign key(status_type_id) references status_type(status_type_id)
 );
 
 CREATE TABLE `user` (
@@ -43,13 +43,12 @@ CREATE TABLE `user` (
   device_id int not null,
   `profiles_number` int DEFAULT '1',
   `is_authenticated` bit DEFAULT b'0',
-  `is_premium` bit(1) DEFAULT b'0',
+  `is_premium` int DEFAULT '0',
   `created_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `last_update_datetime` datetime,
-  `status_id` int default 1,
-  `status_type_id` int default 2,
+  `status_id` int default 2,
   constraint pk_user PRIMARY KEY (`user_id`),
-  constraint fk_user__status foreign key(status_id, status_type_id) references status(status_type_id, status_id),
+  constraint fk_user__status foreign key(status_id) references status(status_id),
   UNIQUE KEY `uk_user__username` (`username`)
 );
 create index idx_user__login on user(username, user_id, password, device_id);
@@ -68,13 +67,12 @@ create table person (
     document varchar(20) not null,
 	`created_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
 	`last_update_datetime` datetime,
-    `status_id` int default 1,
-    `status_type_id` int default 2,
+    `status_id` int default 2,
 	constraint pk_person PRIMARY KEY (`person_id`),
 	UNIQUE KEY uk_person__email (`email`),
     constraint fk_person__person foreign key(person_id) references user(user_id),
     constraint fk_person__document foreign key(document_type_id) references document_type(document_type_id),
-    constraint fk_person__status foreign key(status_id, status_type_id) references status(status_type_id, status_id)
+    constraint fk_person__status foreign key(status_id) references status(status_id)
 );
 
 CREATE TABLE `tmp_validate_email` (
@@ -95,10 +93,9 @@ CREATE TABLE `profile` (
   `created_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `last_update_datetime` datetime,
   `status_id` int,
-  `status_type_id` int,
   constraint pk_profile PRIMARY KEY (`profile_id`),
   CONSTRAINT `fk_profile__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
-  constraint fk_profile__status foreign key(status_id, status_type_id) references status(status_type_id, status_id)
+  constraint fk_profile__status foreign key(status_id) references status(status_id)
 );
 
 create table master(
@@ -149,11 +146,13 @@ values(0, 0, 'Services settings', null)
     
 insert into status_type(status_type_id, name)
 values(1, 'General')
-	, (2, 'User and person');
+	, (2, 'User and person')
+    , (3, 'Profile');
 
 insert into status(status_id, status_type_id, name)
 values(1, 1, 'Active')
-	, (2, 1, 'Active');
+	, (2, 2, 'Active')
+    , (3, 3, 'Active');
 
 insert into document_type(document_type_id, name)
 values(1, 'DNI')

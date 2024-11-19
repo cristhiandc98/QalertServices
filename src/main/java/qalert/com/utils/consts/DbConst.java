@@ -4,7 +4,8 @@ public class DbConst {
 
     public static final String DATA = "data";
 
-    public static final String RESUL_SET = "#result-set-1";
+    public static final String RESUL_SET_1 = "#result-set-1";
+    public static final String RESUL_SET_2 = "#result-set-2";
     public static final String UPDATE_SET = "#update-set-1";
     
     public static final String SP_LOGIN = "sp_login";

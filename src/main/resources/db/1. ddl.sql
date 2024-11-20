@@ -20,6 +20,11 @@ drop table if exists status_type;
 drop table if exists tmp_validate_email;
 drop table if exists master;
 drop table if exists log_service;
+drop table if exists additive;
+drop table if exists additive_group;
+drop table if exists toxicity_level;
+drop table if exists tmp_scan_header;
+drop table if exists tmp_scan_detail;
 
 create table status_type(
 	status_type_id int,
@@ -131,6 +136,64 @@ create table log_service(
 	constraint pk_log_service_id PRIMARY KEY (log_service_id)
 );
 
+CREATE TABLE `toxicity_level` (
+  `toxicity_level_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `level` int NOT NULL,
+  `color` char(7) NOT NULL,
+  constraint pk_toxicity_level PRIMARY KEY (`toxicity_level_id`)
+);
+
+CREATE TABLE `additive_group` (
+  `additive_group_id` int ,
+  `toxicity_level_id` int ,
+  `name` varchar(50) ,
+  `code` varchar(10) ,
+  `function_id` int DEFAULT NULL,
+  `status_id` int DEFAULT 4,
+  constraint pk_additive_group PRIMARY KEY (`additive_group_id`),
+  CONSTRAINT `fk_additive_group__toxicity_level` FOREIGN KEY (`toxicity_level_id`) REFERENCES `toxicity_level` (`toxicity_level_id`),
+  CONSTRAINT `fk_additive_group__status` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`)
+);
+
+CREATE TABLE `additive` (
+  `additive_id` int  AUTO_INCREMENT,
+  `additive_group_id` int ,
+  `toxicity_level_id` int ,
+  `name` varchar(50) ,
+  `code` varchar(10) ,
+  `description` varchar(500) DEFAULT NULL,
+  `status_id` int DEFAULT 4,
+  `converted_code` varchar(20) DEFAULT NULL,
+  `code_characters_number` int DEFAULT NULL,
+  `name_characters_number` int DEFAULT NULL,
+  `converted_name` varchar(50) DEFAULT NULL,
+  `converted_name2` varchar(50) DEFAULT NULL,
+  constraint pk_additive PRIMARY KEY (`additive_id`),
+  CONSTRAINT `fk_additive__additive_group` FOREIGN KEY (`additive_group_id`) REFERENCES `additive_group` (`additive_group_id`),
+  CONSTRAINT `fk_aditivo__toxicity_level` FOREIGN KEY (`toxicity_level_id`) REFERENCES `toxicity_level` (`toxicity_level_id`),
+  CONSTRAINT `fk_aditivo__status` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`)
+);
+
+CREATE TABLE `tmp_scan_header` (
+  `profile_id` int,
+  `data` varchar(9000) DEFAULT NULL,
+  `harmless_additive_number` int,
+  `medium_additive_number` int,
+  `harmful_additive_number` int,
+  CONSTRAINT `fk_tmp_scan_header__profile` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+);
+
+CREATE TABLE `tmp_scan_detail` (
+  `profile_id` int,
+  `additive_id` int,
+  `aditive_name` varchar(50),
+  `toxicity_level_id` int,
+  CONSTRAINT `fk_tmp_scan_detail__profile` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+);
+
+
+
 -- ***********************************************************************
 -- ********************************************************************DML
 -- ***********************************************************************
@@ -147,14 +210,21 @@ values(0, 0, 'Services settings', null)
 insert into status_type(status_type_id, name)
 values(1, 'General')
 	, (2, 'User and person')
-    , (3, 'Profile');
+    , (3, 'Profile')
+    , (4, 'Additive');
 
 insert into status(status_id, status_type_id, name)
 values(1, 1, 'Active')
 	, (2, 2, 'Active')
-    , (3, 3, 'Active');
+    , (3, 3, 'Active')
+    , (4, 4, 'Active');
 
 insert into document_type(document_type_id, name)
 values(1, 'DNI')
 	, (2, 'Carnet de extranjería')
 	, (3, 'Cédula de identidad');
+
+insert into toxicity_level(name, level, color)
+values('Inofensivo', 1, '#00913f')
+	, ('Medio', 2, '#FFFF00')
+    , ('Nocivo', 3, '#ff0000');

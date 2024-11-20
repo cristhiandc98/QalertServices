@@ -288,7 +288,7 @@ sp:BEGIN
 		where t.email = vi_username
 			and t.verification_code = vi_verification_code;
 
-		-- delete from tmp_validate_email where email = vi_username;
+		delete from tmp_validate_email where email = vi_username;
 		
 		if(d_verification_code_expiration_datetime is not null) then
 			if d_verification_code_expiration_datetime < d_current_datetime then

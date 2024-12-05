@@ -19,6 +19,8 @@ public class LogServiceRequest implements Serializable {
 
     private LocalDateTime beginDateTime;
 
+    private LocalDateTime endDateTime;
+
     private String requestHeader;
 
     private String requestBody;
@@ -27,10 +29,9 @@ public class LogServiceRequest implements Serializable {
 
     private String error;
 
+
     public LogServiceRequest() {
     }
-
-
 
     public int getLogServiceId() {
         return logServiceId;
@@ -126,6 +127,18 @@ public class LogServiceRequest implements Serializable {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
     }
 
 

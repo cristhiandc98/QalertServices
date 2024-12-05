@@ -385,7 +385,6 @@ GRANT execute on procedure sp_get_terms_and_conditions   to 'qalert_app'@'%';
 
 
 
-
 drop procedure if exists sp_insert_log_service;
 DELIMITER ;;
 CREATE PROCEDURE sp_insert_log_service(
@@ -395,6 +394,7 @@ CREATE PROCEDURE sp_insert_log_service(
     end_point varchar(200),
     http_status_code int,
     begin_datetime datetime,
+    end_datetime datetime,
     request_header text,
     request_body text,
     response_body text,
@@ -416,8 +416,6 @@ sp:BEGIN
 	-- Fecha			Autor		Cod. Mod.	Comentarios
     -- 
 	-- ***************************************************************************
-    
-    declare current_datetime datetime default current_timestamp();
 	
 	INSERT INTO `qalert_bd`.`log_service`
 		(`request_code`,
@@ -442,9 +440,9 @@ sp:BEGIN
 		http_status_code,
 		date(begin_datetime),
 		time(begin_datetime),
-        cast(TIMESTAMPDIFF(MICROSECOND, begin_datetime, current_datetime) / 1000 as UNSIGNED),
-		date(current_datetime),
-		time(current_datetime),
+        cast(TIMESTAMPDIFF(MICROSECOND, begin_datetime, end_datetime) / 1000 as UNSIGNED),
+		date(end_datetime),
+		time(end_datetime),
 		request_header,
 		request_body,
 		response_body,
@@ -454,3 +452,34 @@ END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_insert_log_service   to 'qalert_app'@'%';
+
+
+
+CREATE  OR REPLACE VIEW vw_status AS
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2024-12-05
+	-- Objetivo: 	view status
+	-- ------------------------------------------------------------
+	-- Descripción de parámetros:
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- 				select * from vw_status;
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************
+    
+	select st.status_type_id
+		, st.name				as status_type_name
+		, st.description		as status_type_description
+		, s.status_id
+		, s.name				as status_name
+		, s.status				as status
+	from status_type st
+		inner join status s on s.status_type_id = st.status_type_id;
+    
+GRANT select on vw_status to 'qalert_app'@'%';

@@ -27,6 +27,7 @@ import qalert.com.models.generic.Response_;
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.login.LoginResponse;
 import qalert.com.models.login.TokenResponse;
+import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.user.UserResponse;
 import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.UserMessageConst;
@@ -36,6 +37,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	private static final Logger logger = LogManager.getLogger(JwtAuthenticationFilter.class);
 
 	private ILogService serviceLog;
+
+	private LogServiceRequest logModel;
 
     public JwtAuthenticationFilter(ILogService serviceLog) {
         this.serviceLog = serviceLog;
@@ -49,7 +52,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		try {
 			login = new ObjectMapper().readValue(request.getReader(), LoginRequest.class);
 
-			serviceLog.setRequestPrivateData(request, login);
+			logModel = serviceLog.setRequestData(request, login, null, true);
 
 			if(login.validateLogin() == null)
 				login.joinUserNameAndDeviceId();
@@ -79,7 +82,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		response.getWriter().flush();
 		out.setError(failed);
 
-		serviceLog.save(out);
+		serviceLog.setResponseDataAndSave(logModel, out, true);
     }
 	
 	@Override
@@ -109,7 +112,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		super.successfulAuthentication(request, response, filter, authentication);
 
-		serviceLog.savePrivate(out);
+		serviceLog.setResponseDataAndSave(logModel, out, true);
 	}
 	
 }

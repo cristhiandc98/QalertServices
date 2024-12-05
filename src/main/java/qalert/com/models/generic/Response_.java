@@ -49,8 +49,12 @@ public class Response_<T> {
         errorMssg = " codError: " + errorId;
 
         try {
-            errorMssg += " | class: " + "lineSearch" +
-                " | error: " + exception.getMessage();
+            StackTraceElement elemento = exception.getStackTrace()[0];
+
+                errorMssg += " | class: " + elemento.getClassName() +
+                " | line: " + elemento.getLineNumber() +
+                " | method: " + elemento.getMethodName() +
+                " | error: "+ exception.getMessage();
         } catch (Exception e) {
             errorMssg += " | json: -";
         }
@@ -93,6 +97,14 @@ public class Response_<T> {
         this(exception, object);
         this.userMssg = userMssg;
     }    
+
+    public <Y>Response_(Response_<Y> in){
+        status = in.isStatus();
+        userMssg = in.getUserMssg();
+        errorId = in.getErrorId();
+        statusCode = in.getStatusCode();
+        errorMssg = in.getErrorMssg();
+    }
 
     //***************************************************************
     //*********************************************GETTERS AND SETTER

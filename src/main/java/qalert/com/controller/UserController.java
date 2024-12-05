@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.interfaces.IUser;
 import qalert.com.models.generic.Response_;
+import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
@@ -35,7 +36,7 @@ public class UserController {
 
     @PostMapping(produces = ApiConst.PRODUCES)
 	public ResponseEntity<?> insert(HttpServletRequest http, @RequestBody UserRequest request) {
-		serviceLog.setRequestData(http, request);
+		LogServiceRequest logModel = serviceLog.setRequestData(http, request, null, true);
 		
 		Response_<String> out;
 
@@ -45,14 +46,14 @@ public class UserController {
 		else
 			out = new Response_<>(HttpStatus.BAD_REQUEST, error);
 
-		serviceLog.save(out);
+		serviceLog.setResponseDataAndSave(logModel, out, true);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
 
     @PostMapping(value = ApiConst.UPDATE_PASSWORD, produces = ApiConst.PRODUCES)
 	public ResponseEntity<?> updatePassword(HttpServletRequest http, @RequestBody UserRequest request) {
-		serviceLog.setRequestData(http, request);
+		LogServiceRequest logModel = serviceLog.setRequestData(http, request, null, true);
 
 		Response_<String> out;
 
@@ -62,7 +63,7 @@ public class UserController {
 		else
 			out = new Response_<>(HttpStatus.BAD_REQUEST, error);
 
-		serviceLog.save(out);
+		serviceLog.setResponseDataAndSave(logModel, out, true);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}

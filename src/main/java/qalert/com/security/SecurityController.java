@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.models.generic.Response_;
+import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
@@ -35,7 +36,7 @@ public class SecurityController {
 		
 	@PostMapping(ApiConst.GET_VERIFICATION_CODE)
 	public ResponseEntity<?> getVerificationCode(HttpServletRequest http, @RequestBody UserRequest request, @RequestParam boolean isChangeDevice) {
-		serviceLog.setRequestData(http, request);
+		LogServiceRequest logModel = serviceLog.setRequestData(http, request, null, false);
 		
 		Response_<String> out;
 		
@@ -45,7 +46,7 @@ public class SecurityController {
 		else
 			out = new Response_<>(HttpStatus.BAD_REQUEST, error);
 
-		serviceLog.save(out);
+		serviceLog.setResponseDataAndSave(logModel, out, false);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}

@@ -1,12 +1,8 @@
-2024-11-19 17:11:14.168 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:15.491 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:34.089 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:54.106 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:07.832 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:08.584 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:14.503 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:15.724 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:26.513 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:27.918 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:40.993 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
-2024-11-19 17:11:08.705 | org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.matches Empty encoded password
+2024-12-05 06:12:47.154 | qalert.com.dao.UserDaoImpl.insert null
+2024-12-05 06:12:47.202 | qalert.com.dao.UserDaoImpl.insert null
+2024-12-05 06:12:46.168 | qalert.com.dao.UserDaoImpl.insert null
+2024-12-05 06:12:59.612 | qalert.com.dao.UserDaoImpl.insert null
+2024-12-05 06:12:10.410 | qalert.com.dao.UserDaoImpl.insert null
+2024-12-05 07:12:27.484 | qalert.com.dao.UserDaoImpl.insert null
+2024-12-05 07:12:26.745 | qalert.com.dao.UserDaoImpl.insert null
+2024-12-05 07:12:49.856 | qalert.com.dao.UserDaoImpl.insert  | requestCode: 20241205071533 | jsonError: {"logServiceId":0,"requestCode":"20241205071533","method":"POST","endPoint":"/security/login","httpStatusCode":200,"beginDateTime":"2024-12-05T07:15:31.514042378","endDateTime":"2024-12-05T07:15:33.665869838"} | cuerpoSolicitud: {"userName":"CRISTHIANDC98@GMAIL.COM","password":"12345678","deviceId":488} | cuerpoRespuesta: null | error: null

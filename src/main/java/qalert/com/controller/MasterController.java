@@ -15,6 +15,7 @@ import qalert.com.interfaces.ILogService;
 import qalert.com.interfaces.IMaster;
 import qalert.com.models.generic.Response_;
 import qalert.com.models.master.MasterResponse;
+import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
 
@@ -35,11 +36,11 @@ public class MasterController {
 
     @GetMapping(value = ApiConst.GET_TERMS_AND_CONDITIONS, produces = ApiConst.PRODUCES)
 	public ResponseEntity<?> getTermsAndConditions(HttpServletRequest http) {
-		serviceLog.setRequestData(http, null);
+		LogServiceRequest logModel = serviceLog.setRequestData(http, null, null, false);
 
 		Response_<MasterResponse> out = service.getTermsAndConditions();
 
-		serviceLog.savePrivate(out);
+		serviceLog.setResponseDataAndSave(logModel, out, true);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
@@ -47,11 +48,11 @@ public class MasterController {
 
     @GetMapping(value = ApiConst.LIST_APP_SETTINGS, produces = ApiConst.PRODUCES)
 	public ResponseEntity<?> listAppSettings(HttpServletRequest http) {
-		serviceLog.setRequestData(http, null);
+		LogServiceRequest logModel = serviceLog.setRequestData(http, null, null, false);
 
 		Response_<List<MasterResponse>> out = service.listAppSettings();
-	
-		serviceLog.save(out);
+
+		serviceLog.setResponseDataAndSave(logModel, out, true);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}

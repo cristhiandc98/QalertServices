@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -64,6 +65,9 @@ public class AppConfig implements WebMvcConfigurer{
         jsonFactory.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
 
         ObjectMapper objectMapper = new ObjectMapper(jsonFactory);
+
+		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             
 		// Ignora los campos nulos
 		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);

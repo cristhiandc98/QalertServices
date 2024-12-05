@@ -8,13 +8,19 @@ import qalert.com.models.service_log.LogServiceRequest;
 
 public interface  ILogService {
 
-    void setRequestData(HttpServletRequest httpRequest, Object request);
+    LogServiceRequest setRequestData(HttpServletRequest httpRequest, Object request, Integer profileId, boolean isPrivate);
+    
+    <T> void hideRequestPrivateDataHide(LogServiceRequest logModel, T request);
 
-    void setRequestPrivateData(HttpServletRequest httpRequest, Object request);
+    <T> void setResponseData(LogServiceRequest logModel, Response_<T> response, boolean isPrivate);
+
+    <T> void hideResponsePrivateDataHide(LogServiceRequest logModel, Response_<T> request);
 
     void insert(LogServiceRequest request);
 
-    <T> CompletableFuture<Void> save(Response_<T> response);
+    <T> CompletableFuture<Void> save(LogServiceRequest logModel);
 
-    <T> void savePrivate(Response_<T> response);
+    <T> T clone(T request, Class<T> clazz);
+
+    <T> void setResponseDataAndSave(LogServiceRequest logModel, Response_<T> response, boolean isPrivate);
 }

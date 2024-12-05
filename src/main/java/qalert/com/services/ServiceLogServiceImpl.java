@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.models.generic.Response_;
-import qalert.com.models.login.LoginRequest;
+import qalert.com.models.login.LoginResponse;
 import qalert.com.models.master.MasterResponse;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.user.UserResponse;
@@ -30,7 +30,113 @@ public class ServiceLogServiceImpl implements ILogService{
 	@Autowired
 	private ObjectMapper objectMapper;
 
-    private LogServiceRequest serviceLogModel;
+    @Override
+    public LogServiceRequest setRequestData(HttpServletRequest httpRequest, Object request, Integer profileId, boolean isPrivate)
+    {
+        LogServiceRequest logModel = new LogServiceRequest();
+        
+        logModel.setMethod(httpRequest.getMethod());
+        logModel.setEndPoint(httpRequest.getRequestURI());
+        logModel.setBeginDateTime(DateUtil.getCurrentDateTime());
+        logModel.setProfileId(profileId);
+        
+        try
+        {
+            logModel.setRequestBody(request == null ? null : objectMapper.writeValueAsString(request));
+
+            if(profileId == null){
+                String profileIdString = httpRequest.getHeader("profile_id");
+                if(profileIdString != null && !profileIdString.isEmpty())
+                logModel.setProfileId(Integer.parseInt(profileIdString));
+            }
+            
+            if(isPrivate)
+                hideRequestPrivateDataHide(logModel, request);
+        }
+        catch (JsonProcessingException ex)
+        {
+            logModel.setRequestBody(ex.getMessage());
+        }
+
+        return logModel;
+    }
+
+
+    @Override
+    public <T> void hideRequestPrivateDataHide(LogServiceRequest logModel, T request) {
+        
+        if(request == null) return;
+
+        try {
+            if (request instanceof UserResponse user){
+                UserResponse data = clone(user, UserResponse.class);
+
+                data.getLogin().getToken().setToken(null);
+                
+                logModel.setRequestBody(objectMapper.writeValueAsString(data));
+            }
+        } catch (Exception e) {
+            logModel.setRequestCode(e.getMessage());
+        }
+    }
+
+
+    public <T> void setResponseData(LogServiceRequest logModel, Response_<T> response, boolean isPrivate)
+    {
+        logModel.setRequestCode(response.getErrorId() == null ? DateUtil.generateId() : response.getErrorId());
+        logModel.setError(response.getErrorMssg());
+        logModel.setHttpStatusCode(response.getStatusCode().value());
+        logModel.setEndDateTime(DateUtil.getCurrentDateTime());
+
+        try
+        {
+            if(response != null && !isPrivate)
+                logModel.setResponseBody(objectMapper.writeValueAsString(response) + logModel.getResponseBody());
+        }
+        catch (JsonProcessingException ex)
+        {
+            logModel.setResponseBody(ex.getMessage());
+        }
+
+        logModel.setError(response.getErrorMssg());
+    }
+
+
+    public <T> void hideResponsePrivateDataHide(LogServiceRequest logModel, Response_<T> response){
+        
+        if (response.getData() == null) return;
+
+        try {
+            if (response.getData() instanceof LoginResponse login){
+
+                Response_<LoginResponse> clon = new Response_<>(response);
+
+                LoginResponse dataClon = clone(login, LoginResponse.class);
+                dataClon.getToken().setToken(null);
+
+                clon.setData(dataClon);
+
+                logModel.setResponseBody(objectMapper.writeValueAsString(clon));
+            
+            }else if(response.getData() instanceof MasterResponse master){
+
+                if(master.getTableId() == 1 && master.getFieldId() == 1){
+
+                    Response_<MasterResponse> clon = new Response_<>(response);
+    
+                    MasterResponse dataClon = clone(master, MasterResponse.class);
+                    
+                    dataClon.setValueVarchar("This field is too big.");
+    
+                    clon.setData(dataClon);
+
+                    logModel.setResponseBody(objectMapper.writeValueAsString(clon));
+                }
+            }
+        } catch (Exception e) {
+            logModel.setResponseBody(e.getMessage());
+        }
+    }
 
     @Override
     public void insert(LogServiceRequest request) {
@@ -38,83 +144,36 @@ public class ServiceLogServiceImpl implements ILogService{
     }
 
     @Override
-    public <T> CompletableFuture<Void> save(Response_<T> response)
+    public <T> CompletableFuture<Void> save(LogServiceRequest logModel)
     {
-        setResponseData(response);
-
         return CompletableFuture.runAsync(() -> {    
-            insert(serviceLogModel);
+            insert(logModel);
         });
     }
 
     @Override
-    public <T> void savePrivate(Response_<T> response) {
-        if (response.getData() != null){
-            String data;
-            //Not save token
-            if (response.getData() instanceof UserResponse user){
-                user.getLogin().getToken().setToken(null);
-                save(response);
-            }
-            //Not save Terms and conditions
-            else if (response.getData() instanceof MasterResponse master){
-                if(master.getTableId() == 1 && master.getFieldId() == 1){
-                    data = master.getValueVarchar();
-                    master.setValueVarchar("This field is too big.");
-                    save(response);
-                    master.setValueVarchar(data);
-                }
-            }
+    public <T> T clone(T request, Class<T> clazz) {
+        try {
+            // Convertir el objeto a JSON
+            String json = objectMapper.writeValueAsString(request);
+
+            // Convertir el JSON de vuelta al objeto
+            T responseClon = objectMapper.readValue(json, clazz);
+
+            return responseClon;
+        } catch (Exception e) {
+            return null;
         }
-        else save(response);
     }
+
 
     @Override
-    public void setRequestData(HttpServletRequest httpRequest, Object request)
-    {
-        serviceLogModel = new LogServiceRequest();
-        serviceLogModel.setBeginDateTime(DateUtil.getCurrentDateTime());
-        serviceLogModel.setMethod(httpRequest.getMethod());
-        serviceLogModel.setEndPoint(httpRequest.getRequestURI());
+    public <T> void setResponseDataAndSave(LogServiceRequest logModel, Response_<T> response, boolean isPrivate) {
+        setResponseData(logModel, response, isPrivate);
 
-        serviceLogModel.setProfileId(httpRequest.getHeader("profile_id") == null ? null : Integer.valueOf(httpRequest.getHeader("profile_id")));
-        
-        try
-        {
-            serviceLogModel.setRequestBody(request == null ? null : objectMapper.writeValueAsString(request));
-        }
-        catch (JsonProcessingException ex)
-        {
-            serviceLogModel.setRequestBody(ex.getMessage());
-        }
-    }
+        if(isPrivate)
+            hideResponsePrivateDataHide(logModel, response);
 
-    @Override
-    public void setRequestPrivateData(HttpServletRequest httpRequest, Object request) {
-        if (request != null){
-            if (request instanceof LoginRequest login){
-                String password = login.getPassword();
-                login.setPassword(null);
-                setRequestData(httpRequest, request);
-                login.setPassword(password);
-            }
-        } 
-        else setRequestData(httpRequest, request);
-    }
-
-    private <T> void setResponseData(Response_<T> response)
-    {
-        serviceLogModel.setRequestCode(response.getErrorId() == null ? DateUtil.generateId() : response.getErrorId());
-        serviceLogModel.setError(response.getErrorMssg());
-        serviceLogModel.setHttpStatusCode(response.getStatusCode().value());
-
-        try
-        {
-            serviceLogModel.setResponseBody(objectMapper.writeValueAsString(response));
-        }
-        catch (JsonProcessingException ex)
-        {
-            serviceLogModel.setResponseBody(ex.getMessage());
-        }
+        save(logModel);
     }
 }

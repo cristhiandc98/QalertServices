@@ -46,6 +46,7 @@ public class LogServiceDaoImpl implements ILogService{
                 .addValue("end_point", request.getEndPoint())
                 .addValue("http_status_code", request.getHttpStatusCode())
                 .addValue("begin_datetime", request.getBeginDateTime())
+                .addValue("end_datetime", request.getBeginDateTime())
                 .addValue("request_header", request.getRequestHeader())
                 .addValue("request_body", request.getRequestBody())
                 .addValue("response_body", request.getResponseBody())
@@ -54,8 +55,6 @@ public class LogServiceDaoImpl implements ILogService{
             jdbcCall.execute(input);
 
         } catch (Exception ex) {
-            logger.error(new Response_<>(ex).getErrorMssg());
-
             try
             {
                 String cuerpoSolicitud = request.getRequestBody();
@@ -81,27 +80,46 @@ public class LogServiceDaoImpl implements ILogService{
     }
 
     @Override
-    public <T> CompletableFuture<Void> save(Response_<T> response) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
-    }
-
-    @Override
-    public <T> void savePrivate(Response_<T> response) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'savePrivate'");
-    }
-
-    @Override
-    public void setRequestData(HttpServletRequest httpRequest, Object request) {
+    public LogServiceRequest setRequestData(HttpServletRequest httpRequest, Object request, Integer profileId,
+            boolean isPrivate) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setRequestData'");
     }
 
     @Override
-    public void setRequestPrivateData(HttpServletRequest httpRequest, Object request) {
+    public <T> void hideRequestPrivateDataHide(LogServiceRequest logModel, T request) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRequestPrivateData'");
+        throw new UnsupportedOperationException("Unimplemented method 'hideRequestPrivateDataHide'");
+    }
+
+    @Override
+    public <T> void setResponseData(LogServiceRequest logModel, Response_<T> response, boolean isPrivate) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setResponseData'");
+    }
+
+    @Override
+    public <T> void hideResponsePrivateDataHide(LogServiceRequest logModel, Response_<T> request) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'hideResponsePrivateDataHide'");
+    }
+
+    @Override
+    public <T> CompletableFuture<Void> save(LogServiceRequest logModel) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
+
+    @Override
+    public <T> T clone(T request, Class<T> clazz) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'clone'");
+    }
+
+    @Override
+    public <T> void setResponseDataAndSave(LogServiceRequest logModel, Response_<T> response, boolean isPrivate) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setResponseDataAndSave'");
     }
 
 }

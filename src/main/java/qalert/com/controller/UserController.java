@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.interfaces.IUser;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.ApiConst;
@@ -38,13 +38,13 @@ public class UserController {
 	public ResponseEntity<?> insert(HttpServletRequest http, @RequestBody UserRequest request) {
 		LogServiceRequest logModel = serviceLog.setRequestData(http, request, null, true);
 		
-		Response_<String> out;
+		Response2<String> out;
 
 		String error;
 		if((error = request.validateUserRegister()) == null)
 			out = service.insert(request);
 		else
-			out = new Response_<>(HttpStatus.BAD_REQUEST, error);
+			out = new Response2<>(HttpStatus.BAD_REQUEST, error);
 
 		serviceLog.setResponseDataAndSave(logModel, out, true);
 
@@ -55,13 +55,13 @@ public class UserController {
 	public ResponseEntity<?> updatePassword(HttpServletRequest http, @RequestBody UserRequest request) {
 		LogServiceRequest logModel = serviceLog.setRequestData(http, request, null, true);
 
-		Response_<String> out;
+		Response2<String> out;
 
 		String error;
 		if((error = request.validateUpdatePassword()) == null)
 			out = service.updatePassword(request);
 		else
-			out = new Response_<>(HttpStatus.BAD_REQUEST, error);
+			out = new Response2<>(HttpStatus.BAD_REQUEST, error);
 
 		serviceLog.setResponseDataAndSave(logModel, out, true);
 

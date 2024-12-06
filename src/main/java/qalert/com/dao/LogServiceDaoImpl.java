@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.utils.consts.CommonConsts;
 
@@ -46,7 +46,7 @@ public class LogServiceDaoImpl implements ILogService{
                 .addValue("end_point", request.getEndPoint())
                 .addValue("http_status_code", request.getHttpStatusCode())
                 .addValue("begin_datetime", request.getBeginDateTime())
-                .addValue("end_datetime", request.getBeginDateTime())
+                .addValue("end_datetime", request.getEndDateTime())
                 .addValue("request_header", request.getRequestHeader())
                 .addValue("request_body", request.getRequestBody())
                 .addValue("response_body", request.getResponseBody())
@@ -74,7 +74,7 @@ public class LogServiceDaoImpl implements ILogService{
             }
             catch (Exception e)
             {
-                logger.error(new Response_<>(ex).getErrorMssg());
+                logger.error(new Response2<>(ex).getErrorMssg());
             }
         }
     }
@@ -93,13 +93,13 @@ public class LogServiceDaoImpl implements ILogService{
     }
 
     @Override
-    public <T> void setResponseData(LogServiceRequest logModel, Response_<T> response, boolean isPrivate) {
+    public <T> void setResponseData(LogServiceRequest logModel, Response2<T> response, boolean isPrivate) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setResponseData'");
     }
 
     @Override
-    public <T> void hideResponsePrivateDataHide(LogServiceRequest logModel, Response_<T> request) {
+    public <T> void hideResponsePrivateDataHide(LogServiceRequest logModel, Response2<T> request) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'hideResponsePrivateDataHide'");
     }
@@ -117,7 +117,7 @@ public class LogServiceDaoImpl implements ILogService{
     }
 
     @Override
-    public <T> void setResponseDataAndSave(LogServiceRequest logModel, Response_<T> response, boolean isPrivate) {
+    public <T> void setResponseDataAndSave(LogServiceRequest logModel, Response2<T> response, boolean isPrivate) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setResponseDataAndSave'");
     }

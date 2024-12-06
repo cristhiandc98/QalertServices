@@ -1,13 +1,14 @@
 package qalert.com.interfaces;
 
-import qalert.com.models.generic.Response_;
-import qalert.com.models.master.MasterResponse;
 import java.util.List;
+
+import qalert.com.models.generic.Response2;
+import qalert.com.models.master.MasterResponse;
 
 public interface IMaster {
 
-    public Response_<MasterResponse> getTermsAndConditions();
+    public Response2<MasterResponse> getTermsAndConditions();
 
-    public Response_<List<MasterResponse>> listAppSettings();
+    public Response2<List<MasterResponse>> listAppSettings();
 
 }

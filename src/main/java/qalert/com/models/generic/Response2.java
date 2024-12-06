@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import qalert.com.utils.consts.UserMessageConst;
 import qalert.com.utils.utils.DateUtil;
 
-public class Response_<T> {
+public class Response2<T> {
 
     private boolean status;    
 
@@ -26,20 +26,21 @@ public class Response_<T> {
     //***************************************************************
     //***************************************************CONSTRUCTORS
     //***************************************************************
-    public Response_() {
+    public Response2() {
         status = true;
         this.userMssg = UserMessageConst.SUCCESS;
         statusCode = HttpStatus.OK;
     }
     
-    public Response_(HttpStatus statusCode, String userMssg, boolean status) {
+    public Response2(HttpStatus statusCode, String userMssg, boolean status) {
         this.statusCode = statusCode;
         this.userMssg = userMssg;
         this.status = status;
     }
 
-    public Response_(Exception exception) {
+    public Response2(Exception exception) {
         this(HttpStatus.INTERNAL_SERVER_ERROR, UserMessageConst.INTERNAL_SERVER_ERROR, false);
+        setError(exception);
     } 
 
     public String setError(Exception exception)
@@ -63,28 +64,28 @@ public class Response_<T> {
     }
 
     //***************************************************************
-    public Response_(T data, String userMessage) {
+    public Response2(T data, String userMessage) {
         this.data = data;
         this.status = data != null;
         this.userMssg = userMessage;
         this.statusCode = HttpStatus.OK;
     }
 
-    public Response_(T data) {
+    public Response2(T data) {
         this.statusCode = HttpStatus.OK;
         this.userMssg = UserMessageConst.SUCCESS;
         this.data = data;
         this.status = data != null;
     }
 
-    public Response_(HttpStatus statusCode, String userMssg) {
+    public Response2(HttpStatus statusCode, String userMssg) {
         this.statusCode = statusCode;
         this.userMssg = userMssg;
         this.status = statusCode == HttpStatus.OK;
     }
     
     //Exception
-    public Response_(Exception exception, Object object) {
+    public Response2(Exception exception, Object object) {
         errorId = DateUtil.generateId();
         status = false;
         statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -93,12 +94,12 @@ public class Response_<T> {
     }   
     
     //Exception
-    public Response_(Exception exception, Object object, String userMssg) {
+    public Response2(Exception exception, Object object, String userMssg) {
         this(exception, object);
         this.userMssg = userMssg;
     }    
 
-    public <Y>Response_(Response_<Y> in){
+    public <Y>Response2(Response2<Y> in){
         status = in.isStatus();
         userMssg = in.getUserMssg();
         errorId = in.getErrorId();

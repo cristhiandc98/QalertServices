@@ -12,4 +12,9 @@ public class DbConst {
     public static final String SP_SAVE_VERIFICATION_CODE = "sp_save_verification_code";
     public static final String SP_INSERT_USER = "sp_insert_user";
 
+    public static final String SP_LIST_APP_SETTINGS = "sp_list_app_settings";
+
+    //scan
+    public static final String SP_INSERT_TMP_SCAN = "sp_insert_tmp_scan";
+
 }

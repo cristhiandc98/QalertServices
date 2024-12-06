@@ -3,7 +3,7 @@ package qalert.com.interfaces;
 import java.util.concurrent.CompletableFuture;
 
 import jakarta.servlet.http.HttpServletRequest;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.service_log.LogServiceRequest;
 
 public interface  ILogService {
@@ -12,9 +12,9 @@ public interface  ILogService {
     
     <T> void hideRequestPrivateDataHide(LogServiceRequest logModel, T request);
 
-    <T> void setResponseData(LogServiceRequest logModel, Response_<T> response, boolean isPrivate);
+    <T> void setResponseData(LogServiceRequest logModel, Response2<T> response, boolean isPrivate);
 
-    <T> void hideResponsePrivateDataHide(LogServiceRequest logModel, Response_<T> request);
+    <T> void hideResponsePrivateDataHide(LogServiceRequest logModel, Response2<T> request);
 
     void insert(LogServiceRequest request);
 
@@ -22,5 +22,5 @@ public interface  ILogService {
 
     <T> T clone(T request, Class<T> clazz);
 
-    <T> void setResponseDataAndSave(LogServiceRequest logModel, Response_<T> response, boolean isPrivate);
+    <T> void setResponseDataAndSave(LogServiceRequest logModel, Response2<T> response, boolean isPrivate);
 }

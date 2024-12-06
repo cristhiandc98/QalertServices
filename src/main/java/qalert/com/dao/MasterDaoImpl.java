@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import qalert.com.interfaces.IMaster;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.master.MasterResponse;
 import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.DbConst;
@@ -27,12 +27,12 @@ public class MasterDaoImpl implements IMaster{
     
 
     @Override
-    public Response_<List<MasterResponse>> listAppSettings() {
-        Response_<List<MasterResponse>> out;
+    public Response2<List<MasterResponse>> listAppSettings() {
+        Response2<List<MasterResponse>> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName("sp_list_app_settings");
+    		    .withProcedureName(DbConst.SP_LIST_APP_SETTINGS);
         	
             List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET_1);
         	
@@ -54,22 +54,22 @@ public class MasterDaoImpl implements IMaster{
                 }
                 
                 if(!list.isEmpty())
-                    out = new Response_<>(list);
+                    out = new Response2<>(list);
                 else 
-                    out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
+                    out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
             }
-            else out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
+            else out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
 		
 		} catch (Exception ex) {
-            out = new Response_<>(ex, null, "Ocurrió un problema al obtener la configuración");
+            out = new Response2<>(ex, null, "Ocurrió un problema al obtener la configuración");
         }		
 
     	return out;
     }
 
     
-    public Response_<MasterResponse> getTermsAndConditions(){
-        Response_<MasterResponse> out;
+    public Response2<MasterResponse> getTermsAndConditions(){
+        Response2<MasterResponse> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
@@ -92,14 +92,14 @@ public class MasterDaoImpl implements IMaster{
                 }
                 
                 if(model != null)
-                    out = new Response_<>(model);
+                    out = new Response2<>(model);
                 else 
-                    out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
+                    out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
             }
-            else out = new Response_<>(HttpStatus.OK, "Configuración no encontrada", false);
+            else out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
 		
 		} catch (Exception ex) {
-            out = new Response_<>(ex, null, "Ocurrió un problema al obtener la configuración");
+            out = new Response2<>(ex, null, "Ocurrió un problema al obtener la configuración");
         }		
 
     	return out;

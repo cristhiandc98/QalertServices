@@ -23,7 +23,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import qalert.com.interfaces.ILogService;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.login.LoginResponse;
 import qalert.com.models.login.TokenResponse;
@@ -74,7 +74,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     	response.setCharacterEncoding(CommonConsts.ENCODING);
         
         //Return
-		Response_<UserResponse> out = new Response_<UserResponse>(HttpStatus.UNAUTHORIZED, UserMessageConst.UNAUTHORIZED);
+		Response2<UserResponse> out = new Response2<UserResponse>(HttpStatus.UNAUTHORIZED, UserMessageConst.UNAUTHORIZED);
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(CommonConsts.CONTENT_TYPE);
     	response.setCharacterEncoding(CommonConsts.ENCODING);
@@ -104,7 +104,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		login.setToken(tokenResponse);
 		
 		//Return
-		Response_<UserResponse> out = new Response_<UserResponse>(udi.getUser());
+		Response2<UserResponse> out = new Response2<UserResponse>(udi.getUser());
 		response.setContentType(CommonConsts.CONTENT_TYPE);
     	response.setCharacterEncoding(CommonConsts.ENCODING);
 		response.getWriter().write(new ObjectMapper().writeValueAsString(out));

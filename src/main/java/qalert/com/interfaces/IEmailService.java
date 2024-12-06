@@ -1,10 +1,10 @@
 package qalert.com.interfaces;
 
 import qalert.com.models.email.SendEmailRequest;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 
 public interface IEmailService {
 
-    Response_<String> sendSimpleEmail(SendEmailRequest request, String mssgOk);
+    Response2<String> sendSimpleEmail(SendEmailRequest request, String mssgOk);
 
 }

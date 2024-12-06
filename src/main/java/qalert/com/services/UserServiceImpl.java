@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import qalert.com.interfaces.IUser;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.user.UserRequest;
 import qalert.com.models.user.UserResponse;
@@ -24,11 +24,11 @@ public class UserServiceImpl implements IUser{
     private PasswordEncoder encryptador;
 
     @Override
-    public Response_<String> insert(UserRequest request) {
+    public Response2<String> insert(UserRequest request) {
         request.getLogin().setDeviceId(Integer.parseInt(request.getLogin().getVerificationCode()));
         request.getLogin().setPassword(encryptador.encode(request.getLogin().getPassword()));
         
-        Response_<String> out = dao.insert(request);
+        Response2<String> out = dao.insert(request);
 
         if(out.isStatus())
           out.setData(request.getLogin().getVerificationCode());
@@ -37,14 +37,14 @@ public class UserServiceImpl implements IUser{
     }
 
     @Override
-    public Response_<UserResponse> login(LoginRequest request) {
+    public Response2<UserResponse> login(LoginRequest request) {
 		  return dao.login(request);
     }
 
     @Override
-    public Response_<String> updatePassword(UserRequest request) {
+    public Response2<String> updatePassword(UserRequest request) {
       request.getLogin().setPassword(encryptador.encode(request.getLogin().getPassword()));
-		  Response_<String> out = dao.updatePassword(request);
+		  Response2<String> out = dao.updatePassword(request);
 
         if( out.isStatus())
           out.setData(request.getLogin().getVerificationCode());

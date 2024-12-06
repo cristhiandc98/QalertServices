@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import qalert.com.interfaces.IEmailService;
 import qalert.com.models.email.SendEmailRequest;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.utils.consts.EnvironmentConst;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
@@ -32,8 +32,8 @@ public class EmailServiceImpl implements IEmailService{
 
 	private static final Logger logger = LogManager.getLogger(EmailServiceImpl.class);
 
-	public Response_<String> sendSimpleEmail(SendEmailRequest request, String mssgOk){
-		Response_<String> salida = null;
+	public Response2<String> sendSimpleEmail(SendEmailRequest request, String mssgOk){
+		Response2<String> salida = null;
 
 		Properties props = new Properties();  
 		props.put("mail.smtp.auth", "true");
@@ -62,13 +62,13 @@ public class EmailServiceImpl implements IEmailService{
 			
 			Transport.send(msg);
 			
-			salida = new Response_<String>(HttpStatus.OK, (mssgOk == null ? "¡Correo enviado exitosamente!" : mssgOk));
+			salida = new Response2<String>(HttpStatus.OK, (mssgOk == null ? "¡Correo enviado exitosamente!" : mssgOk));
 		} catch (AddressException e) {
-            logger.error((salida = new Response_<String>(e, request)).getErrorMssg());
+            logger.error((salida = new Response2<String>(e, request)).getErrorMssg());
 		} catch (MessagingException e) {
-            logger.error((salida = new Response_<String>(e, request)).getErrorMssg());
+            logger.error((salida = new Response2<String>(e, request)).getErrorMssg());
 		} catch (UnsupportedEncodingException e) {
-            logger.error((salida = new Response_<String>(e, request)).getErrorMssg());
+            logger.error((salida = new Response2<String>(e, request)).getErrorMssg());
 		}
 		return salida;
 	}

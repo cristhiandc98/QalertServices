@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.login.LoginResponse;
 import qalert.com.models.master.MasterResponse;
 import qalert.com.models.service_log.LogServiceRequest;
@@ -39,6 +39,7 @@ public class ServiceLogServiceImpl implements ILogService{
         logModel.setEndPoint(httpRequest.getRequestURI());
         logModel.setBeginDateTime(DateUtil.getCurrentDateTime());
         logModel.setProfileId(profileId);
+        logModel.setResponseBody("");
         
         try
         {
@@ -81,7 +82,7 @@ public class ServiceLogServiceImpl implements ILogService{
     }
 
 
-    public <T> void setResponseData(LogServiceRequest logModel, Response_<T> response, boolean isPrivate)
+    public <T> void setResponseData(LogServiceRequest logModel, Response2<T> response, boolean isPrivate)
     {
         logModel.setRequestCode(response.getErrorId() == null ? DateUtil.generateId() : response.getErrorId());
         logModel.setError(response.getErrorMssg());
@@ -102,14 +103,14 @@ public class ServiceLogServiceImpl implements ILogService{
     }
 
 
-    public <T> void hideResponsePrivateDataHide(LogServiceRequest logModel, Response_<T> response){
+    public <T> void hideResponsePrivateDataHide(LogServiceRequest logModel, Response2<T> response){
         
         if (response.getData() == null) return;
 
         try {
             if (response.getData() instanceof LoginResponse login){
 
-                Response_<LoginResponse> clon = new Response_<>(response);
+                Response2<LoginResponse> clon = new Response2<>(response);
 
                 LoginResponse dataClon = clone(login, LoginResponse.class);
                 dataClon.getToken().setToken(null);
@@ -122,7 +123,7 @@ public class ServiceLogServiceImpl implements ILogService{
 
                 if(master.getTableId() == 1 && master.getFieldId() == 1){
 
-                    Response_<MasterResponse> clon = new Response_<>(response);
+                    Response2<MasterResponse> clon = new Response2<>(response);
     
                     MasterResponse dataClon = clone(master, MasterResponse.class);
                     
@@ -168,7 +169,7 @@ public class ServiceLogServiceImpl implements ILogService{
 
 
     @Override
-    public <T> void setResponseDataAndSave(LogServiceRequest logModel, Response_<T> response, boolean isPrivate) {
+    public <T> void setResponseDataAndSave(LogServiceRequest logModel, Response2<T> response, boolean isPrivate) {
         setResponseData(logModel, response, isPrivate);
 
         if(isPrivate)

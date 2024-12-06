@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.interfaces.IMaster;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.master.MasterResponse;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.utils.consts.ApiConst;
@@ -38,7 +38,7 @@ public class MasterController {
 	public ResponseEntity<?> getTermsAndConditions(HttpServletRequest http) {
 		LogServiceRequest logModel = serviceLog.setRequestData(http, null, null, false);
 
-		Response_<MasterResponse> out = service.getTermsAndConditions();
+		Response2<MasterResponse> out = service.getTermsAndConditions();
 
 		serviceLog.setResponseDataAndSave(logModel, out, true);
 
@@ -50,7 +50,7 @@ public class MasterController {
 	public ResponseEntity<?> listAppSettings(HttpServletRequest http) {
 		LogServiceRequest logModel = serviceLog.setRequestData(http, null, null, false);
 
-		Response_<List<MasterResponse>> out = service.listAppSettings();
+		Response2<List<MasterResponse>> out = service.listAppSettings();
 
 		serviceLog.setResponseDataAndSave(logModel, out, true);
 

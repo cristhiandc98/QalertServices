@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import qalert.com.interfaces.IUser;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.profile.ProfileResponse;
 import qalert.com.models.user.UserRequest;
@@ -31,8 +31,8 @@ public class UserDaoImpl implements IUser{
 	
     
     @Override
-    public Response_<String> insert(UserRequest request) {
-		Response_<String> out;
+    public Response2<String> insert(UserRequest request) {
+		Response2<String> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
@@ -50,12 +50,12 @@ public class UserDaoImpl implements IUser{
         	
             List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET_1);
             
-			out = new Response_<>(HttpStatus.CREATED, 
+			out = new Response2<>(HttpStatus.CREATED, 
 				DbUtil.getString(resultset.get(0), "user_mssg"), 
 				DbUtil.getBoolean(resultset.get(0), "status"));
 		
 		}catch (Exception ex) {
-            out = new Response_<>(ex, request, "Ocurrió un problema al crear el usuario");
+            out = new Response2<>(ex, request, "Ocurrió un problema al crear el usuario");
         }	
 
     	return out;
@@ -63,8 +63,8 @@ public class UserDaoImpl implements IUser{
 
 
     @Override
-    public Response_<UserResponse> login(LoginRequest request){
-        Response_<UserResponse> out;
+    public Response2<UserResponse> login(LoginRequest request){
+        Response2<UserResponse> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
@@ -109,14 +109,14 @@ public class UserDaoImpl implements IUser{
                     user.getLogin().setUserName(DbUtil.getString(map, "username"));
                     user.getLogin().setPassword(DbUtil.getString(map, "password"));
     
-                    out = new Response_<>(user);
+                    out = new Response2<>(user);
                 }
-                else out = new Response_<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
+                else out = new Response2<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
             }
-            else out = new Response_<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
+            else out = new Response2<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
 		
 		} catch (Exception ex) {
-            out = new Response_<>(ex, request, "Ocurrió un problema al iniciar sesión");
+            out = new Response2<>(ex, request, "Ocurrió un problema al iniciar sesión");
         }		
 
     	return out;
@@ -124,8 +124,8 @@ public class UserDaoImpl implements IUser{
 
 
     @Override
-    public Response_<String> updatePassword(UserRequest request) {
-        Response_<String> out;
+    public Response2<String> updatePassword(UserRequest request) {
+        Response2<String> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
@@ -138,12 +138,12 @@ public class UserDaoImpl implements IUser{
         	
             List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET_1);
             
-			out = new Response_<>(HttpStatus.OK, 
+			out = new Response2<>(HttpStatus.OK, 
 				DbUtil.getString(resultset.get(0), "user_mssg"), 
 				DbUtil.getBoolean(resultset.get(0), "status"));
 		
 		}catch (Exception ex) {
-            out = new Response_<>(ex, request, "Ocurrió un problema al actualizar el usuario");
+            out = new Response2<>(ex, request, "Ocurrió un problema al actualizar el usuario");
         }	
 
     	return out;

@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.DbConst;
@@ -26,8 +26,8 @@ public class SecurityDaoImpl implements ISecurity{
 	JdbcTemplate jdbcTemplate;
 
 	@Override
-	public Response_<String> saveVerificationCode(UserRequest request, boolean isChangeDevice) {
-		Response_<String> out;
+	public Response2<String> saveVerificationCode(UserRequest request, boolean isChangeDevice) {
+		Response2<String> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
@@ -41,19 +41,19 @@ public class SecurityDaoImpl implements ISecurity{
         	
 			List<Map<String, Object>> dataset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET_1);
             
-			out = new Response_<>(HttpStatus.OK, 
+			out = new Response2<>(HttpStatus.OK, 
 				DbUtil.getString(dataset.get(0), "user_mssg"), 
 				DbUtil.getBoolean(dataset.get(0), "status"));
 		
 		} catch (Exception ex) {
-            out = new Response_<>(ex, request, "Error al guardar el código de verificación");
+            out = new Response2<>(ex, request, "Error al guardar el código de verificación");
         }		
 
     	return out;
 	}
 
 	@Override
-	public Response_<String> resetIdDevice(UserRequest request) {
+	public Response2<String> resetIdDevice(UserRequest request) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'resetIdDevice'");
 	}

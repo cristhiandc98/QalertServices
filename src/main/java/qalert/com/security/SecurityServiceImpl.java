@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import qalert.com.interfaces.IEmailService;
 import qalert.com.models.email.SendEmailRequest;
-import qalert.com.models.generic.Response_;
+import qalert.com.models.generic.Response2;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.EnvironmentConst;
@@ -32,8 +32,8 @@ public class SecurityServiceImpl implements ISecurity{
 	private static final Logger logger = LogManager.getLogger(SecurityServiceImpl.class);
 	
     @Override
-    public Response_<String> saveVerificationCode(UserRequest request, boolean isChangeDevice) {
-        Response_<String> out;
+    public Response2<String> saveVerificationCode(UserRequest request, boolean isChangeDevice) {
+        Response2<String> out;
 
         try {
             //Generate verification code
@@ -41,7 +41,7 @@ public class SecurityServiceImpl implements ISecurity{
             randomCode = (int)Math.floor(Math.random() * (codMax - codMin + 1) + codMin);
             request.getLogin().setVerificationCode(String.valueOf(randomCode));
 
-            Response_<String> rptBD = dao.saveVerificationCode(request, isChangeDevice);
+            Response2<String> rptBD = dao.saveVerificationCode(request, isChangeDevice);
 
             if(rptBD.isStatus()){
                 SendEmailRequest sendEmail = new SendEmailRequest();
@@ -55,14 +55,14 @@ public class SecurityServiceImpl implements ISecurity{
             else out = rptBD;
 
         } catch (IllegalStateException e) {
-            logger.error((out = new Response_<>(e, request, "Error al generar el código de verificación")).getErrorMssg());
+            logger.error((out = new Response2<>(e, request, "Error al generar el código de verificación")).getErrorMssg());
         }
 
         return out;
     }
 
 	@Override
-	public Response_<String> resetIdDevice(UserRequest request) {
+	public Response2<String> resetIdDevice(UserRequest request) {
 		request.getLogin().setDeviceId(Integer.valueOf(DateUtil.generateId()));
 		return dao.resetIdDevice(request);
 	}

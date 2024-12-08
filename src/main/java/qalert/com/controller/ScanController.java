@@ -50,12 +50,12 @@ public class ScanController {
             LocalDateTime beginDateTime = LocalDateTime.now();
             profileId = Integer.parseInt(profileIdString);
 
-            Response2<String> additivesRsp = scanService.detectAdditives(image);
+            Response2<String> additivesRsp = scanService.getAdditivesFromImage(image);
 
             logModel = logService.setRequestData(http, additivesRsp.getData(), profileId, false);
             
             if(additivesRsp.isStatus())
-                out = scanService.getAdditivesFromImage(profileId, additivesRsp.getData());
+                out = scanService.insertAndGetAdditivesFromPlainText(profileId, additivesRsp.getData());
             else 
                 out = new Response2<>(additivesRsp);
 

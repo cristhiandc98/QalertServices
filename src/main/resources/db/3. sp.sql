@@ -483,3 +483,188 @@ CREATE  OR REPLACE VIEW vw_status AS
 		inner join status s on s.status_type_id = st.status_type_id;
     
 GRANT select on vw_status to 'qalert_app'@'%';
+
+
+
+use qalert_bd;
+
+drop procedure if exists sp_insert_and_get_additives_from_plain_text;
+DELIMITER ;;
+CREATE PROCEDURE `sp_insert_and_get_additives_from_plain_text`(
+    ni_profile_id int
+	,vi_data varchar(9000)
+)
+sp:BEGIN
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2024-09-03
+	-- Objetivo: 	Insert a row in "tmp_scan_header" and "tmp_scan_detail" and return additives
+	-- ------------------------------------------------------------
+	-- Descripción de parámetros:
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- 				call sp_insert_and_get_additives_from_plain_text(1, 'RIBOFLAVINAS');
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************
+    
+    declare d_current_datetime 			datetime default current_timestamp();
+    declare n_data_size					int default LENGTH(vi_data);
+    
+    declare n_status_id__active			int default 4;
+    declare toxicity_level_id__harmless	int default 1;
+    declare toxicity_level_id__medium	int default 2;
+    declare toxicity_level_id__harmful  int default 3;
+    
+    
+    -- save all additives without filter
+    CREATE TEMPORARY TABLE additive_found_tmp(
+	 	  additive_id 			int
+		  , additive_group_id	int 
+ 		  , toxicity_level_id 	int 
+ 		  , name 				varchar(50) 
+ 		  , code 				varchar(10) 
+ 		  , description 		varchar(500)
+ 		  , code_characters_number int
+ 		  , name_characters_number int
+ 		  , converted_code 		varchar(20)
+ 		  , converted_name 		varchar(50)
+		  , is_match_by_name  	bit
+    );
+    
+    CREATE TEMPORARY TABLE additive_found_by_name_tmp select * from additive_found_tmp;
+	
+	CREATE TEMPORARY TABLE additive_found_by_code_tmp select * from additive_found_tmp;
+	
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+        
+        
+	delete from tmp_scan_header where profile_id = ni_profile_id;
+	delete from tmp_scan_detail where profile_id = ni_profile_id;
+
+    
+    -- ****************************************************************
+    -- ********************insert data to avoid searching for it again
+    -- ****************************************************************
+    insert into additive_found_tmp
+    select a.additive_id
+		, a.additive_group_id
+		, a.toxicity_level_id
+		, a.name
+		, a.code
+		, a.description
+		, a.code_characters_number
+		, a.name_characters_number
+		, a.converted_code
+		, a.converted_name
+		, case when vi_data like a.converted_name then 1 else 0 end as is_match_by_name -- flag to determine if encountred by name or code
+	from additive a
+	where status_id = n_status_id__active
+		and (vi_data like a.converted_name or vi_data like a.converted_code); -- Find by name or code. This is required by business rules.
+    
+    
+    -- ****************************************************************
+    -- ***************************************************Get by name
+    -- ****************************************************************
+    insert into additive_found_by_name_tmp
+    with cte_additive_found_by_name as (
+			select af.*
+				, row_number() over(partition by af.additive_group_id order by af.name_characters_number desc) as additive_position
+            from additive_found_tmp af
+            where af.is_match_by_name = 1
+		)
+    select a.additive_id
+		, a.additive_group_id
+		, a.toxicity_level_id
+		, a.name
+		, a.code
+		, a.description
+		, a.code_characters_number
+		, a.name_characters_number
+		, a.converted_code
+		, a.converted_name
+		, a.is_match_by_name
+	from cte_additive_found_by_name a
+	where a.additive_position = 1;
+	
+    
+    -- ****************************************************************
+    -- ***************************************************Get by code
+    -- ****************************************************************
+    insert into additive_found_by_code_tmp
+    with cte_additive_found_by_code as (
+			select af.*
+				, row_number() over(partition by af.additive_group_id order by af.code_characters_number desc) as additive_position
+            from additive_found_tmp af
+            where af.is_match_by_name = 0
+		)
+    select c.additive_id
+		, c.additive_group_id
+		, c.toxicity_level_id
+		, c.name
+		, c.code
+		, c.description
+		, c.code_characters_number
+		, c.name_characters_number
+		, c.converted_code
+		, c.converted_name
+		, c.is_match_by_name
+	from cte_additive_found_by_code c
+	where c.additive_position = 1
+		and not exists(select 1
+					   from additive_found_by_name_tmp n
+                       where n.additive_group_id = c.additive_group_id);
+    
+    
+    -- ****************************************************************
+    -- **********************************************insert header tmp
+    -- ****************************************************************
+    insert into tmp_scan_header(profile_id
+		, data
+        , harmless_additives_number
+        , medium_additives_number
+        , harmful_additives_number)
+    select ni_profile_id
+		, vi_data
+		, count(case when toxicity_level_id = 1 then toxicity_level_id__harmless end)
+		, count(case when toxicity_level_id = 2 then toxicity_level_id__medium end)
+        , count(case when toxicity_level_id = 3 then toxicity_level_id__harmful end) 
+    from(
+		select *
+		from additive_found_by_name_tmp
+		union all
+		select *
+		from additive_found_by_code_tmp
+		) additive_found;
+    
+    
+    -- ****************************************************************
+    -- **********************************************insert detail tmp
+    -- ****************************************************************        
+	insert into tmp_scan_detail(profile_id
+		, additive_id
+        , aditive_name_or_code)
+	select ni_profile_id
+		, additive_found.additive_id
+		, case when additive_found.name is not null  then additive_found.name else additive_found.code end
+    from(
+		select *
+		from additive_found_by_name_tmp
+		union all
+		select *
+		from additive_found_by_code_tmp
+		) additive_found;
+        
+	DROP TEMPORARY TABLE IF EXISTS additive_found_tmp;
+	DROP TEMPORARY TABLE IF EXISTS additive_found_by_name_tmp;
+	DROP TEMPORARY TABLE IF EXISTS additive_found_by_code_tmp;
+
+END ;;
+DELIMITER ;
+
+GRANT execute on procedure sp_insert_and_get_additives_from_plain_text   to 'qalert_app'@'%';
+

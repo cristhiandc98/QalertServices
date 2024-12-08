@@ -6,6 +6,6 @@ import qalert.com.models.generic.Response2;
 
 public interface IScanService extends IScanDao{
 
-    Response2<String> detectAdditives(MultipartFile file);
+    Response2<String> getAdditivesFromImage(MultipartFile file);
 
 }

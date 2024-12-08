@@ -18,12 +18,12 @@ public class ScanDaoImpl implements IScanDao {
 	private JdbcTemplate jdbcTemplate;
 
     @Override
-    public Response2<Boolean> getAdditivesFromImage(int profileId, String data) {
+    public Response2<Boolean> insertAndGetAdditivesFromPlainText(int profileId, String data) {
         Response2<Boolean> out = new Response2<>();
 
         try {
             SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName(DbConst.SP_INSERT_TMP_SCAN);
+    		    .withProcedureName(DbConst.SP_INSERT_AND_GET_ADDITIVES_FROM_PLAIN_TEXT);
 
             SqlParameterSource input = new MapSqlParameterSource()
                 .addValue("ni_profile_id", profileId)

@@ -22,7 +22,6 @@ import software.amazon.awssdk.services.textract.TextractClient;
 import software.amazon.awssdk.services.textract.model.Block;
 import software.amazon.awssdk.services.textract.model.DetectDocumentTextRequest;
 import software.amazon.awssdk.services.textract.model.DetectDocumentTextResponse;
-import software.amazon.awssdk.services.textract.model.TextractException;
 import software.amazon.awssdk.services.textract.model.Document;
 import software.amazon.awssdk.services.textract.model.TextractException;
 
@@ -37,12 +36,12 @@ public class ScanServiceImpl implements IScanService{
 
 
     @Override
-    public Response2<Boolean> getAdditivesFromImage(int profileId, String data) {
-        return scanDao.getAdditivesFromImage(profileId, data);
+    public Response2<Boolean> insertAndGetAdditivesFromPlainText(int profileId, String data) {
+        return scanDao.insertAndGetAdditivesFromPlainText(profileId, data);
     }
 
     @Override
-    public Response2<String> detectAdditives(MultipartFile file) {
+    public Response2<String> getAdditivesFromImage(MultipartFile file) {
 
 		Response2<String> out;
 

@@ -15,6 +15,6 @@ public class DbConst {
     public static final String SP_LIST_APP_SETTINGS = "sp_list_app_settings";
 
     //scan
-    public static final String SP_INSERT_TMP_SCAN = "sp_insert_tmp_scan";
+    public static final String SP_INSERT_AND_GET_ADDITIVES_FROM_PLAIN_TEXT = "sp_insert_and_get_additives_from_plain_text";
 
 }

@@ -93,7 +93,9 @@ public class UserDaoImpl implements IUser{
                     profile.setIsPrincipal(DbUtil.getBoolean(row, "is_principal"));
 
                     user.getProfileList().add(profile);
+                    user.setFullName(profile.getName());
                     continue_ = true;
+                    
                 }
             }
 

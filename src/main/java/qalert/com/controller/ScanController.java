@@ -1,6 +1,10 @@
 package qalert.com.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.time.LocalDateTime;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,17 +42,17 @@ public class ScanController {
 
     @PostMapping(value = ApiConst.GET_ADDITIVES_FROM_IMAGE, produces = ApiConst.PRODUCES)
 	public ResponseEntity<?> proccessScan(HttpServletRequest http, 
-        @RequestParam("image") MultipartFile image,
-        @RequestParam("profileIdString") String profileIdString) {
+        @RequestParam("file") MultipartFile image,
+        @RequestParam("data") String data) {
 
         Response2<Boolean> out;
         LogServiceRequest logModel;
         int profileId = 0;
 
-        if(RegexUtil.NUMBER.matcher(profileIdString).matches()){
+        if(RegexUtil.NUMBER.matcher(data).matches() && isValidImageContent(image)){
             
             LocalDateTime beginDateTime = LocalDateTime.now();
-            profileId = Integer.parseInt(profileIdString);
+            profileId = Integer.parseInt(data);
 
             Response2<String> additivesRsp = scanService.getAdditivesFromImage(image);
 
@@ -63,7 +67,7 @@ public class ScanController {
 
         }else{
 
-            logModel = logService.setRequestData(http, profileIdString, profileId, false);
+            logModel = logService.setRequestData(http, data, profileId, false);
 
             out = new Response2<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
         }
@@ -72,6 +76,18 @@ public class ScanController {
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
+
+    public boolean isValidImageContent(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return false;
+        }
+        try {
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            return image != null; 
+        } catch (IOException e) {
+            return false; 
+        }
+    }
 
 
 }

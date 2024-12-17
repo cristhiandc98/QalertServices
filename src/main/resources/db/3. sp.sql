@@ -486,8 +486,6 @@ GRANT select on vw_status to 'qalert_app'@'%';
 
 
 
-use qalert_bd;
-
 drop procedure if exists sp_insert_and_get_additives_from_plain_text;
 DELIMITER ;;
 CREATE PROCEDURE `sp_insert_and_get_additives_from_plain_text`(
@@ -650,7 +648,7 @@ sp:BEGIN
         , aditive_name_or_code)
 	select ni_profile_id
 		, additive_found.additive_id
-		, case when additive_found.name is not null  then additive_found.name else additive_found.code end
+		, case when additive_found.is_match_by_name is not null  then additive_found.name else additive_found.code end
     from(
 		select *
 		from additive_found_by_name_tmp
@@ -667,4 +665,3 @@ END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_insert_and_get_additives_from_plain_text   to 'qalert_app'@'%';
-

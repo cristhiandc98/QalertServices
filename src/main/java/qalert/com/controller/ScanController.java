@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.interfaces.scan.IScanService;
 import qalert.com.models.generic.Response2;
+import qalert.com.models.scan.ScanResponse;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
@@ -45,7 +46,7 @@ public class ScanController {
         @RequestParam("file") MultipartFile image,
         @RequestParam("data") String data) {
 
-        Response2<Boolean> out;
+        Response2<ScanResponse> out;
         LogServiceRequest logModel;
         int profileId = 0;
 

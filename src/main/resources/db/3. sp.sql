@@ -660,8 +660,59 @@ sp:BEGIN
 	DROP TEMPORARY TABLE IF EXISTS additive_found_tmp;
 	DROP TEMPORARY TABLE IF EXISTS additive_found_by_name_tmp;
 	DROP TEMPORARY TABLE IF EXISTS additive_found_by_code_tmp;
+    
+    call sp_get_additives_report(ni_profile_id, 1);
 
 END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_insert_and_get_additives_from_plain_text   to 'qalert_app'@'%';
+
+
+
+drop procedure if exists sp_get_additives_report;
+DELIMITER ;;
+CREATE PROCEDURE `sp_get_additives_report`(
+    ni_profile_id 	int
+	,ni_report_type int
+)
+sp:BEGIN
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2024-12-19
+	-- Objetivo: 	Get report of additives
+	-- ------------------------------------------------------------
+	-- Descripción de parámetros:
+    -- 				ni_report_type: 
+	-- 						1, Report last scan
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- 				call sp_get_additives_report(1, 1);
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************
+    
+    select a.toxicity_level_id
+		, (select x.name from toxicity_level x where x.toxicity_level_id = a.toxicity_level_id) as toxicity_level
+        , count(1) total
+    from tmp_scan_detail d 
+		inner join additive a on a.additive_id = d.additive_id
+    where d.profile_id = ni_profile_id
+    group by  a.toxicity_level_id
+    ;
+    
+    select d.additive_id
+		, d.aditive_name_or_code
+        , 1 total
+    from tmp_scan_detail d 
+    where d.profile_id = ni_profile_id
+    ;
+    
+END ;;
+DELIMITER ;
+
+GRANT execute on procedure sp_get_additives_report   to 'qalert_app'@'%';

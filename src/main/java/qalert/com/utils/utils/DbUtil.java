@@ -17,6 +17,13 @@ public class DbUtil {
             return (int)data.get(key);
     }
 
+    public static Long getLong(Map<String, Object> data, String key){
+        if(data.get(key) == null)
+            return null;
+        else
+            return (Long)data.get(key);
+    }
+
     public static String getString(Map<String, Object> data, String key){
         return (String)data.get(key);
     }

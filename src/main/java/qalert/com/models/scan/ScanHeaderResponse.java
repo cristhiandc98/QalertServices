@@ -8,6 +8,8 @@ public class ScanHeaderResponse {
 
     private Integer total;
 
+    private double percentageOfTotal;
+
     public ScanHeaderResponse() {
     }
 
@@ -33,6 +35,14 @@ public class ScanHeaderResponse {
 
     public void setTotal(Integer total) {
         this.total = total;
+    }
+
+    public double getPercentageOfTotal() {
+        return percentageOfTotal;
+    }
+
+    public void setPercentageOfTotal(double percentageOfTotal) {
+        this.percentageOfTotal = percentageOfTotal;
     }
 
 }

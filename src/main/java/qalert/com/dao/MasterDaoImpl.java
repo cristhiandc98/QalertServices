@@ -61,7 +61,7 @@ public class MasterDaoImpl implements IMaster{
             else out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
 		
 		} catch (Exception ex) {
-            out = new Response2<>(ex, null, "Ocurrió un problema al obtener la configuración");
+            out = new Response2<>(ex, "Ocurrió un problema al obtener la configuración");
         }		
 
     	return out;
@@ -99,7 +99,7 @@ public class MasterDaoImpl implements IMaster{
             else out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
 		
 		} catch (Exception ex) {
-            out = new Response2<>(ex, null, "Ocurrió un problema al obtener la configuración");
+            out = new Response2<>(ex, "Ocurrió un problema al obtener la configuración");
         }		
 
     	return out;

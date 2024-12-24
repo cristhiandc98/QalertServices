@@ -75,6 +75,7 @@ public class ScanDaoImpl implements IScanDao {
                     detail.setAdditiveId(DbUtil.getInteger(row, "toxicity_level_id"));
                     detail.setAdditiveName(DbUtil.getString(row, "aditive_name_or_code"));
                     detail.setTotal(DbUtil.getLong(row, "total").intValue());
+                    detail.setToxicityLevelId(DbUtil.getInteger(row, "toxicity_level_id"));
 
                     out.getData().addScanDetail(detail);
                 }

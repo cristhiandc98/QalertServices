@@ -8,6 +8,8 @@ public class ScanDetailResponse {
 
     private Integer total;
 
+    private Integer toxicityLevelId;
+
     public ScanDetailResponse() {
     }
 
@@ -35,4 +37,13 @@ public class ScanDetailResponse {
         this.total = total;
     }
 
+    public Integer getToxicityLevelId() {
+        return toxicityLevelId;
+    }
+
+    public void setToxicityLevelId(Integer toxicityLevelId) {
+        this.toxicityLevelId = toxicityLevelId;
+    }
+
+    
 }

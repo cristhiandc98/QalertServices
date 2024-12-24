@@ -1,3 +1,17 @@
-2024-12-19 09:12:59.640 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.web.multipart.support.MissingServletRequestPartException: Required part 'file' is not present.]
-2024-12-19 09:12:22.578 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.web.multipart.support.MissingServletRequestPartException: Required part 'file' is not present.]
-2024-12-19 09:12:21.172 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.web.multipart.support.MissingServletRequestPartException: Required part 'file' is not present.]
+2024-12-22 18:12:48.257 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.web.multipart.support.MissingServletRequestPartException: Required part 'file' is not present.]
+2024-12-22 20:12:44.907 | org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer.startServer Unable to start LiveReload server
+2024-12-22 20:12:45.029 | org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext.refresh Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2024-12-22 20:12:46.155 | org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter.report 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8080 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
+

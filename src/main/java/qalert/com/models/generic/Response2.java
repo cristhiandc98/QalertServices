@@ -38,10 +38,16 @@ public class Response2<T> {
         this.status = status;
     }
 
+    //Exception
     public Response2(Exception exception) {
         this(HttpStatus.INTERNAL_SERVER_ERROR, UserMessageConst.INTERNAL_SERVER_ERROR, false);
         setError(exception);
     } 
+    
+    public Response2(Exception exception, String userMssg) {
+        this(HttpStatus.INTERNAL_SERVER_ERROR, userMssg, false);
+        setError(exception);
+    }   
 
     public String setError(Exception exception)
     {
@@ -91,12 +97,6 @@ public class Response2<T> {
         statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         userMssg = UserMessageConst.INTERNAL_SERVER_ERROR;
         errorMssg = " | error: " + exception.getLocalizedMessage();
-    }   
-    
-    //Exception
-    public Response2(Exception exception, Object object, String userMssg) {
-        this(exception, object);
-        this.userMssg = userMssg;
     }    
 
     public <Y>Response2(Response2<Y> in){

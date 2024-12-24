@@ -91,7 +91,7 @@ public class ServiceLogServiceImpl implements ILogService{
 
         try
         {
-            if(response != null && !isPrivate)
+            if(!isPrivate)
                 logModel.setResponseBody(objectMapper.writeValueAsString(response) + logModel.getResponseBody());
         }
         catch (JsonProcessingException ex)

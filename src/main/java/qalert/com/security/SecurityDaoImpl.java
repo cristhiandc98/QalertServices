@@ -43,10 +43,10 @@ public class SecurityDaoImpl implements ISecurity{
             
 			out = new Response2<>(HttpStatus.OK, 
 				DbUtil.getString(dataset.get(0), "user_mssg"), 
-				DbUtil.getBoolean(dataset.get(0), "status"));
+				DbUtil.getString(dataset.get(0), "status").equals("1"));
 		
 		} catch (Exception ex) {
-            out = new Response2<>(ex, request, "Error al guardar el código de verificación");
+            out = new Response2<>(ex, "Error al guardar el código de verificación");
         }		
 
     	return out;

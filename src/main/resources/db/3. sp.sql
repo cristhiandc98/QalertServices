@@ -270,7 +270,7 @@ sp:BEGIN
     -- 
 	-- ***************************************************************************
     
-	declare n_status_id__active		int default 1;
+	declare n_status_id__active		int default 2;
     
     -- Verification code variables
     declare n_validate_email_id int;
@@ -707,10 +707,11 @@ sp:BEGIN
     
     select d.additive_id
 		, d.aditive_name_or_code
+        , a.toxicity_level_id
         , 1 total
     from tmp_scan_detail d 
+		inner join additive a on a.additive_id = d.additive_id
     where d.profile_id = ni_profile_id
-    ;
     
 END ;;
 DELIMITER ;

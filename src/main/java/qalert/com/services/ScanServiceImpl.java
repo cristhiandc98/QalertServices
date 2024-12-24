@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import qalert.com.interfaces.scan.IScanDao;
 import qalert.com.interfaces.scan.IScanService;
 import qalert.com.models.generic.Response2;
+import qalert.com.models.scan.ScanHeaderResponse;
 import qalert.com.models.scan.ScanResponse;
 import qalert.com.utils.consts.EnvironmentConst;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -38,7 +39,17 @@ public class ScanServiceImpl implements IScanService{
 
     @Override
     public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(int profileId, String data) {
-        return scanDao.insertAndGetAdditivesFromPlainText(profileId, data);
+		Response2<ScanResponse> rsp = scanDao.insertAndGetAdditivesFromPlainText(profileId, data);
+
+		double total = 0;
+
+		for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+			total += item.getTotal();
+
+		for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+			item.setPercentageOfTotal(item.getTotal() / total);
+
+        return rsp;
     }
 
     @Override

@@ -52,10 +52,10 @@ public class UserDaoImpl implements IUser{
             
 			out = new Response2<>(HttpStatus.CREATED, 
 				DbUtil.getString(resultset.get(0), "user_mssg"), 
-				DbUtil.getBoolean(resultset.get(0), "status"));
+				DbUtil.getString(resultset.get(0), "status").equals("1"));
 		
 		}catch (Exception ex) {
-            out = new Response2<>(ex, request, "Ocurrió un problema al crear el usuario");
+            out = new Response2<>(ex,  "Ocurrió un problema al crear el usuario");
         }	
 
     	return out;
@@ -118,7 +118,7 @@ public class UserDaoImpl implements IUser{
             else out = new Response2<>(HttpStatus.UNAUTHORIZED, "Usuario no encontrado", false);
 		
 		} catch (Exception ex) {
-            out = new Response2<>(ex, request, "Ocurrió un problema al iniciar sesión");
+            out = new Response2<>(ex, "Ocurrió un problema al iniciar sesión");
         }		
 
     	return out;
@@ -142,10 +142,10 @@ public class UserDaoImpl implements IUser{
             
 			out = new Response2<>(HttpStatus.OK, 
 				DbUtil.getString(resultset.get(0), "user_mssg"), 
-				DbUtil.getBoolean(resultset.get(0), "status"));
+				DbUtil.getString(resultset.get(0), "status").equals("1"));
 		
 		}catch (Exception ex) {
-            out = new Response2<>(ex, request, "Ocurrió un problema al actualizar el usuario");
+            out = new Response2<>(ex, "Ocurrió un problema al actualizar el usuario");
         }	
 
     	return out;

@@ -63,7 +63,7 @@ public class UserController {
 		else
 			out = new Response2<>(HttpStatus.BAD_REQUEST, error);
 
-		serviceLog.setResponseDataAndSave(logModel, out, true);
+		serviceLog.setResponseDataAndSave(logModel, out, false);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}

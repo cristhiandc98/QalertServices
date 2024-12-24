@@ -55,7 +55,7 @@ public class SecurityServiceImpl implements ISecurity{
             else out = rptBD;
 
         } catch (IllegalStateException e) {
-            logger.error((out = new Response2<>(e, request, "Error al generar el código de verificación")).getErrorMssg());
+            logger.error((out = new Response2<>(e, "Error al generar el código de verificación")).getErrorMssg());
         }
 
         return out;

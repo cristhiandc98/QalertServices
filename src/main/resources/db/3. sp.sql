@@ -696,13 +696,14 @@ sp:BEGIN
     -- 
 	-- ***************************************************************************
     
-    select a.toxicity_level_id
-		, (select x.name from toxicity_level x where x.toxicity_level_id = a.toxicity_level_id) as toxicity_level
-        , count(1) total
+    select t.toxicity_level_id
+		, t.name as toxicity_level
+		, count(a.toxicity_level_id) as total
     from tmp_scan_detail d 
 		inner join additive a on a.additive_id = d.additive_id
-    where d.profile_id = ni_profile_id
-    group by  a.toxicity_level_id
+			and d.profile_id = ni_profile_id
+        right join toxicity_level t on t.toxicity_level_id = a.toxicity_level_id
+    group by  t.toxicity_level_id
     ;
     
     select d.additive_id

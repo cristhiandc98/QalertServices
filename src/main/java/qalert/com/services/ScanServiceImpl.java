@@ -41,13 +41,16 @@ public class ScanServiceImpl implements IScanService{
     public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(int profileId, String data) {
 		Response2<ScanResponse> rsp = scanDao.insertAndGetAdditivesFromPlainText(profileId, data);
 
-		double total = 0;
-
-		for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
-			total += item.getTotal();
-
-		for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
-			item.setPercentageOfTotal(item.getTotal() / total);
+		if(rsp.isStatus()){
+			
+			double total = 0;
+	
+			for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+				total += item.getTotal();
+	
+			for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+				item.setPercentageOfTotal(item.getTotal() / total);
+		}
 
         return rsp;
     }

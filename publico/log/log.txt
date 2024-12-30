@@ -1,17 +1,4 @@
-2024-12-22 18:12:48.257 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.web.multipart.support.MissingServletRequestPartException: Required part 'file' is not present.]
-2024-12-22 20:12:44.907 | org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer.startServer Unable to start LiveReload server
-2024-12-22 20:12:45.029 | org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext.refresh Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
-2024-12-22 20:12:46.155 | org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter.report 
-
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Web server failed to start. Port 8080 was already in use.
-
-Action:
-
-Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
-
+2024-12-29 17:12:37.233 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `int` from Object value (token `JsonToken.START_OBJECT`)]
+2024-12-29 17:12:08.034 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `int` from String "profileId": not a valid `int` value]
+2024-12-29 17:12:48.450 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `java.lang.Integer` from Object value (token `JsonToken.START_OBJECT`)]
+2024-12-29 20:12:00.539 | org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver.logException Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unrecognized field "value" (class qalert.com.models.scan.ScanRequest), not marked as ignorable]

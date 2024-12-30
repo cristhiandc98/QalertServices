@@ -15,6 +15,7 @@ import qalert.com.interfaces.scan.IScanDao;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.scan.ScanDetailResponse;
 import qalert.com.models.scan.ScanHeaderResponse;
+import qalert.com.models.scan.ScanRequest;
 import qalert.com.models.scan.ScanResponse;
 import qalert.com.utils.consts.DbConst;
 import qalert.com.utils.utils.DbUtil;
@@ -87,6 +88,32 @@ public class ScanDaoImpl implements IScanDao {
         }
 
         return out;
+    }
+
+    @Override
+    public Response2<Boolean> insert(ScanRequest request) {
+        Response2<Boolean> out;
+
+        try {
+            SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+    		    .withProcedureName(DbConst.SP_INSERT_SCAN);
+        	
+        	SqlParameterSource input = new MapSqlParameterSource()
+                .addValue("ni_profile_id", request.getProfileId())
+                .addValue("vi_product_name", request.getProductName());
+        	
+            Map<String, Object> resultset = (Map<String, Object>) jdbcCall.execute(input);
+            
+            if(DbUtil.getInt(resultset, DbConst.UPDATE_SET) > 0)
+                out = new Response2<>(true, "¡Escaneo guardado exitosamente!");
+            else
+                out = new Response2<>(false, "No se pudo guardar el producto escaneado.");
+
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
+        }
+
+    	return out;
     }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.interfaces.scan.IScanService;
 import qalert.com.models.generic.Response2;
+import qalert.com.models.scan.ScanRequest;
 import qalert.com.models.scan.ScanResponse;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.utils.consts.ApiConst;
@@ -90,5 +92,19 @@ public class ScanController {
         }
     }
 
+
+    @PostMapping(produces = ApiConst.PRODUCES)
+	public ResponseEntity<?> insert(HttpServletRequest http, @RequestBody ScanRequest request) {
+		LogServiceRequest logModel = logService.setRequestData(http, request, request.getProfileId(), false);
+		
+		Response2<Boolean> out = request.validateInsert();
+
+        if(out.isStatus())
+            out = scanService.insert(request);
+
+		logService.setResponseDataAndSave(logModel, out, false);
+
+		return ResponseEntity.status(out.getStatusCode()).body(out);
+	}
 
 }

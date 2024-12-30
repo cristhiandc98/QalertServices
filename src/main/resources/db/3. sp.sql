@@ -712,9 +712,70 @@ sp:BEGIN
         , 1 total
     from tmp_scan_detail d 
 		inner join additive a on a.additive_id = d.additive_id
-    where d.profile_id = ni_profile_id
+    where d.profile_id = ni_profile_id;
     
 END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_get_additives_report   to 'qalert_app'@'%';
+
+
+
+drop procedure if exists sp_insert_scan;
+DELIMITER ;;
+CREATE PROCEDURE `sp_insert_scan`(
+	ni_profile_id 			int,
+    vi_product_name			varchar(100)
+)
+sp:BEGIN  
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2024-09-03
+	-- Objetivo: 	Insert a scan from tmp
+	-- ------------------------------------------------------------
+	-- Descripción de parámetros:
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- 				call sp_insert_scan (1, 'testing');
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************
+		
+	insert into scan_header(profile_id,
+		data, 
+        harmless_additives_number,
+        medium_additives_number,
+        harmful_additives_number,
+        product_name)
+	select x.profile_id,
+		data,
+        harmless_additives_number,
+        medium_additives_number,
+        harmful_additives_number,
+        vi_product_name
+	from tmp_scan_header x 
+	where x.profile_id = ni_profile_id;
+    
+    delete from tmp_scan_header
+    where profile_id = ni_profile_id;
+    
+    insert into scan_detail(scan_header_id,
+		additive_id)
+    select LAST_INSERT_ID(),
+		x.additive_id
+    from tmp_scan_detail x 
+	where x.profile_id = ni_profile_id;
+    
+    delete from tmp_scan_detail
+    where profile_id = ni_profile_id;
+    
+    commit;
+		
+END ;;
+DELIMITER ;
+
+GRANT execute on procedure sp_insert_scan   to 'qalert_app'@'%';

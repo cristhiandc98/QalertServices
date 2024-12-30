@@ -13,6 +13,7 @@ import qalert.com.interfaces.scan.IScanDao;
 import qalert.com.interfaces.scan.IScanService;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.scan.ScanHeaderResponse;
+import qalert.com.models.scan.ScanRequest;
 import qalert.com.models.scan.ScanResponse;
 import qalert.com.utils.consts.EnvironmentConst;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -163,4 +164,9 @@ public class ScanServiceImpl implements IScanService{
 			return text;	
 		}
 	}
+
+    @Override
+    public Response2<Boolean> insert(ScanRequest request) {
+        return scanDao.insert(request);
+    }
 }

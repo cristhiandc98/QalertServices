@@ -6,7 +6,7 @@ public class DbConst {
 
     public static final String RESUL_SET_1 = "#result-set-1";
     public static final String RESUL_SET_2 = "#result-set-2";
-    public static final String UPDATE_SET = "#update-set-1";
+    public static final String UPDATE_SET = "#update-count-1";
     
     public static final String SP_LOGIN = "sp_login";
     public static final String SP_SAVE_VERIFICATION_CODE = "sp_save_verification_code";
@@ -16,5 +16,6 @@ public class DbConst {
 
     //scan
     public static final String SP_INSERT_AND_GET_ADDITIVES_FROM_PLAIN_TEXT = "sp_insert_and_get_additives_from_plain_text";
+    public static final String SP_INSERT_SCAN = "sp_insert_scan";
 
 }

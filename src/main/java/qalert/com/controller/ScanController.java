@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -101,6 +102,26 @@ public class ScanController {
 
         if(out.isStatus())
             out = scanService.insert(request);
+
+		logService.setResponseDataAndSave(logModel, out, false);
+
+		return ResponseEntity.status(out.getStatusCode()).body(out);
+	}
+
+
+    @GetMapping(value=ApiConst.GET_ADDITIVES_REPORT, produces = ApiConst.PRODUCES)
+	public ResponseEntity<?> insert(HttpServletRequest http, @RequestParam Integer profileId, @RequestParam Integer reportType) {
+        
+        ScanRequest request = new ScanRequest();
+        request.setProfileId(profileId);
+        request.setReportType(reportType);
+
+		LogServiceRequest logModel = logService.setRequestData(http, request, profileId, false);
+		
+		Response2<ScanResponse> out = request.validateGetAdditiveReport();
+
+        if(out.isStatus())
+            out = scanService.getAdditivesReport(request);
 
 		logService.setResponseDataAndSave(logModel, out, false);
 

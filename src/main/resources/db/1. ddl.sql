@@ -202,15 +202,16 @@ CREATE TABLE `tmp_scan_detail` (
 );
 
 CREATE TABLE `scan_header` (
-  `scan_header_id` int AUTO_INCREMENT,
-  `profile_id` int,
-  `product_name` varchar(100);
-  `data` varchar(9000) DEFAULT NULL,
-  `harmless_additives_number` int,
-  `medium_additives_number` int,
-  `harmful_additives_number` int,
-   created_datetime datetime DEFAULT CURRENT_TIMESTAMP,
-   constraint pk_scan_header primary key(scan_header_id),
+  `scan_header_id` INT AUTO_INCREMENT,
+  `profile_id` INT,
+  `product_name` VARCHAR(100),
+  `data` VARCHAR(9000) DEFAULT NULL,
+  `harmless_additives_number` INT,
+  `medium_additives_number` INT,
+  `harmful_additives_number` INT,
+  `created_date` DATE not null,
+  `created_time` TIME not null,
+  CONSTRAINT `pk_scan_header` PRIMARY KEY (`scan_header_id`),
   CONSTRAINT `fk_scan_header__profile` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
 );
 
@@ -218,6 +219,8 @@ CREATE TABLE `scan_detail` (
   `scan_detail_id` int AUTO_INCREMENT,
   `scan_header_id` int,
   `additive_id` int,
+   `created_date` DATE not null,
+  `created_time` TIME not null,
    constraint pk_scan_detail primary key(scan_detail_id),
   CONSTRAINT `fk_scan_detail__scan_header` FOREIGN KEY (`scan_header_id`) REFERENCES `scan_header` (`scan_header_id`)
 );

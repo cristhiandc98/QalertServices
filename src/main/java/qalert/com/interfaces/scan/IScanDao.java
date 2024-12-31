@@ -10,4 +10,6 @@ public interface  IScanDao {
 
     Response2<Boolean> insert(ScanRequest request);
 
+    Response2<ScanResponse> getAdditivesReport(ScanRequest request);
+
 }

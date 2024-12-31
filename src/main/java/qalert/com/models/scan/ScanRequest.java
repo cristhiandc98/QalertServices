@@ -12,6 +12,8 @@ public class ScanRequest {
 
     private String productName;
 
+    private Integer reportType;
+
     public <T> Response2<T> validateInsert(){
         Response2<T> out = new Response2<T>();
 
@@ -29,6 +31,22 @@ public class ScanRequest {
         return out;
     }
 
+    public <T> Response2<T> validateGetAdditiveReport(){
+        Response2<T> out = new Response2<T>();
+
+        String error = null;
+
+        if(!RegexUtil.validateNumericId(profileId) || !RegexUtil.validateNumericId(reportType))
+            error = UserMessageConst.BAD_REQUEST;
+
+        if(error != null)
+            out = new Response2<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
+
+        return out;
+    }
+
+    
+
     public Integer getProfileId() {
         return profileId;
     }
@@ -43,5 +61,13 @@ public class ScanRequest {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public Integer getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(Integer reportType) {
+        this.reportType = reportType;
     }
 }

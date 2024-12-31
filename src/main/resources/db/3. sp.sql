@@ -696,28 +696,74 @@ sp:BEGIN
     -- 
 	-- ***************************************************************************
     
-    select t.toxicity_level_id
-		, t.name as toxicity_level
-		, count(a.toxicity_level_id) as total
-    from tmp_scan_detail d 
-		inner join additive a on a.additive_id = d.additive_id
-			and d.profile_id = ni_profile_id
-        right join toxicity_level t on t.toxicity_level_id = a.toxicity_level_id
-    group by  t.toxicity_level_id
-    ;
+    declare d_begin_date   date;
+    declare d_end_date	   date;
+    declare d_current_date date;
     
-    select d.additive_id
-		, d.aditive_name_or_code
-        , a.toxicity_level_id
-        , 1 total
-    from tmp_scan_detail d 
-		inner join additive a on a.additive_id = d.additive_id
-    where d.profile_id = ni_profile_id;
+    if ni_report_type = 0 then
+    
+		select t.toxicity_level_id
+			, t.name as toxicity_level
+			, count(a.toxicity_level_id) as total
+		from tmp_scan_detail d 
+			inner join additive a on a.additive_id = d.additive_id
+				and d.profile_id = ni_profile_id
+			right join toxicity_level t on t.toxicity_level_id = a.toxicity_level_id
+		group by  t.toxicity_level_id
+		;
+		
+		select d.additive_id
+			, d.aditive_name_or_code as name
+			, a.toxicity_level_id
+			, 1 total
+		from tmp_scan_detail d 
+			inner join additive a on a.additive_id = d.additive_id
+		where d.profile_id = ni_profile_id
+        ;
+        
+	else 
+		set d_current_date  = current_date();
+		set d_end_date 		= d_current_date;
+            
+		if ni_report_type = 1 then
+			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 7 DAY);
+		elseif ni_report_type = 2 then
+			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 30 DAY);
+		elseif ni_report_type = 3 then
+			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 90 DAY);
+        end if;
+    
+		-- ***********************************************************
+        -- **************************************************header
+        -- ***********************************************************
+		select t.toxicity_level_id
+			, t.name as toxicity_level
+			, count(h.toxicity_level_id) as total
+        from scan_header h
+			right join toxicity_level t on t.toxicity_level_id = h.toxicity_level_id
+		where h.created_date between d_begin_date and d_end_date
+			and h.profile_id = ni_profile_id
+		;
+        
+        select d.additive_id
+			, a.name
+			, a.toxicity_level_id
+			, count(1) total
+        from scan_detail d 
+			inner join additive a on a.additive_id = d.additive_id
+		where d.created_date between d_begin_date and d_end_date
+			and exists(select 1 from scan_header h where h.profile_id = ni_profile_id and h.additive_id = d.additive_id)
+		group by d.additive_id, a.name, a.toxicity_level_id
+        order by a.toxicity_level_id asc, a.name
+        ;
+        
+	end if;
     
 END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_get_additives_report   to 'qalert_app'@'%';
+
 
 
 
@@ -744,19 +790,26 @@ sp:BEGIN
 	-- Fecha			Autor		Cod. Mod.	Comentarios
     -- 
 	-- ***************************************************************************
-		
+    
+	declare d_current_date datetime default current_date();
+    
 	insert into scan_header(profile_id,
 		data, 
         harmless_additives_number,
         medium_additives_number,
         harmful_additives_number,
-        product_name)
+        product_name,
+        created_date,
+        created_time
+        )
 	select x.profile_id,
 		data,
         harmless_additives_number,
         medium_additives_number,
         harmful_additives_number,
-        vi_product_name
+        vi_product_name,
+        d_current_date,
+        d_current_date
 	from tmp_scan_header x 
 	where x.profile_id = ni_profile_id;
     
@@ -764,16 +817,18 @@ sp:BEGIN
     where profile_id = ni_profile_id;
     
     insert into scan_detail(scan_header_id,
-		additive_id)
+		additive_id,
+        created_date,
+        created_time)
     select LAST_INSERT_ID(),
-		x.additive_id
+		x.additive_id,
+        d_current_date,
+        d_current_date
     from tmp_scan_detail x 
 	where x.profile_id = ni_profile_id;
     
     delete from tmp_scan_detail
     where profile_id = ni_profile_id;
-    
-    commit;
 		
 END ;;
 DELIMITER ;

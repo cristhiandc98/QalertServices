@@ -169,4 +169,9 @@ public class ScanServiceImpl implements IScanService{
     public Response2<Boolean> insert(ScanRequest request) {
         return scanDao.insert(request);
     }
+
+    @Override
+    public Response2<ScanResponse> getAdditivesReport(ScanRequest request) {
+        return scanDao.getAdditivesReport(request);
+    }
 }

@@ -45,7 +45,7 @@ public class ScanController {
 
 
     @PostMapping(value = ApiConst.GET_ADDITIVES_FROM_IMAGE, produces = ApiConst.PRODUCES)
-	public ResponseEntity<?> proccessScan(HttpServletRequest http, 
+	public ResponseEntity<?> getAdditivesFromImage(HttpServletRequest http, 
         @RequestParam("file") MultipartFile image,
         @RequestParam("data") String data) {
 

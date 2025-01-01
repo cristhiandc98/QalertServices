@@ -661,12 +661,15 @@ sp:BEGIN
 	DROP TEMPORARY TABLE IF EXISTS additive_found_by_name_tmp;
 	DROP TEMPORARY TABLE IF EXISTS additive_found_by_code_tmp;
     
-    call sp_get_additives_report(ni_profile_id, 1);
+    call sp_get_additives_report(ni_profile_id, 0);
 
 END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_insert_and_get_additives_from_plain_text   to 'qalert_app'@'%';
+
+
+
 
 
 
@@ -736,26 +739,32 @@ sp:BEGIN
 		-- ***********************************************************
         -- **************************************************header
         -- ***********************************************************
-		select t.toxicity_level_id
+        select t.toxicity_level_id
 			, t.name as toxicity_level
-			, count(h.toxicity_level_id) as total
-        from scan_header h
-			right join toxicity_level t on t.toxicity_level_id = h.toxicity_level_id
-		where h.created_date between d_begin_date and d_end_date
-			and h.profile_id = ni_profile_id
+			, count(a.toxicity_level_id) as total
+		from scan_detail d 
+			inner join scan_header h on h.scan_header_id = d.scan_header_id
+				and h.profile_id = ni_profile_id
+				and h.created_date between d_begin_date and d_end_date
+			inner join additive a on a.additive_id = d.additive_id
+			right join toxicity_level t on t.toxicity_level_id = a.toxicity_level_id
+		group by  t.toxicity_level_id
 		;
         
         select d.additive_id
 			, a.name
 			, a.toxicity_level_id
 			, count(1) total
-        from scan_detail d 
+		from scan_detail d 
 			inner join additive a on a.additive_id = d.additive_id
-		where d.created_date between d_begin_date and d_end_date
-			and exists(select 1 from scan_header h where h.profile_id = ni_profile_id and h.additive_id = d.additive_id)
+		where exists(   select 1 
+						from scan_header h 
+						where h.profile_id = ni_profile_id
+							and h.created_date between d_begin_date and d_end_date
+					  )
 		group by d.additive_id, a.name, a.toxicity_level_id
-        order by a.toxicity_level_id asc, a.name
-        ;
+		order by a.toxicity_level_id asc, a.name
+		;
         
 	end if;
     
@@ -791,7 +800,7 @@ sp:BEGIN
     -- 
 	-- ***************************************************************************
     
-	declare d_current_date datetime default current_date();
+	declare d_current_date datetime default current_timestamp();
     
 	insert into scan_header(profile_id,
 		data, 

@@ -42,16 +42,7 @@ public class ScanServiceImpl implements IScanService{
     public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(int profileId, String data) {
 		Response2<ScanResponse> rsp = scanDao.insertAndGetAdditivesFromPlainText(profileId, data);
 
-		if(rsp.isStatus()){
-			
-			double total = 0;
-	
-			for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
-				total += item.getTotal();
-	
-			for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
-				item.setPercentageOfTotal(item.getTotal() / total);
-		}
+		setPercentageOfTotal(rsp);
 
         return rsp;
     }
@@ -172,6 +163,23 @@ public class ScanServiceImpl implements IScanService{
 
     @Override
     public Response2<ScanResponse> getAdditivesReport(ScanRequest request) {
-        return scanDao.getAdditivesReport(request);
+		Response2<ScanResponse> rsp = scanDao.getAdditivesReport(request);
+
+		setPercentageOfTotal(rsp);
+
+        return rsp;
     }
+
+	private void setPercentageOfTotal(Response2<ScanResponse> rsp){
+		if(rsp.isStatus()){
+			
+			double total = 0;
+	
+			for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+				total += item.getTotal();
+	
+			for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+				item.setPercentageOfTotal(item.getTotal() / total);
+		}
+	}
 }

@@ -8,7 +8,7 @@ public class ScanHeaderResponse {
 
     private Integer total;
 
-    private double percentageOfTotal;
+    private Double percentageOfTotal;
 
     public ScanHeaderResponse() {
     }
@@ -37,11 +37,11 @@ public class ScanHeaderResponse {
         this.total = total;
     }
 
-    public double getPercentageOfTotal() {
+    public Double getPercentageOfTotal() {
         return percentageOfTotal;
     }
 
-    public void setPercentageOfTotal(double percentageOfTotal) {
+    public void setPercentageOfTotal(Double percentageOfTotal) {
         this.percentageOfTotal = percentageOfTotal;
     }
 

@@ -178,8 +178,13 @@ public class ScanServiceImpl implements IScanService{
 			for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
 				total += item.getTotal();
 	
-			for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
-				item.setPercentageOfTotal(item.getTotal() / total);
+			if(total > 0){
+				for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+					item.setPercentageOfTotal(item.getTotal() / total);
+			}else{
+				for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+					item.setPercentageOfTotal(0.0);
+			}
 		}
 	}
 }

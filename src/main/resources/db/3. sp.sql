@@ -671,8 +671,6 @@ GRANT execute on procedure sp_insert_and_get_additives_from_plain_text   to 'qal
 
 
 
-
-
 drop procedure if exists sp_get_additives_report;
 DELIMITER ;;
 CREATE PROCEDURE `sp_get_additives_report`(
@@ -772,6 +770,8 @@ END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_get_additives_report   to 'qalert_app'@'%';
+
+
 
 
 

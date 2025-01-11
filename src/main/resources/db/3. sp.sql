@@ -727,10 +727,12 @@ sp:BEGIN
 		set d_end_date 		= d_current_date;
             
 		if ni_report_type = 1 then
-			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 7 DAY);
+			set d_begin_date = d_current_date;
 		elseif ni_report_type = 2 then
-			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 30 DAY);
+			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 7 DAY);
 		elseif ni_report_type = 3 then
+			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 30 DAY);
+		elseif ni_report_type = 4 then
 			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 90 DAY);
         end if;
     
@@ -759,6 +761,7 @@ sp:BEGIN
 						from scan_header h 
 						where h.profile_id = ni_profile_id
 							and h.created_date between d_begin_date and d_end_date
+                            and h.scan_header_id = d.scan_header_id
 					  )
 		group by d.additive_id, a.name, a.toxicity_level_id
 		order by a.toxicity_level_id asc, a.name

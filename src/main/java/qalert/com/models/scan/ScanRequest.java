@@ -1,5 +1,7 @@
 package qalert.com.models.scan;
 
+import java.util.regex.Pattern;
+
 import org.springframework.http.HttpStatus;
 
 import qalert.com.models.generic.Response2;
@@ -14,6 +16,8 @@ public class ScanRequest {
 
     private Integer reportType;
 
+    private String imageName;
+
     public <T> Response2<T> validateInsert(){
         Response2<T> out = new Response2<T>();
 
@@ -24,6 +28,9 @@ public class ScanRequest {
             
         if(productName == null || !RegexUtil.SIMPLE_NAME.matcher(productName).matches())
             error = "Nombre de producto inválido.";
+
+        // if(imageName == null || !Pattern.compile("^[0-9]{13}.jpg$").matcher(imageName).matches())
+        //     error = "Nombre de imagen inválida.";
 
         if(error != null)
             out = new Response2<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
@@ -70,4 +77,13 @@ public class ScanRequest {
     public void setReportType(Integer reportType) {
         this.reportType = reportType;
     }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+    
 }

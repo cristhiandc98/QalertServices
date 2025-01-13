@@ -215,6 +215,8 @@ CREATE TABLE `scan_header` (
   CONSTRAINT `fk_scan_header__profile` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
 );
 
+alter table scan_header add image_path varchar(200);
+
 CREATE TABLE `scan_detail` (
   `scan_detail_id` int AUTO_INCREMENT,
   `scan_header_id` int,

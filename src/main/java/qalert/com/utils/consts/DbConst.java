@@ -18,5 +18,6 @@ public class DbConst {
     public static final String SP_INSERT_AND_GET_ADDITIVES_FROM_PLAIN_TEXT = "sp_insert_and_get_additives_from_plain_text";
     public static final String SP_INSERT_SCAN = "sp_insert_scan";
     public static final String SP_GET_ADDITIVES_REPORT = "sp_get_additives_report";
+    public static final String SP_GET_SCAN_LIST = "sp_get_scan_list";
 
 }

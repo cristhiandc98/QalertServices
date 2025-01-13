@@ -1,5 +1,6 @@
 package qalert.com.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,8 @@ public class ScanDaoImpl implements IScanDao {
 
             SqlParameterSource input = new MapSqlParameterSource()
                     .addValue("ni_profile_id", request.getProfileId())
-                    .addValue("vi_product_name", request.getProductName());
+                    .addValue("vi_product_name", request.getProductName())
+                    .addValue("vi_image_path", request.getImageName());
 
             Map<String, Object> resultset = (Map<String, Object>) jdbcCall.execute(input);
 
@@ -124,6 +126,48 @@ public class ScanDaoImpl implements IScanDao {
                 out = new Response2<>(HttpStatus.OK, "Aditivos no encontrados", false);
             }
 
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
+        }
+
+        return out;
+    }
+
+    @Override
+    public Response2<List<ScanHeaderResponse>> getScanList(int profileId) {
+        Response2<List<ScanHeaderResponse>> out = new Response2<>();
+
+        try {
+            SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                    .withProcedureName(DbConst.SP_GET_SCAN_LIST);
+
+            SqlParameterSource input = new MapSqlParameterSource()
+                    .addValue("ni_profile_id", profileId);
+
+            Map<String, Object> dbData = jdbcCall.execute(input);
+
+            List<Map<String, Object>> resultset = (List<Map<String, Object>>) dbData.get(DbConst.RESUL_SET_1);
+
+            if (resultset != null && !resultset.isEmpty()){
+                
+                out.setData(new ArrayList<>());
+                ScanHeaderResponse header;
+
+                for (Map<String, Object> row : resultset) {
+
+                    header = new ScanHeaderResponse();
+
+                    header.setScanHeaderId(DbUtil.getInteger(row, "scan_header_id"));
+                    header.setProductName(DbUtil.getString(row, "product_name"));
+                    header.setImagePath(DbUtil.getString(row, "image_path"));
+
+                    out.getData().add(header);
+                }
+
+                
+            }else
+                out = new Response2<>(HttpStatus.OK, "No cuenta con escaneos registrados", false);
+            
         } catch (Exception ex) {
             out = new Response2<>(ex);
         }

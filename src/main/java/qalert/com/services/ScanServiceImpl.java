@@ -187,4 +187,9 @@ public class ScanServiceImpl implements IScanService{
 			}
 		}
 	}
+
+	@Override
+	public Response2<List<ScanHeaderResponse>> getScanList(int profileId) {
+		return scanDao.getScanList(profileId);
+	}
 }

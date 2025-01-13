@@ -486,6 +486,7 @@ GRANT select on vw_status to 'qalert_app'@'%';
 
 
 
+
 drop procedure if exists sp_insert_and_get_additives_from_plain_text;
 DELIMITER ;;
 CREATE PROCEDURE `sp_insert_and_get_additives_from_plain_text`(
@@ -783,7 +784,8 @@ drop procedure if exists sp_insert_scan;
 DELIMITER ;;
 CREATE PROCEDURE `sp_insert_scan`(
 	ni_profile_id 			int,
-    vi_product_name			varchar(100)
+    vi_product_name			varchar(100),
+    vi_image_path			varchar(20)
 )
 sp:BEGIN  
 
@@ -812,7 +814,8 @@ sp:BEGIN
         harmful_additives_number,
         product_name,
         created_date,
-        created_time
+        created_time,
+        image_path
         )
 	select x.profile_id,
 		data,
@@ -821,7 +824,8 @@ sp:BEGIN
         harmful_additives_number,
         vi_product_name,
         d_current_date,
-        d_current_date
+        d_current_date,
+        vi_image_path
 	from tmp_scan_header x 
 	where x.profile_id = ni_profile_id;
     
@@ -846,3 +850,43 @@ END ;;
 DELIMITER ;
 
 GRANT execute on procedure sp_insert_scan   to 'qalert_app'@'%';
+
+
+
+drop procedure if exists sp_get_scan_list;
+DELIMITER ;;
+CREATE PROCEDURE `sp_get_scan_list`(
+	ni_profile_id 			int
+)
+sp:BEGIN  
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2024-09-03
+	-- Objetivo: 	Get scan list
+	-- ------------------------------------------------------------
+	-- Descripción de parámetros:
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- 				call sp_get_scan_list (1);
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************
+    
+	declare d_end_date 		date default current_date();
+    declare d_begin_date 	date default DATE_SUB(d_end_date, INTERVAL 30 DAY);
+    
+	select x.scan_header_id
+		, x.product_name
+        , x.image_path
+    from scan_header x
+	where x.profile_id = ni_profile_id
+		and x.created_date between d_begin_date and d_end_date;
+		
+END ;;
+DELIMITER ;
+
+GRANT execute on procedure sp_get_scan_list   to 'qalert_app'@'%';

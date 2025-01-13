@@ -3,6 +3,7 @@ package qalert.com.controller;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -23,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.ILogService;
 import qalert.com.interfaces.scan.IScanService;
 import qalert.com.models.generic.Response2;
+import qalert.com.models.scan.ScanHeaderResponse;
 import qalert.com.models.scan.ScanRequest;
 import qalert.com.models.scan.ScanResponse;
 import qalert.com.models.service_log.LogServiceRequest;
@@ -110,7 +112,7 @@ public class ScanController {
 
 
     @GetMapping(value=ApiConst.GET_ADDITIVES_REPORT, produces = ApiConst.PRODUCES)
-	public ResponseEntity<?> insert(HttpServletRequest http, @RequestParam Integer profileId, @RequestParam Integer reportType) {
+	public ResponseEntity<?> getAdditivesReport(HttpServletRequest http, @RequestParam Integer profileId, @RequestParam Integer reportType) {
         
         ScanRequest request = new ScanRequest();
         request.setProfileId(profileId);
@@ -122,6 +124,25 @@ public class ScanController {
 
         if(out.isStatus())
             out = scanService.getAdditivesReport(request);
+
+		logService.setResponseDataAndSave(logModel, out, false);
+
+		return ResponseEntity.status(out.getStatusCode()).body(out);
+	}
+
+
+
+    @GetMapping(value=ApiConst.GET_SCAN_LIST, produces = ApiConst.PRODUCES)
+	public ResponseEntity<?> getScanList(HttpServletRequest http, @RequestParam Integer profileId) {
+
+		LogServiceRequest logModel = logService.setRequestData(http, profileId, profileId, false);
+
+        Response2<List<ScanHeaderResponse>> out;
+
+        if(profileId != null)
+            out = scanService.getScanList(profileId);
+        else 
+            out = new Response2<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST, false);
 
 		logService.setResponseDataAndSave(logModel, out, false);
 

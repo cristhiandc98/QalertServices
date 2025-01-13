@@ -19,6 +19,7 @@ public class ApiConst {
     //SCAN
     public static final String GET_ADDITIVES_FROM_IMAGE = "/get-additives-from-image";
     public static final String GET_ADDITIVES_REPORT = "/get-additives-report";
+    public static final String GET_SCAN_LIST = "/get-scan-list";
 
     //USER
     public static final String UPDATE_PASSWORD = "/update-password";

@@ -18,6 +18,8 @@ public class ScanRequest {
 
     private String imageName;
 
+    private Integer scanId;
+
     public <T> Response2<T> validateInsert(){
         Response2<T> out = new Response2<T>();
 
@@ -84,6 +86,14 @@ public class ScanRequest {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
+    }
+
+    public Integer getScanId() {
+        return scanId;
+    }
+
+    public void setScanId(Integer scanId) {
+        this.scanId = scanId;
     }
     
 }

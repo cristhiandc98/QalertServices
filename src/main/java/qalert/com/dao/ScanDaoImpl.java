@@ -3,6 +3,7 @@ package qalert.com.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,12 +14,14 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import qalert.com.interfaces.scan.IScanDao;
+import qalert.com.models.BaseData;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.scan.ScanDetailResponse;
 import qalert.com.models.scan.ScanHeaderResponse;
 import qalert.com.models.scan.ScanRequest;
 import qalert.com.models.scan.ScanResponse;
 import qalert.com.utils.consts.DbConst;
+import qalert.com.utils.exceptions.ConflictException;
 import qalert.com.utils.utils.DbUtil;
 
 @Repository
@@ -27,47 +30,55 @@ public class ScanDaoImpl implements IScanDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private BaseData data;
+
+
+
     @Override
-    public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(int profileId, String data) {
+    public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(Long profileId, String data) {
         SqlParameterSource input = new MapSqlParameterSource()
-                .addValue("ni_profile_id", profileId)
+                .addValue("ni_user_id", profileId)
                 .addValue("vi_data", data);
 
         return getAdditivesReport(DbConst.SP_INSERT_AND_GET_ADDITIVES_FROM_PLAIN_TEXT, input);
     }
 
+
+
     @Override
-    public Response2<Boolean> insert(ScanRequest request) {
-        Response2<Boolean> out;
+    public void insert(ScanRequest request) {
 
-        try {
-            SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                    .withProcedureName(DbConst.SP_INSERT_SCAN);
+        String profileIdConcatenated = request.getProfileIdList()
+                .stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
 
-            SqlParameterSource input = new MapSqlParameterSource()
-                    .addValue("ni_profile_id", request.getProfileId())
-                    .addValue("vi_product_name", request.getProductName())
-                    .addValue("vi_image_path", request.getImageName());
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName(data.getSchema())
+                .withProcedureName(DbConst.SP_INSERT_SCAN);
 
-            Map<String, Object> resultset = (Map<String, Object>) jdbcCall.execute(input);
+        SqlParameterSource input = new MapSqlParameterSource()
+                .addValue("ni_user_id", request.getUserId())
+                .addValue("vi_profile_id_concatenated", profileIdConcatenated)
+                .addValue("vi_separator", ",")
+                .addValue("vi_product_name", request.getProductName())
+                .addValue("vi_image_path", request.getImageName());
 
-            if (DbUtil.getInt(resultset, DbConst.UPDATE_COUNT_1) > 0) {
-                out = new Response2<>(true, "¡Escaneo guardado exitosamente!"); 
-            }else {
-                out = new Response2<>(false, "No se pudo guardar el producto escaneado.");
-            }
+        Map<String, Object> resultset = (Map<String, Object>) jdbcCall.execute(input);
 
-        } catch (Exception ex) {
-            out = new Response2<>(ex);
-        }
-
-        return out;
+        
+        if(DbUtil.getInt(resultset, DbConst.UPDATE_COUNT_1) == 0)
+            throw new ConflictException("No se pudo guardar el producto escaneado.");
     }
+
+
 
     @Override
     public Response2<ScanResponse> getAdditivesReport(ScanRequest request) {
 
         SqlParameterSource input = new MapSqlParameterSource()
+                .addValue("ni_user_id", request.getUserId())
                 .addValue("ni_profile_id", request.getProfileId())
                 .addValue("ni_report_type", request.getReportType())
                 .addValue("ni_scan_id", request.getScanId() == null ? 0 : request.getScanId());
@@ -75,12 +86,15 @@ public class ScanDaoImpl implements IScanDao {
         return getAdditivesReport(DbConst.SP_GET_ADDITIVES_REPORT, input);
     }
 
+
+
     private Response2<ScanResponse> getAdditivesReport(String sp, SqlParameterSource input) {
         Response2<ScanResponse> out = new Response2<>();
         out.setData(new ScanResponse());
 
         try {
             SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                    .withCatalogName(data.getSchema())
                     .withProcedureName(sp);
 
             Map<String, Object> dbData = jdbcCall.execute(input);
@@ -135,11 +149,12 @@ public class ScanDaoImpl implements IScanDao {
     }
 
     @Override
-    public Response2<List<ScanHeaderResponse>> getScanList(int profileId) {
+    public Response2<List<ScanHeaderResponse>> getScanList(Long profileId) {
         Response2<List<ScanHeaderResponse>> out = new Response2<>();
 
         try {
             SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                    .withCatalogName(data.getSchema())
                     .withProcedureName(DbConst.SP_GET_SCAN_LIST);
 
             SqlParameterSource input = new MapSqlParameterSource()
@@ -149,8 +164,8 @@ public class ScanDaoImpl implements IScanDao {
 
             List<Map<String, Object>> resultset = (List<Map<String, Object>>) dbData.get(DbConst.RESUL_SET_1);
 
-            if (resultset != null && !resultset.isEmpty()){
-                
+            if (resultset != null && !resultset.isEmpty()) {
+
                 out.setData(new ArrayList<>());
                 ScanHeaderResponse header;
 
@@ -165,10 +180,9 @@ public class ScanDaoImpl implements IScanDao {
                     out.getData().add(header);
                 }
 
-                
-            }else
+            } else
                 out = new Response2<>(HttpStatus.OK, "No cuenta con escaneos registrados", false);
-            
+
         } catch (Exception ex) {
             out = new Response2<>(ex);
         }

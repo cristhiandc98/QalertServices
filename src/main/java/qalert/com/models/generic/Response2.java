@@ -1,11 +1,15 @@
 package qalert.com.models.generic;
 
+import java.sql.SQLException;
+
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import qalert.com.utils.consts.UserMessageConst;
-import qalert.com.utils.utils.DateUtil;
+import qalert.com.utils.exceptions.ConflictException;
+import qalert.com.utils.exceptions.InvalidFormException;
 
 public class Response2<T> {
 
@@ -15,8 +19,7 @@ public class Response2<T> {
 
     private T data;
 
-    private String errorId;
-
+    @JsonIgnore
     private HttpStatus statusCode;
 
     @JsonIgnore
@@ -38,7 +41,52 @@ public class Response2<T> {
         this.status = status;
     }
 
-    //Exception
+    public Response2(T data) {
+        this.statusCode = HttpStatus.OK;
+        this.userMssg = UserMessageConst.SUCCESS;
+        this.data = data;
+        this.status = data != null;
+    }   
+
+    public <Y>Response2(Response2<Y> in){
+        status = in.isStatus();
+        userMssg = in.getUserMssg();
+        statusCode = in.getStatusCode();
+        errorMssg = in.getErrorMssg();
+    }
+
+    //***********************************************************************
+    //************************************************************ Exception
+    //***********************************************************************
+    public Response2(InvalidFormException exception) {
+        this(HttpStatus.BAD_REQUEST, exception.getMessage(), false);
+        setError(exception);
+    } 
+    public Response2(ConflictException exception) {
+        this(HttpStatus.CONFLICT, exception.getMessage(), false);
+        setError(exception);
+    } 
+
+
+
+    public Response2(DataAccessException ex) {
+        
+        SQLException sqlEx = (SQLException) ex.getMostSpecificCause();
+
+        userMssg = sqlEx.getMessage();
+
+        switch (sqlEx.getErrorCode()) {
+            case 50001:
+                statusCode = HttpStatus.CONFLICT;
+                break;
+            default:
+                userMssg = UserMessageConst.INTERNAL_SERVER_ERROR;
+                statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+                setError(ex);
+                break;
+        }
+    }
+
     public Response2(Exception exception) {
         this(HttpStatus.INTERNAL_SERVER_ERROR, UserMessageConst.INTERNAL_SERVER_ERROR, false);
         setError(exception);
@@ -51,10 +99,6 @@ public class Response2<T> {
 
     public String setError(Exception exception)
     {
-        errorId = DateUtil.generateId();
-        
-        errorMssg = " codError: " + errorId;
-
         try {
             StackTraceElement elemento = exception.getStackTrace()[0];
 
@@ -67,44 +111,6 @@ public class Response2<T> {
         }
 
         return errorMssg;
-    }
-
-    //***************************************************************
-    public Response2(T data, String userMessage) {
-        this.data = data;
-        this.status = data != null;
-        this.userMssg = userMessage;
-        this.statusCode = HttpStatus.OK;
-    }
-
-    public Response2(T data) {
-        this.statusCode = HttpStatus.OK;
-        this.userMssg = UserMessageConst.SUCCESS;
-        this.data = data;
-        this.status = data != null;
-    }
-
-    public Response2(HttpStatus statusCode, String userMssg) {
-        this.statusCode = statusCode;
-        this.userMssg = userMssg;
-        this.status = statusCode == HttpStatus.OK;
-    }
-    
-    //Exception
-    public Response2(Exception exception, Object object) {
-        errorId = DateUtil.generateId();
-        status = false;
-        statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-        userMssg = UserMessageConst.INTERNAL_SERVER_ERROR;
-        errorMssg = " | error: " + exception.getLocalizedMessage();
-    }    
-
-    public <Y>Response2(Response2<Y> in){
-        status = in.isStatus();
-        userMssg = in.getUserMssg();
-        errorId = in.getErrorId();
-        statusCode = in.getStatusCode();
-        errorMssg = in.getErrorMssg();
     }
 
     //***************************************************************
@@ -132,14 +138,6 @@ public class Response2<T> {
 
     public void setData(T data) {
         this.data = data;
-    }
-
-    public String getErrorId() {
-        return errorId;
-    }
-
-    public void setErrorId(String errorId) {
-        this.errorId = errorId;
     }
 
     public HttpStatus getStatusCode() {

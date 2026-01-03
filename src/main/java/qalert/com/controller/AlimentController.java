@@ -1,0 +1,56 @@
+package qalert.com.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.HttpServletRequest;
+import qalert.com.interfaces.IAliment;
+import qalert.com.interfaces.log.ILogService;
+import qalert.com.models.aliment.AlimentDataResponse;
+import qalert.com.models.generic.Response2;
+import qalert.com.models.service_log.LogServiceRequest;
+import qalert.com.utils.consts.ApiConst;
+import qalert.com.utils.consts.CommonConsts;
+
+
+@CrossOrigin(origins = "*")
+@RestController
+@RequestMapping(ApiConst.ALIMENT)
+public class AlimentController {
+
+    @Qualifier(CommonConsts.QALIFIER_SERVICE)
+    @Autowired
+    private IAliment alimenService;
+
+    @Autowired
+    private ILogService logService;
+
+
+
+    @GetMapping(produces = ApiConst.PRODUCES)
+    public ResponseEntity<?> getAlimentList(HttpServletRequest http) {
+        
+        LogServiceRequest logModel = logService.setRequestData(http);
+
+        Response2<AlimentDataResponse> out;
+
+        try {
+            out = new Response2<> (alimenService.getAlimentList(logModel.getUserId()));
+        } catch (DataAccessException ex) {
+            out = new Response2<>(ex);
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
+        }
+
+        logService.setResponseDataAndSave(logModel, out);
+
+        return ResponseEntity.status(out.getStatusCode()).body(out);
+
+    }
+}

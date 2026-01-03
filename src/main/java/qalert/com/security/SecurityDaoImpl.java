@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
+import qalert.com.models.BaseData;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.CommonConsts;
@@ -25,12 +26,16 @@ public class SecurityDaoImpl implements ISecurity{
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
+	@Autowired
+    private BaseData data;
+
 	@Override
 	public Response2<String> saveVerificationCode(UserRequest request, boolean isChangeDevice) {
 		Response2<String> out;
 
         try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+			    .withCatalogName(data.getSchema())
     		    .withProcedureName(DbConst.SP_SAVE_VERIFICATION_CODE);
         	
         	SqlParameterSource input = new MapSqlParameterSource()

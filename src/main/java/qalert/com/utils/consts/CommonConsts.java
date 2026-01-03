@@ -10,7 +10,11 @@ public class CommonConsts {
 
     public static final String SEPARADOR_CONTRASENIA__ID_EQUIPO = " ";
 
+    //keys
     public static final String KEY_FILE = "file";
     public static final String KEY_MODEL = "modelo";
+
+    public static final String KEY_USER_ID = "user_id";
+    public static final String KEY_PROFILE_ID = "user_id";
     
 }

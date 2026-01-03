@@ -2,8 +2,11 @@ package qalert.com.models.login;
 
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import qalert.com.utils.utils.RegexUtil;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LoginRequest {
 
     private String userName;
@@ -14,56 +17,60 @@ public class LoginRequest {
 
     private String verificationCode;
 
-    //***************************************************************
-    //********************************************************METHODS
-    //***************************************************************
-    public void joinUserNameAndDeviceId(){
+    // ***************************************************************
+    // ********************************************************METHODS
+    // ***************************************************************
+    public void joinUserNameAndDeviceId() {
         userName = userName + ":" + deviceId;
     }
 
-    public void separateUserNameAndDeviceId(){
+    public void separateUserNameAndDeviceId() {
         String[] x = userName.split(":");
         userName = x[0];
         deviceId = Integer.parseInt(x[1]);
     }
 
     public String validateUserName() {
-		if (userName != null && RegexUtil.EMAIL.matcher(userName).matches() && userName.length() <= 50) 
-			return null;
-		return "Credenciales inválidas.";
-	}
+        if (userName != null && RegexUtil.EMAIL.matcher(userName).matches() && userName.length() <= 40) {
+            return null;
+        }
+        return "Credenciales inválidas.";
+    }
 
     public String validatePassword() {
-		if (password != null && RegexUtil.PASSWORD.matcher(password).matches()) 
+        if (password != null && RegexUtil.PASSWORD.matcher(password).matches()) {
             return null;
-		return "Credenciales inválidas.";
-	}
+        }
+        return "Credenciales inválidas.";
+    }
 
     public String validateDeviceId() {
-		if (deviceId != null && deviceId.toString().length() == 3) 
+        if (deviceId != null && deviceId.toString().length() == 3) {
             return null;
-		return "Dispositivo inválido.";
-	}
+        }
+        return "Dispositivo inválido.";
+    }
 
     public String validateVerificationCode() {
-		if (verificationCode != null && Pattern.compile("^[0-9]{3}$").matcher(verificationCode).matches()) 
+        if (verificationCode != null && Pattern.compile("^[0-9]{3}$").matcher(verificationCode).matches()) {
             return null;
-		return "Código de verifición inválido.";
-	}
+        }
+        return "Código de verifición inválido.";
+    }
 
     public String validateLogin() throws Exception {
         String error;
-		if ((error = validateUserName()) == null
-            && (error = validatePassword()) == null
-            && (error = validateDeviceId()) == null) 
-			return null;
-		return error;
-	}
+        if ((error = validateUserName()) == null
+                && (error = validatePassword()) == null
+                && (error = validateDeviceId()) == null) {
+            return null;
+        }
+        return error;
+    }
 
-
-    //***************************************************************
-    //***************************************************CONSTRUCTORS
-    //***************************************************************    
+    // ***************************************************************
+    // ***************************************************CONSTRUCTORS
+    // ***************************************************************
     public LoginRequest(String userName, String password, Integer deviceId) {
         this.userName = userName;
         this.password = password;
@@ -77,9 +84,9 @@ public class LoginRequest {
     public LoginRequest() {
     }
 
-    //***************************************************************
-    //*********************************************GETTERS AND SETTER
-    //***************************************************************
+    // ***************************************************************
+    // *********************************************GETTERS AND SETTER
+    // ***************************************************************
     public String getUserName() {
         return userName;
     }

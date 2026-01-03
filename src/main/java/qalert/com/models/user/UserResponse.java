@@ -7,18 +7,19 @@ import qalert.com.models.login.LoginResponse;
 import qalert.com.models.person.PersonResponse;
 import qalert.com.models.profile.ProfileResponse;
 
-public class UserResponse extends PersonResponse{
+public class UserResponse extends PersonResponse {
 
-    private Integer userId;
-    
+    private Long userId;
+
     private LoginResponse login = new LoginResponse();
+
+    private Integer subscriptionId;
 
     private List<ProfileResponse> profileList = new ArrayList<>();
 
-    
-    //***************************************************************
-    //*********************************************GETTERS AND SETTER
-    //***************************************************************
+    // ***************************************************************
+    // *********************************************GETTERS AND SETTER
+    // ***************************************************************
     public LoginResponse getLogin() {
         return login;
     }
@@ -27,11 +28,11 @@ public class UserResponse extends PersonResponse{
         this.login = login;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -42,5 +43,13 @@ public class UserResponse extends PersonResponse{
     public void setProfileList(List<ProfileResponse> profileList) {
         this.profileList = profileList;
     }
-    
+
+    public Integer getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(Integer subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+
 }

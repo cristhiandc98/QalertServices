@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import qalert.com.interfaces.IMaster;
+import qalert.com.models.BaseData;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.master.MasterResponse;
 import qalert.com.utils.consts.CommonConsts;
@@ -25,82 +26,61 @@ public class MasterDaoImpl implements IMaster{
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
     
+    @Autowired
+    private BaseData data;
 
     @Override
-    public Response2<List<MasterResponse>> listAppSettings() {
-        Response2<List<MasterResponse>> out;
+    public List<MasterResponse> getAppSettingsList() {
+        List<MasterResponse> out = new ArrayList<>();
 
-        try {
-			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName(DbConst.SP_LIST_APP_SETTINGS);
-        	
-            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET_1);
-        	
-            if(resultset != null && !resultset.isEmpty()){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+            .withCatalogName(data.getSchema())
+            .withProcedureName(DbConst.SP_GET_APP_SETTINGS_LIST);
+        
+        List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET_1);
+        
+        MasterResponse model;
+        
+        for (Map<String,Object> map : resultset) {
+            model = new MasterResponse();
 
-                List<MasterResponse> list = new ArrayList<>();
-                MasterResponse model;
-                
-                for (Map<String,Object> map : resultset) {
-                    model = new MasterResponse();
+            model.setTableId(DbUtil.getInteger(map, "table_id"));
+            model.setFieldId(DbUtil.getInteger(map, "field_id"));
+            model.setSequence(DbUtil.getInteger(map, "sequence"));
+            model.setValueInt(DbUtil.getInteger(map, "value_int"));
+            model.setDescription(DbUtil.getString(map, "description"));
 
-                    model.setTableId(DbUtil.getInteger(map, "table_id"));
-                    model.setFieldId(DbUtil.getInteger(map, "field_id"));
-                    model.setSequence(DbUtil.getInteger(map, "sequence"));
-                    model.setValueInt(DbUtil.getInteger(map, "value_int"));
-                    model.setValueVarchar(DbUtil.getString(map, "value_varchar"));
+            out.add(model);
+        }
 
-                    list.add(model);
-                }
-                
-                if(!list.isEmpty())
-                    out = new Response2<>(list);
-                else 
-                    out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
-            }
-            else out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
-		
-		} catch (Exception ex) {
-            out = new Response2<>(ex, "Ocurrió un problema al obtener la configuración");
-        }		
+        if(out.isEmpty())
+            out = null;
 
     	return out;
     }
 
+
     
-    public Response2<MasterResponse> getTermsAndConditions(){
-        Response2<MasterResponse> out;
+    public MasterResponse getTermsAndConditions(){
 
-        try {
-			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-    		    .withProcedureName("sp_get_terms_and_conditions");
-        	
-            List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET_1);
-        	
-            if(resultset != null && resultset.size() > 0){
+        MasterResponse out = null;
 
-                MasterResponse model = null;
-                
-                for (Map<String,Object> map : resultset) {
-                    model = new MasterResponse();
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+            .withCatalogName(data.getSchema())
+            .withProcedureName(DbConst.SP_GET_TERMS_AND_CONDITIONS);
+        
+        List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute().get(DbConst.RESUL_SET_1);
+        
+        
+        for (Map<String,Object> map : resultset) {
+            out = new MasterResponse();
 
-                    model.setTableId(DbUtil.getInteger(map, "table_id"));
-                    model.setFieldId(DbUtil.getInteger(map, "field_id"));
-                    model.setSequence(DbUtil.getInteger(map, "sequence"));
-                    model.setValueInt(DbUtil.getInteger(map, "value_int"));
-                    model.setValueVarchar(DbUtil.getString(map, "value_varchar"));
-                }
-                
-                if(model != null)
-                    out = new Response2<>(model);
-                else 
-                    out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
-            }
-            else out = new Response2<>(HttpStatus.OK, "Configuración no encontrada", false);
-		
-		} catch (Exception ex) {
-            out = new Response2<>(ex, "Ocurrió un problema al obtener la configuración");
-        }		
+            out.setTableId(DbUtil.getInteger(map, "table_id"));
+            out.setFieldId(DbUtil.getInteger(map, "field_id"));
+            out.setSequence(DbUtil.getInteger(map, "sequence"));
+            out.setValueInt(DbUtil.getInteger(map, "value_int"));
+            out.setValueVarchar(DbUtil.getString(map, "value_varchar"));
+        }
 
     	return out;
     }

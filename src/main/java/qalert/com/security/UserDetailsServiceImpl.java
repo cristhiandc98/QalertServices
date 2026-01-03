@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 import qalert.com.interfaces.IUser;
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.user.UserResponse;
+import qalert.com.utils.consts.CommonConsts;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService{
 	
-	@Qualifier(qalert.com.utils.consts.CommonConsts.QALIFIER_SERVICE)
+	@Qualifier(CommonConsts.QALIFIER_SERVICE)
 	@Autowired
 	private IUser userService;
 

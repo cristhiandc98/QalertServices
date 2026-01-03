@@ -1,14 +1,10 @@
 package qalert.com.controller;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
-import qalert.com.interfaces.ILogService;
+import qalert.com.interfaces.log.ILogService;
 import qalert.com.interfaces.scan.IScanService;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.scan.ScanHeaderResponse;
@@ -29,9 +25,9 @@ import qalert.com.models.scan.ScanRequest;
 import qalert.com.models.scan.ScanResponse;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.utils.consts.ApiConst;
-import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.consts.UserMessageConst;
-import qalert.com.utils.utils.RegexUtil;
+import qalert.com.utils.exceptions.ConflictException;
+import qalert.com.utils.exceptions.InvalidFormException;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -41,91 +37,118 @@ public class ScanController {
     @Autowired
     private IScanService scanService;
 
-    @Qualifier(CommonConsts.QALIFIER_SERVICE)
     @Autowired
     private ILogService logService;
 
 
+
     @PostMapping(value = ApiConst.GET_ADDITIVES_FROM_IMAGE, produces = ApiConst.PRODUCES)
 	public ResponseEntity<?> getAdditivesFromImage(HttpServletRequest http, 
-        @RequestParam("file") MultipartFile image,
-        @RequestParam("data") String data) {
+        @RequestParam MultipartFile image,
+        @RequestParam String userId) {
 
+        LogServiceRequest logModel = null;
         Response2<ScanResponse> out;
-        LogServiceRequest logModel;
-        int profileId = 0;
 
-        if(RegexUtil.NUMBER.matcher(data).matches() && isValidImageContent(image)){
-            
-            LocalDateTime beginDateTime = LocalDateTime.now();
-            profileId = Integer.parseInt(data);
+        try {
+            scanService.isValidImageContent(image);
+
 
             Response2<String> additivesRsp = scanService.getAdditivesFromImage(image);
-
-            logModel = logService.setRequestData(http, additivesRsp.getData(), profileId, false);
             
-            if(additivesRsp.isStatus())
-                out = scanService.insertAndGetAdditivesFromPlainText(profileId, additivesRsp.getData());
-            else 
-                out = new Response2<>(additivesRsp);
 
+            logModel = logService.setRequestData(http, additivesRsp.getData());
+
+            LocalDateTime beginDateTime = LocalDateTime.now();
             logModel.setBeginDateTime(beginDateTime);
 
-        }else{
 
-            logModel = logService.setRequestData(http, data, profileId, false);
+            out = scanService.insertAndGetAdditivesFromPlainText(Long.parseLong(userId), additivesRsp.getData());
 
-            out = new Response2<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST);
+        } catch (InvalidFormException ex) {
+            out = new Response2<>(ex);
+            logModel = logService.setRequestData(http, userId);
+        } catch (DataAccessException ex) {
+            out = new Response2<>(ex);
+            logModel = logService.setRequestData(http, userId);
+        } catch (ConflictException ex) {
+            out = new Response2<>(ex);
+            logModel = logService.setRequestData(http, userId);
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
+            logModel = logService.setRequestData(http, userId);
         }
 
-        logService.setResponseDataAndSave(logModel, out, false);
+
+        logService.setResponseDataAndSave(logModel, out);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
 
-    public boolean isValidImageContent(MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            return false;
-        }
-        try {
-            BufferedImage image = ImageIO.read(file.getInputStream());
-            return image != null; 
-        } catch (IOException e) {
-            return false; 
-        }
-    }
 
 
     @PostMapping(produces = ApiConst.PRODUCES)
 	public ResponseEntity<?> insert(HttpServletRequest http, @RequestBody ScanRequest request) {
-		LogServiceRequest logModel = logService.setRequestData(http, request, request.getProfileId(), false);
+
+		LogServiceRequest logModel = logService.setRequestData(http, request);
 		
-		Response2<Boolean> out = request.validateInsert();
+		Response2<String> out = null;
 
-        if(out.isStatus())
-            out = scanService.insert(request);
+        try {
+            request.validateInsert();
+            
+            request.setUserId(logModel.getUserId());
+            
+            scanService.insert(request);
 
-		logService.setResponseDataAndSave(logModel, out, false);
+            out = new Response2<>(HttpStatus.CREATED, "¡Escaneo guardado exitosamente!", true);
+
+        } catch (InvalidFormException ex) {
+            out = new Response2<>(ex);
+        } catch (DataAccessException ex) {
+            out = new Response2<>(ex);
+        } catch (ConflictException ex) {
+            out = new Response2<>(ex);
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
+        }
+
+		logService.setResponseDataAndSave(logModel, out);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
 
 
+
     @GetMapping(value=ApiConst.GET_ADDITIVES_REPORT, produces = ApiConst.PRODUCES)
-	public ResponseEntity<?> getAdditivesReport(HttpServletRequest http, @RequestParam Integer profileId, @RequestParam Integer reportType) {
-        
+	public ResponseEntity<?> getAdditivesReport(HttpServletRequest http, @RequestParam Long profileId, @RequestParam Integer reportType) {
+
         ScanRequest request = new ScanRequest();
         request.setProfileId(profileId);
         request.setReportType(reportType);
 
-		LogServiceRequest logModel = logService.setRequestData(http, request, profileId, false);
+        LogServiceRequest logModel = logService.setRequestData(http, request);
 		
-		Response2<ScanResponse> out = request.validateGetAdditiveReport();
+		Response2<ScanResponse> out = null;
 
-        if(out.isStatus())
+        try {
+            request.validateGetAdditiveReport();
+
+            request.setUserId(logModel.getUserId());
+            
             out = scanService.getAdditivesReport(request);
 
-		logService.setResponseDataAndSave(logModel, out, false);
+        } catch (InvalidFormException ex) {
+            out = new Response2<>(ex);
+        } catch (DataAccessException ex) {
+            out = new Response2<>(ex);
+        } catch (ConflictException ex) {
+            out = new Response2<>(ex);
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
+        }
+
+		logService.setResponseDataAndSave(logModel, out);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
@@ -133,9 +156,9 @@ public class ScanController {
 
 
     @GetMapping(value=ApiConst.GET_SCAN_LIST, produces = ApiConst.PRODUCES)
-	public ResponseEntity<?> getScanList(HttpServletRequest http, @RequestParam Integer profileId) {
+	public ResponseEntity<?> getScanList(HttpServletRequest http, @RequestParam Long profileId) {
 
-		LogServiceRequest logModel = logService.setRequestData(http, profileId, profileId, false);
+		LogServiceRequest logModel = logService.setRequestData(http, null);
 
         Response2<List<ScanHeaderResponse>> out;
 
@@ -144,7 +167,7 @@ public class ScanController {
         else 
             out = new Response2<>(HttpStatus.BAD_REQUEST, UserMessageConst.BAD_REQUEST, false);
 
-		logService.setResponseDataAndSave(logModel, out, false);
+		logService.setResponseDataAndSave(logModel, out);
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}

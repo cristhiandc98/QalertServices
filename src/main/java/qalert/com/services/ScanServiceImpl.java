@@ -3,6 +3,8 @@ package qalert.com.services;
 import java.io.IOException;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import qalert.com.models.scan.ScanHeaderResponse;
 import qalert.com.models.scan.ScanRequest;
 import qalert.com.models.scan.ScanResponse;
 import qalert.com.utils.consts.EnvironmentConst;
+import qalert.com.utils.exceptions.InvalidFormException;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -38,8 +41,16 @@ public class ScanServiceImpl implements IScanService{
     private IScanDao scanDao;
 
 
+	
     @Override
-    public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(int profileId, String data) {
+    public void insert(ScanRequest request) {
+        scanDao.insert(request);
+    }
+
+
+
+    @Override
+    public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(Long profileId, String data) {
 		Response2<ScanResponse> rsp = scanDao.insertAndGetAdditivesFromPlainText(profileId, data);
 
 		setPercentageOfTotal(rsp);
@@ -85,11 +96,11 @@ public class ScanServiceImpl implements IScanService{
 	            text = noRepeat(text);    
 
 				if(text.isEmpty())
-					out = new Response2<>(HttpStatus.BAD_REQUEST, "La imagen no contiene ingredientes.");
+					out = new Response2<>(HttpStatus.BAD_REQUEST, "La imagen no contiene ingredientes.", false);
 	            else if(text.length() <= 2000) 
 		            out = new Response2<>(text);
 	            else
-                    out = new Response2<>(HttpStatus.BAD_REQUEST, "Ingredientes inválidos, favor de recortar la imagen.");
+                    out = new Response2<>(HttpStatus.BAD_REQUEST, "Ingredientes inválidos, favor de recortar la imagen.", false);
 	            
 			}else
                 out = new Response2<>(scanRsp);
@@ -101,6 +112,8 @@ public class ScanServiceImpl implements IScanService{
 		return out;
 	}
 
+	
+
     private Response2<List<Block>> scanImage(MultipartFile file) {
 		
 		TextractClient awsTextExtract = null;
@@ -108,16 +121,14 @@ public class ScanServiceImpl implements IScanService{
 		
 		try {
             SdkBytes sourceBytes = SdkBytes.fromInputStream(file.getInputStream());
-
             Document myDoc = Document.builder()
                     .bytes(sourceBytes)
                     .build();
-
             DetectDocumentTextRequest detectDocumentTextRequest = DetectDocumentTextRequest.builder()
                     .document(myDoc)
                     .build();
             
-            awsTextExtract = createTextExtractObject();
+            awsTextExtract = createTextExtractClient();
             
             DetectDocumentTextResponse textResponse = awsTextExtract.detectDocumentText(detectDocumentTextRequest);
 
@@ -134,7 +145,9 @@ public class ScanServiceImpl implements IScanService{
 		return out;
 	}
 
-    private TextractClient createTextExtractObject() {
+
+
+    private TextractClient createTextExtractClient() {
 		AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(
                 		env.getRequiredProperty(EnvironmentConst.AWS_TEXTEXTRACT_ACCESS_KEY)
@@ -148,6 +161,8 @@ public class ScanServiceImpl implements IScanService{
                 .build();
 	}
 
+
+
     private String noRepeat(String text) {
 		try {
 			return text.substring(0, text.length() / 2);
@@ -156,10 +171,7 @@ public class ScanServiceImpl implements IScanService{
 		}
 	}
 
-    @Override
-    public Response2<Boolean> insert(ScanRequest request) {
-        return scanDao.insert(request);
-    }
+
 
     @Override
     public Response2<ScanResponse> getAdditivesReport(ScanRequest request) {
@@ -189,7 +201,20 @@ public class ScanServiceImpl implements IScanService{
 	}
 
 	@Override
-	public Response2<List<ScanHeaderResponse>> getScanList(int profileId) {
+	public Response2<List<ScanHeaderResponse>> getScanList(Long profileId) {
 		return scanDao.getScanList(profileId);
 	}
+
+
+	@Override
+    public void isValidImageContent(MultipartFile file) {
+        if (file == null || file.isEmpty()) 
+            throw new InvalidFormException("Imagen vacía");
+
+        try {
+            ImageIO.read(file.getInputStream());
+        } catch (IOException e) {
+            throw new InvalidFormException("Imagen inválida");
+        }
+    }
 }

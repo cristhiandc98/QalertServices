@@ -1,16 +1,15 @@
 package qalert.com.models.login;
 
-public class LoginResponse extends LoginRequest{
-    
+public class LoginResponse extends LoginRequest {
+
     private TokenResponse token;
 
-
-    public LoginResponse(){
+    public LoginResponse() {
     }
 
-    //***************************************************************
-    //*********************************************GETTERS AND SETTER
-    //***************************************************************
+    // ***************************************************************
+    // *********************************************GETTERS AND SETTER
+    // ***************************************************************
     public TokenResponse getToken() {
         return token;
     }

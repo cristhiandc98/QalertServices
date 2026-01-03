@@ -8,6 +8,7 @@ public class EnvironmentConst {
     public static final String SPRING_DATASOURCE_HIKARI_USUARIO = "spring.datasource.hikari.username";
     public static final String SPRING_DATASOURCE_HIKARI_CONTRASENIA = "spring.datasource.hikari.password";
     public static final String SPRING_DATASOURCE_HIKARI_DRIVER_CLASS = "spring.datasource.hikari.driver-class-name";
+    public static final String SPRING_DATASOURCE_HIKARI_SCHEMA = "spring.datasource.hikari.schema";
 
     public static final String GOOGLE_EMAIL_CONTRASENIA = "google.email.contrasenia";
     public static final String GOOGLE_EMAIL_REMITENTE = "google.email.remitente";

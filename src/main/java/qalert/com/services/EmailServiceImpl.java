@@ -3,8 +3,6 @@ package qalert.com.services;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -29,8 +27,6 @@ public class EmailServiceImpl implements IEmailService{
 
 	@Autowired
 	private Environment env;
-
-	private static final Logger logger = LogManager.getLogger(EmailServiceImpl.class);
 
 	public Response2<String> sendSimpleEmail(SendEmailRequest request, String mssgOk){
 		Response2<String> salida = null;
@@ -62,13 +58,13 @@ public class EmailServiceImpl implements IEmailService{
 			
 			Transport.send(msg);
 			
-			salida = new Response2<String>(HttpStatus.OK, (mssgOk == null ? "¡Correo enviado exitosamente!" : mssgOk));
+			salida = new Response2<String>(HttpStatus.OK, (mssgOk == null ? "¡Correo enviado exitosamente!" : mssgOk), true);
 		} catch (AddressException e) {
-            logger.error((salida = new Response2<String>(e, request)).getErrorMssg());
+			salida = new Response2<>(e);
 		} catch (MessagingException e) {
-            logger.error((salida = new Response2<String>(e, request)).getErrorMssg());
+			salida = new Response2<>(e);
 		} catch (UnsupportedEncodingException e) {
-            logger.error((salida = new Response2<String>(e, request)).getErrorMssg());
+			salida = new Response2<>(e);
 		}
 		return salida;
 	}

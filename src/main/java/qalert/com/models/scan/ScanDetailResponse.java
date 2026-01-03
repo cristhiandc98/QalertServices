@@ -13,6 +13,17 @@ public class ScanDetailResponse {
     public ScanDetailResponse() {
     }
 
+    
+
+    public ScanDetailResponse(Integer additiveId, String additiveName, Integer total, Integer toxicityLevelId) {
+        this.additiveId = additiveId;
+        this.additiveName = additiveName;
+        this.total = total;
+        this.toxicityLevelId = toxicityLevelId;
+    }
+
+
+
     public Integer getAdditiveId() {
         return additiveId;
     }

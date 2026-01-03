@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import qalert.com.interfaces.IMaster;
-import qalert.com.models.generic.Response2;
 import qalert.com.models.master.MasterResponse;
 import qalert.com.utils.consts.CommonConsts;
 
@@ -20,12 +19,12 @@ public class MasterServicesImpl implements IMaster{
     private IMaster dao;
 
     @Override
-    public Response2<List<MasterResponse>> listAppSettings() {
-        return dao.listAppSettings();
+    public List<MasterResponse> getAppSettingsList() {
+        return dao.getAppSettingsList();
     }
 
     @Override
-    public Response2<MasterResponse> getTermsAndConditions() {
+    public MasterResponse getTermsAndConditions() {
         return dao.getTermsAndConditions();
     }
 

@@ -5,57 +5,76 @@ import java.util.regex.Pattern;
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.person.PersonRequest;
 
-public class UserRequest extends PersonRequest{
+public class UserRequest extends PersonRequest {
 
-    private Integer userId;
-    
+    private Long userId;
+
     private LoginRequest login;
 
-    
     //***************************************************************
     //********************************************************METHODS
     //***************************************************************    
-    public String validateLogin(){
+    public String validateLogin() {
         return (getLogin() == null) ? "Credenciales inválidas." : null;
     }
 
-    public String validateFormVerificationCode() {         
+    public String validate() {
+        return (getLogin() == null) ? "Credenciales inválidas." : null;
+    }
+
+    public String validateFormVerificationCode() {
         String error;
 
-        if((error = validateLogin()) == null
-            && (error = getLogin().validateUserName()) == null
-            && (error = validateEmail()) == null)
+        if ((error = validateLogin()) == null
+                && (error = getLogin().validateUserName()) == null
+                && (error = validateEmail()) == null) {
             return null;
+        }
         return error;
     }
 
-    public String validateUserRegister() {            
+    public String validateUserRegister() {
         String error;
         String fullName = getFullName();
         Integer documentTypeId = getDocumentTypeId();
         String document = getDocument();
-
+        
         if ((error = validateLogin()) == null
-            && (error = getLogin().validateUserName()) == null
-            && (error = validateEmail()) == null
-            && (error = getLogin().validatePassword()) == null
-            && (error = (fullName != null && Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ' -]{2,50}$").matcher(fullName).matches()) ? null : "Nombre inválido") == null
-            && (error = (documentTypeId != null && documentTypeId > 0) ? null : "Tipo de documento inválido") == null
-            && (error = (document != null && Pattern.compile("^[a-zA-Z0-9:;<>,\\!\\@#\\$\\%\\^&\\*\\(\\)_\\+\\{\\}\\[\\]\\.\\?\\/\\-]{6,20}$").matcher(document).matches()) ? null : "Documento inválido") == null) 
+                && (error = getLogin().validateUserName()) == null
+                && (error = validateEmail()) == null
+                && (error = getLogin().validatePassword()) == null
+                && (error = (fullName != null && Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ' -]{2,40}$").matcher(fullName).matches()) ? null : "Nombre inválido") == null
+                && (error = (documentTypeId != null && documentTypeId > 0) ? null : "Tipo de documento inválido") == null
+                && (error = validateDocument(document, documentTypeId)) == null
+                && (error = (getEmail().equals(getLogin().getUserName())  ? null : "Formulario inválido")) == null) {
             return null;
-		return error;
-	}
+        }
+        return error;
+    }
+
+    private String validateDocument(String document, Integer documentTypeId) {
+        if (document == null) {
+            return "Documento inválido";
+        }
+
+        if (documentTypeId == 1) { // DNI
+            return Pattern.matches("^\\d{8}$", document) ? null : "El DNI debe tener exactamente 8 dígitos";
+        } else { // Otros documentos
+            return Pattern.matches("^[a-zA-Z0-9]{6,20}$", document) ? null : "Documento inválido";
+//          return Pattern.matches("^[a-zA-Z0-9:;<>,\\!\\@#\\$\\%\\^&\\*\\(\\)_\\+\\{\\}\\[\\]\\.\\?\\/\\-]{6,20}$", document) ? null : "Documento inválido";
+        }
+    }
 
     public String validateUpdatePassword() {
         String error;
-		if ((error = validateLogin()) == null
-            && (error = getLogin().validateUserName()) == null
-            && (error = getLogin().validatePassword()) == null
-            && (error = getLogin().validateVerificationCode()) == null) 
-			return null;
-		return error;
-	}
-
+        if ((error = validateLogin()) == null
+                && (error = getLogin().validateUserName()) == null
+                && (error = getLogin().validatePassword()) == null
+                && (error = getLogin().validateVerificationCode()) == null) {
+            return null;
+        }
+        return error;
+    }
 
     //***************************************************************
     //*********************************************GETTERS AND SETTER
@@ -68,12 +87,12 @@ public class UserRequest extends PersonRequest{
         this.login = login;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
-    }    
-    
+    }
+
 }

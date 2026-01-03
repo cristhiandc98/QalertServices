@@ -8,4 +8,5 @@ public interface IScanService extends IScanDao{
 
     Response2<String> getAdditivesFromImage(MultipartFile file);
 
+    void isValidImageContent(MultipartFile file);
 }

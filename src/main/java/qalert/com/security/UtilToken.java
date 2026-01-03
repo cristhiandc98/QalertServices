@@ -14,6 +14,7 @@ import io.jsonwebtoken.security.Keys;
 import qalert.com.models.login.LoginResponse;
 import qalert.com.models.login.TokenResponse;
 import qalert.com.models.user.UserResponse;
+import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.utils.DateUtil;
 
 public class UtilToken {
@@ -25,7 +26,7 @@ public class UtilToken {
 		Date expirationDate = new Date(System.currentTimeMillis() + TIME_EXPIRATION);
 		
 		Map<String, Object> extra = new HashMap<>();
-		extra.put("birthDay", user.getBirthDay());
+		extra.put(CommonConsts.KEY_USER_ID, user.getUserId());
 		
 		//Generate token
 		String tokenString = Jwts.builder()
@@ -36,11 +37,14 @@ public class UtilToken {
 				.compact();			
 				
 		//Set Token
-		LoginResponse login = new LoginResponse();
-		TokenResponse token = new TokenResponse(tokenString, DateUtil.getStringDateTimeFromDate(expirationDate));
+    LoginResponse login = user.getLogin();
+    if (login == null) { // por si acaso viene null
+        login = new LoginResponse();
+        user.setLogin(login);
+    }
 
-		login.setToken(token);
-		user.setLogin(login);	
+    TokenResponse token = new TokenResponse(tokenString, DateUtil.getStringDateTimeFromDate(expirationDate));
+    login.setToken(token);
 	}
 	
 	public static UsernamePasswordAuthenticationToken getAuthentication(String token) {
@@ -50,9 +54,9 @@ public class UtilToken {
 					.build()
 					.parseClaimsJws(token)
 					.getBody();
-			String user = claims.getSubject();
+			long userId = Long.parseLong(claims.get(CommonConsts.KEY_USER_ID).toString());
 			
-			return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+			return new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
 		} catch (JwtException e) {
 			return null;
 		}

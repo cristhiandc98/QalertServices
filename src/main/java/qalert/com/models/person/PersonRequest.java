@@ -12,16 +12,15 @@ public class PersonRequest {
 
     private String email;
 
-    private String birthDay;
-    
     //***************************************************************
     //*********************************************METHODS
     //***************************************************************
     public String validateEmail() {
-        return (email != null && RegexUtil.EMAIL.matcher(email).matches() && email.length() <= 50) ? null : "Email inválido.";
+        return (email != null && RegexUtil.EMAIL.matcher(email).matches() && email.length() <= 40) ? null : "Email inválido.";
     }
 
-    
+
+
     //***************************************************************
     //*********************************************GETTERS AND SETTER
     //***************************************************************
@@ -55,13 +54,5 @@ public class PersonRequest {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-    
-    public String getBirthDay() {
-        return birthDay;
-    }
-
-    public void setBirthDay(String birthDay) {
-        this.birthDay = birthDay;
     }
 }

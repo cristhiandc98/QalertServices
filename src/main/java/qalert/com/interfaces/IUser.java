@@ -7,10 +7,12 @@ import qalert.com.models.user.UserResponse;
 
 public interface IUser {
 
-    Response2<String> insert(UserRequest request);
+    void insert(UserRequest request);
 
-    Response2<String> updatePassword(UserRequest request);
+    void updatePassword(UserRequest request);
 	
     Response2<UserResponse> login(LoginRequest request);
+
+    Response2<String> validateNewUser(UserRequest request);
 
 }

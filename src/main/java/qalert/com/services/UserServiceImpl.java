@@ -24,16 +24,11 @@ public class UserServiceImpl implements IUser{
     private PasswordEncoder encryptador;
 
     @Override
-    public Response2<String> insert(UserRequest request) {
+    public void insert(UserRequest request) {
         request.getLogin().setDeviceId(Integer.parseInt(request.getLogin().getVerificationCode()));
         request.getLogin().setPassword(encryptador.encode(request.getLogin().getPassword()));
-        
-        Response2<String> out = dao.insert(request);
 
-        if(out.isStatus())
-          out.setData(request.getLogin().getVerificationCode());
-
-        return out;
+      dao.insert(request);
     }
 
     @Override
@@ -42,14 +37,14 @@ public class UserServiceImpl implements IUser{
     }
 
     @Override
-    public Response2<String> updatePassword(UserRequest request) {
+    public void updatePassword(UserRequest request) {
       request.getLogin().setPassword(encryptador.encode(request.getLogin().getPassword()));
-		  Response2<String> out = dao.updatePassword(request);
+		   dao.updatePassword(request);
+    }
 
-        if( out.isStatus())
-          out.setData(request.getLogin().getVerificationCode());
-
-        return out;
+    @Override
+    public Response2<String> validateNewUser(UserRequest request) {
+        return dao.validateNewUser(request);
     }
 
 }

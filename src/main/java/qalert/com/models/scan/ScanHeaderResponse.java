@@ -20,6 +20,21 @@ public class ScanHeaderResponse {
     public ScanHeaderResponse() {
     }
 
+    
+
+    public ScanHeaderResponse(Integer scanHeaderId, Integer toxocityLevelId, String toxocityLevel, Integer total,
+            Double percentageOfTotal, String productName, String imagePath) {
+        this.scanHeaderId = scanHeaderId;
+        this.toxocityLevelId = toxocityLevelId;
+        this.toxocityLevel = toxocityLevel;
+        this.total = total;
+        this.percentageOfTotal = percentageOfTotal;
+        this.productName = productName;
+        this.imagePath = imagePath;
+    }
+
+
+
     public Integer getToxocityLevelId() {
         return toxocityLevelId;
     }

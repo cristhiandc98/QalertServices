@@ -11,6 +11,11 @@ public class ApiConst {
     public static final String SCAN = "/scan";
     public static final String USER = "/user";
     public static final String MASTER = "/master";
+    public static final String PROFILE = "/profile";
+    public static final String SUGGESTIONS = "/suggestions";
+    public static final String ADDITIVE = "/additive";
+    public static final String ALIMENT = "/aliment";
+    public static final String QALERT = "/qalert";
 
     //SECURITY
     public static final String GET_VERIFICATION_CODE = "/get-verification-code";
@@ -23,9 +28,20 @@ public class ApiConst {
 
     //USER
     public static final String UPDATE_PASSWORD = "/update-password";
+    public static final String VALIDATE = "/validate";
 
     //MASTER
-    public static final String LIST_APP_SETTINGS = "/list-app-settings";
+    public static final String GET_APP_SETTINGS = "/get-app-settings";
     public static final String GET_TERMS_AND_CONDITIONS = "/get-terms-and-conditions";
 
+    //PROFILE
+    public static final String INSERT_PROFILE = "/insert";
+    public static final String LIST_PROFILES = "/fetch-by-user-id";
+    public static final String UPDATE_PROFILE = "/update";
+
+    //Suggestions
+    public static final String INSERT_SUGGESTIONS = "/insert";
+
+    //QALERT
+    public static final String SUBSCRIBE = "/subscribe";
 }

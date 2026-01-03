@@ -1,32 +1,32 @@
 package qalert.com.models.profile;
 
+import java.time.LocalDate;
+
 public class ProfileResponse {
 
-    private Integer profileId;
-
-    private Integer userId;
+    private Long profileId;
+    
+    private Long userId;
 
     private String name;
+
+    private LocalDate birthdate;
+
+    private Integer age;
+
+    private String imagePath;
 
     private Boolean isPrincipal;
 
     public ProfileResponse() {
     }
 
-    public Integer getProfileId() {
+    public Long getProfileId() {
         return profileId;
     }
 
-    public void setProfileId(Integer profileId) {
+    public void setProfileId(Long profileId) {
         this.profileId = profileId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
     }
 
     public String getName() {
@@ -37,6 +37,14 @@ public class ProfileResponse {
         this.name = name;
     }
 
+    public LocalDate getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(LocalDate birthdate) {
+        this.birthdate = birthdate;
+    }
+
     public Boolean getIsPrincipal() {
         return isPrincipal;
     }
@@ -45,6 +53,28 @@ public class ProfileResponse {
         this.isPrincipal = isPrincipal;
     }
 
-    
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
 }

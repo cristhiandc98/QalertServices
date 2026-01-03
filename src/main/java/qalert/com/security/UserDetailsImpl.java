@@ -6,7 +6,6 @@ import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import qalert.com.models.login.LoginResponse;
 import qalert.com.models.user.UserResponse;
 
 public class UserDetailsImpl implements UserDetails{

@@ -13,61 +13,64 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-import qalert.com.interfaces.ILogService;
+import qalert.com.interfaces.log.ILogService;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
-	
+
 @Configuration
-public class WebSecurityConfig{
-    
+public class WebSecurityConfig {
+
 	@Autowired
-	private UserDetailsService userDetailsService;	
+	private UserDetailsService userDetailsService;
 
 	@Autowired
 	private JwtAuthorizationFilter jwtAuthorizationFilter;
-	
-    @Qualifier(CommonConsts.QALIFIER_SERVICE)
-    @Autowired
-    private ILogService serviceLog;
+
+	@Qualifier(CommonConsts.QALIFIER_SERVICE)
+	@Autowired
+	private ILogService serviceLog;
 
 	@Bean
 	MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
 		return new MvcRequestMatcher.Builder(introspector);
 	}
-	
-    @Autowired
-    private PasswordEncoder encryptador;
-	
+
+	@Autowired
+	private PasswordEncoder encryptador;
+
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager auth, MvcRequestMatcher.Builder mvc) throws Exception {
+	SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager auth, MvcRequestMatcher.Builder mvc)
+			throws Exception {
 		JwtAuthenticationFilter jwtAuthentication = new JwtAuthenticationFilter(serviceLog);
 		jwtAuthentication.setAuthenticationManager(auth);
 		jwtAuthentication.setFilterProcessesUrl(ApiConst.SECURITY + ApiConst.LOGIN);
-		
+
 		return http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(requests -> {
-					requests.requestMatchers("/**").permitAll();
-					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.GET_VERIFICATION_CODE)).permitAll();
+				.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(requests -> {
+					//requests.requestMatchers("/**").permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.USER + ApiConst.VALIDATE)).permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.MASTER + ApiConst.GET_TERMS_AND_CONDITIONS))
+							.permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.GET_VERIFICATION_CODE))
+							.permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.USER)).permitAll();
-					requests.requestMatchers(mvc.pattern(ApiConst.MASTER + ApiConst.GET_TERMS_AND_CONDITIONS)).permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.LOGIN)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.USER + ApiConst.UPDATE_PASSWORD)).permitAll();
 					requests.anyRequest().authenticated();
 				})
-                .httpBasic()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilter(jwtAuthentication)
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+				.httpBasic()
+				.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.addFilter(jwtAuthentication)
+				.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+				.build();
 	}
-	
+
 	@Bean
 	AuthenticationManager authManager(HttpSecurity http) throws Exception {
 		return http.getSharedObject(AuthenticationManagerBuilder.class)
@@ -75,5 +78,5 @@ public class WebSecurityConfig{
 				.passwordEncoder(encryptador)
 				.and()
 				.build();
-	}	
+	}
 }

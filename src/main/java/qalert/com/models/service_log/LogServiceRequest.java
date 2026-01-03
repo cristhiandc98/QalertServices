@@ -7,13 +7,13 @@ public class LogServiceRequest implements Serializable {
 
     private int logServiceId;
 
-    private String requestCode;
+    private Long userId;
 
-    private Integer profileId;
-
-    private String method;
+    private Long profileId;
 
     private String endPoint;
+
+    private String method;
 
     private int httpStatusCode;
 
@@ -41,20 +41,12 @@ public class LogServiceRequest implements Serializable {
         this.logServiceId = serviceLogId;
     }
 
-    public String getRequestCode() {
-        return requestCode;
-    }
-
-    public void setRequestCode(String requestCode) {
-        this.requestCode = requestCode;
-    }
-
-    public Integer getProfileId() {
+    public Long getProfileId() {
         return profileId;
     }
 
-    public void setProfileId(Integer key_) {
-        this.profileId = key_;
+    public void setProfileId(Long profileId) {
+        this.profileId = profileId;
     }
 
     public String getEndPoint() {
@@ -63,6 +55,14 @@ public class LogServiceRequest implements Serializable {
 
     public void setEndPoint(String endPoint) {
         this.endPoint = endPoint;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+    
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     public int getHttpStatusCode() {
@@ -119,18 +119,6 @@ public class LogServiceRequest implements Serializable {
 
 
 
-    public String getMethod() {
-        return method;
-    }
-
-
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-
-
     public LocalDateTime getEndDateTime() {
         return endDateTime;
     }
@@ -139,6 +127,18 @@ public class LogServiceRequest implements Serializable {
 
     public void setEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
+    }
+
+
+
+    public Long getUserId() {
+        return userId;
+    }
+
+
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
 

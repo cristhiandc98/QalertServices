@@ -14,17 +14,20 @@ public class MasterResponse {
 
     private String valueVarchar;
 
+    private String description;
+
     public MasterResponse() {
     }
 
     public MasterResponse(Integer masterId, Integer tableId, Integer fieldId, Integer sequence, Integer valueInt,
-    String valueVarchar) {
+    String valueVarchar, String description) {
         this.masterId = masterId;
         this.tableId = tableId;
         this.fieldId = fieldId;
         this.sequence = sequence;
         this.valueInt = valueInt;
         this.valueVarchar = valueVarchar;
+        this.description = description;
     }
 
     public Integer getMasterId() {
@@ -75,6 +78,12 @@ public class MasterResponse {
         this.valueVarchar = valueVarchar;
     }
 
-    
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 }

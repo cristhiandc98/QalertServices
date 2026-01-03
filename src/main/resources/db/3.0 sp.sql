@@ -740,12 +740,8 @@ sp:BEGIN
     
     DECLARE d_current_date DATETIME DEFAULT CURRENT_TIMESTAMP();
     
-    -- obtener los datos a insertar
-    -- cursor para recorrer todos los perfiles
-    -- insertar la misma informacion para cada perfil
-    
-    DROP TEMPORARY TABLE IF EXISTS tmp_products;
-	CREATE TEMPORARY TABLE tmp_products AS
+    DROP TEMPORARY TABLE IF EXISTS tmp_profile;
+	CREATE TEMPORARY TABLE tmp_profile AS
 	SELECT CAST(jt.value AS UNSIGNED) AS profile_id
 	FROM JSON_TABLE(
 		CONCAT('["', REPLACE(vi_profile_id_concatenated, vi_separator, '","'), '"]'),
@@ -753,42 +749,48 @@ sp:BEGIN
 	) jt;
 
     -- Insert header para TODOS los profiles
-    INSERT INTO scan_header (
-        profile_id,
-        data,
-        harmless_additives_number,
-        medium_additives_number,
-        harmful_additives_number,
-        product_name,
-        created_date,
-        created_time,
-        image_path
-        )
-	select (select profile_id from tmp_products limit 1),
-		data,
-        harmless_additives_number,
-        medium_additives_number,
-        harmful_additives_number,
-        vi_product_name,
-        d_current_date,
-        d_current_date,
-        vi_image_path
-	from tmp_scan_header x 
-	where x.user_id = ni_user_id;
+INSERT INTO scan_header (
+    profile_id,
+    data,
+    harmless_additives_number,
+    medium_additives_number,
+    harmful_additives_number,
+    product_name,
+    created_date,
+    created_time,
+    image_path
+)
+SELECT 
+    p.profile_id,
+    h.data,
+    h.harmless_additives_number,
+    h.medium_additives_number,
+    h.harmful_additives_number,
+    vi_product_name,
+    d_current_date,
+    d_current_date,
+    vi_image_path
+FROM tmp_scan_header h
+JOIN tmp_profile p
+WHERE h.user_id = ni_user_id;
+
     
-    
-    insert into scan_detail(scan_header_id,
-		additive_id,
-        created_date,
-        created_time
-    )
-    SELECT 
-        LAST_INSERT_ID(),
-        x.additive_id,
-        d_current_date,
-        d_current_date
-    from tmp_scan_detail x 
-	where x.user_id = ni_user_id;
+INSERT INTO scan_detail (
+    scan_header_id,
+    additive_id,
+    created_date,
+    created_time
+)
+SELECT
+    sh.scan_header_id,
+    d.additive_id,
+    d_current_date,
+    d_current_date
+FROM scan_header sh
+JOIN tmp_scan_detail d
+    ON d.user_id = ni_user_id
+WHERE sh.created_date = d_current_date
+  AND sh.user_id = ni_user_id;
 
 
     delete from tmp_scan_detail

@@ -20,7 +20,7 @@ public class ScanRequest {
 
     private String imageName;
 
-    private Integer scanId;
+    private Integer scanHeaderId;
 
 
     
@@ -88,12 +88,12 @@ public class ScanRequest {
         this.imageName = imageName;
     }
 
-    public Integer getScanId() {
-        return scanId;
+    public Integer getScanHeaderId() {
+        return scanHeaderId;
     }
 
-    public void setScanId(Integer scanId) {
-        this.scanId = scanId;
+    public void setScanHeaderId(Integer scanHeaderId) {
+        this.scanHeaderId = scanHeaderId;
     }
 
 

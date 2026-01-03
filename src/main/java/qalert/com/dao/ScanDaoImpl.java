@@ -78,10 +78,9 @@ public class ScanDaoImpl implements IScanDao {
     public Response2<ScanResponse> getAdditivesReport(ScanRequest request) {
 
         SqlParameterSource input = new MapSqlParameterSource()
-                .addValue("ni_user_id", request.getUserId())
                 .addValue("ni_profile_id", request.getProfileId())
                 .addValue("ni_report_type", request.getReportType())
-                .addValue("ni_scan_id", request.getScanId() == null ? 0 : request.getScanId());
+                .addValue("ni_scan_id", request.getScanHeaderId() == null ? 0 : request.getScanHeaderId());
 
         return getAdditivesReport(DbConst.SP_GET_ADDITIVES_REPORT, input);
     }

@@ -1077,7 +1077,8 @@ drop procedure if exists sp_get_additives_report;
 DELIMITER //
 CREATE PROCEDURE sp_get_additives_report(
     ni_profile_id 	BIGINT
-	,ni_report_type int
+  	,ni_report_type int
+    ,ni_scan_header_id int
 )
 sp:BEGIN
 
@@ -1092,84 +1093,63 @@ sp:BEGIN
 	-- 						1, Report last scan
 	-- ------------------------------------------------------------
 	-- Ejemplo de uso
-	-- 				call sp_get_additives_report(1, 1);
+	-- 				call sp_get_additives_report(1, 0, 1);
 	-- ------------------------------------------------------------
 	-- Log
 	-- Fecha			Autor		Cod. Mod.	Comentarios
     -- 
 	-- ***************************************************************************
     
+    declare d_current_date date default current_date();
     declare d_begin_date   date;
-    declare d_end_date	   date;
-    declare d_current_date date;
-    
-    if ni_report_type = 0 then
-    
-		select t.toxicity_level_id
-			, t.name as toxicity_level
-			, count(a.toxicity_level_id) as total
-		from tmp_scan_detail d 
-			inner join additive a on a.additive_id = d.additive_id
-				and d.user_id = ni_profile_id
-			right join toxicity_level t on t.toxicity_level_id = a.toxicity_level_id
-		group by  t.toxicity_level_id
-		;
+    declare d_end_date	   date default d_current_date;
 		
-		select d.additive_id
-			, d.aditive_name_or_code as name
-			, a.toxicity_level_id
-			, 1 total
-		from tmp_scan_detail d 
-			inner join additive a on a.additive_id = d.additive_id
-		where d.user_id = ni_profile_id
-        ;
         
-	else 
-		set d_current_date  = current_date();
-		set d_end_date 		= d_current_date;
+	set d_begin_date = case ni_report_type  when 1 then d_current_date
+											when 2 then DATE_SUB(d_current_date, INTERVAL 7 DAY)
+                                            when 3 then DATE_SUB(d_current_date, INTERVAL 30 DAY)
+                                            when 4 then DATE_SUB(d_current_date, INTERVAL 90 DAY)
+						end;
+                        
+
+	-- ***********************************************************
+	-- **************************************************header
+	-- ***********************************************************
+	select t.toxicity_level_id
+		, t.name as toxicity_level
+		, count(a.toxicity_level_id) as total
+	from scan_detail d 
+		inner join scan_header h on h.scan_header_id = d.scan_header_id
+			and h.profile_id = ni_profile_id
+			
+            -- buscar por producto
+            and ((ni_report_type = 0 and h.scan_header_id = ni_scan_header_id)
             
-		if ni_report_type = 1 then
-			set d_begin_date = d_current_date;
-		elseif ni_report_type = 2 then
-			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 7 DAY);
-		elseif ni_report_type = 3 then
-			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 30 DAY);
-		elseif ni_report_type = 4 then
-			set d_begin_date = DATE_SUB(d_current_date, INTERVAL 90 DAY);
-        end if;
+            -- buscar por rango de fechas
+				or (h.created_date between d_begin_date and d_end_date))
+            
+		inner join additive a on a.additive_id = d.additive_id
+		right join toxicity_level t on t.toxicity_level_id = a.toxicity_level_id
+	group by  t.toxicity_level_id;
+	
     
-		-- ***********************************************************
-        -- **************************************************header
-        -- ***********************************************************
-        select t.toxicity_level_id
-			, t.name as toxicity_level
-			, count(a.toxicity_level_id) as total
-		from scan_detail d 
-			inner join scan_header h on h.scan_header_id = d.scan_header_id
-				and h.profile_id = ni_profile_id
-				and h.created_date between d_begin_date and d_end_date
-			inner join additive a on a.additive_id = d.additive_id
-			right join toxicity_level t on t.toxicity_level_id = a.toxicity_level_id
-		group by  t.toxicity_level_id
-		;
-        
-        select d.additive_id
-			, a.name
-			, a.toxicity_level_id
-			, count(1) total
-		from scan_detail d 
-			inner join additive a on a.additive_id = d.additive_id
-		where exists(   select 1 
-						from scan_header h 
-						where h.profile_id = ni_profile_id
-							and h.created_date between d_begin_date and d_end_date
-                            and h.scan_header_id = d.scan_header_id
-					  )
-		group by d.additive_id, a.name, a.toxicity_level_id
-		order by a.toxicity_level_id asc, a.name
-		;
-        
-	end if;
+	select d.additive_id
+		, a.name
+		, a.toxicity_level_id
+		, count(1) total
+	from scan_detail d 
+		inner join additive a on a.additive_id = d.additive_id
+		inner join scan_header h on h.scan_header_id = d.scan_header_id
+			and h.profile_id = ni_profile_id
+			
+            -- buscar por producto
+            and ((ni_report_type = 0 and h.scan_header_id = ni_scan_header_id)
+            
+            -- buscar por rango de fechas
+				or (h.created_date between d_begin_date and d_end_date))
+	group by d.additive_id, a.name, a.toxicity_level_id
+	order by a.toxicity_level_id asc, a.name
+	;
 
 END;
 //

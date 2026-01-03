@@ -120,20 +120,14 @@ public class ScanController {
 
 
 
-    @GetMapping(value=ApiConst.GET_ADDITIVES_REPORT, produces = ApiConst.PRODUCES)
-	public ResponseEntity<?> getAdditivesReport(HttpServletRequest http, @RequestParam Long profileId, @RequestParam Integer reportType) {
-
-        ScanRequest request = new ScanRequest();
-        request.setProfileId(profileId);
-        request.setReportType(reportType);
+    @PostMapping(value=ApiConst.GET_ADDITIVES_REPORT, produces = ApiConst.PRODUCES)
+	public ResponseEntity<?> getAdditivesReport(HttpServletRequest http, @RequestBody ScanRequest request) {
 
         LogServiceRequest logModel = logService.setRequestData(http, request);
 		
 		Response2<ScanResponse> out = null;
 
         try {
-            request.validateGetAdditiveReport();
-
             request.setUserId(logModel.getUserId());
             
             out = scanService.getAdditivesReport(request);

@@ -269,6 +269,7 @@ sp:BEGIN
 	select p.profile_id
 		, p.name
 		, p.is_principal
+    , p.image_path
     from profile p 
     where p.status_id = n_profile_status_id__active
 		and p.user_id = n_user_id;
@@ -715,7 +716,7 @@ DELIMITER //
 CREATE PROCEDURE sp_insert_scan(
 	ni_user_id					bigint,
     vi_profile_id_concatenated  varchar(100),
-    vi_separator				char(1),
+    vi_separator				varchar(1),
     vi_product_name				varchar(100),
     vi_image_path				varchar(200)
 )
@@ -747,7 +748,7 @@ sp:BEGIN
 	CREATE TEMPORARY TABLE tmp_products AS
 	SELECT CAST(jt.value AS UNSIGNED) AS profile_id
 	FROM JSON_TABLE(
-		CONCAT('["', REPLACE(vi_profile_id_concatenated, ',', '","'), '"]'),
+		CONCAT('["', REPLACE(vi_profile_id_concatenated, vi_separator, '","'), '"]'),
 		'$[*]' COLUMNS (value VARCHAR(20) PATH '$')
 	) jt;
 
@@ -775,33 +776,31 @@ sp:BEGIN
 	from tmp_scan_header x 
 	where x.user_id = ni_user_id;
     
+    
     insert into scan_detail(scan_header_id,
 		additive_id,
         created_date,
         created_time
     )
     SELECT 
-        sh.scan_header_id,
-        td.additive_id,
+        LAST_INSERT_ID(),
+        x.additive_id,
         d_current_date,
         d_current_date
     from tmp_scan_detail x 
 	where x.user_id = ni_user_id;
-    
-    
-    
+
+
     delete from tmp_scan_detail
     where user_id = ni_user_id;
     
     delete from tmp_scan_header
     where user_id = ni_user_id;
-
+    
 END;
 //
 DELIMITER ;
 grant execute on procedure qalert_bd.sp_insert_scan   to 'qalert_app'@'localhost';
-
-
 
 drop procedure if exists sp_get_scan_list;
 DELIMITER //

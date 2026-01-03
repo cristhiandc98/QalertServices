@@ -62,22 +62,6 @@ public class ProfileDaoImpl implements profileDao {
                 .addValue("vi_image_path", request.getImagePath());
 
         jdbcCall.execute(input);
-
-        // List<Map<String, Object>> resultset = (List<Map<String, Object>>)
-        // jdbcCall.execute(input).get("out");
-
-        // String userMssg = DbUtil.getString(resultset.get(0), "user_mssg");
-        // boolean success = DbUtil.getString(resultset.get(0), "status").equals("0");
-
-        // HttpStatus httpStatus = HttpStatus.OK;
-
-        // out = new Response2<>(httpStatus, userMssg, success);
-
-        // }catch (Exception ex) {
-        // out = new Response2<>(ex, "Ocurrió un problema al atulizar el perfil");
-        // }
-
-        // return out;
     }
 
     @Override

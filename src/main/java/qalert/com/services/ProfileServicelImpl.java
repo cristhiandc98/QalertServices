@@ -17,8 +17,8 @@ public class ProfileServicelImpl implements profileService {
     private profileDao profileDao;
 
     @Override
-    public void insert(ProfileRequest request) {
-        profileDao.insert(request);
+    public Long insert(ProfileRequest request) {
+       return profileDao.insert(request);
     }
 
     @Override

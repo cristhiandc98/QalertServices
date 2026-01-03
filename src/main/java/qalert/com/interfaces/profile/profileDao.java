@@ -7,7 +7,7 @@ import qalert.com.models.profile.ProfileResponse;
 
 public interface profileDao {
 
-    void insert (ProfileRequest request);
+    Long insert (ProfileRequest request);
 
     void updateProfile (ProfileRequest request);
 

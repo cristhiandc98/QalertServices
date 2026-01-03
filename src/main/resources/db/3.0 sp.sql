@@ -941,6 +941,8 @@ sp:BEGIN
         0,
         3
     );
+
+	SELECT LAST_INSERT_ID() AS profile_id; 
 END//
 DELIMITER ;
 

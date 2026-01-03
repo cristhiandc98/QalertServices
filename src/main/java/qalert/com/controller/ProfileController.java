@@ -45,8 +45,8 @@ public class ProfileController {
 
         try {
             if ((request.validateInsert(request.getUserId())) == null) {
-                service.insert(request);
-                out = new Response2<>(HttpStatus.CREATED, "Perfil insertado correctamente", true);
+                Long profileId = service.insert(request);
+                out = new Response2<>(HttpStatus.CREATED, "Perfil insertado correctamente", true,profileId);
             } else {
                 out = new Response2<>(HttpStatus.BAD_REQUEST);
             }

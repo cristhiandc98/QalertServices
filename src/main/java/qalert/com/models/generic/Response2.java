@@ -13,7 +13,7 @@ import qalert.com.utils.exceptions.InvalidFormException;
 
 public class Response2<T> {
 
-    private boolean status;    
+    private boolean status;
 
     private String userMssg;
 
@@ -25,16 +25,15 @@ public class Response2<T> {
     @JsonIgnore
     private String errorMssg;
 
-
-    //***************************************************************
-    //***************************************************CONSTRUCTORS
-    //***************************************************************
+    // ***************************************************************
+    // ***************************************************CONSTRUCTORS
+    // ***************************************************************
     public Response2() {
         status = true;
         this.userMssg = UserMessageConst.SUCCESS;
         statusCode = HttpStatus.OK;
     }
-    
+
     public Response2(HttpStatus statusCode, String userMssg, boolean status) {
         this.statusCode = statusCode;
         this.userMssg = userMssg;
@@ -46,31 +45,37 @@ public class Response2<T> {
         this.userMssg = UserMessageConst.SUCCESS;
         this.data = data;
         this.status = data != null;
-    }   
+    }
 
-    public <Y>Response2(Response2<Y> in){
+    public <Y> Response2(Response2<Y> in) {
         status = in.isStatus();
         userMssg = in.getUserMssg();
         statusCode = in.getStatusCode();
         errorMssg = in.getErrorMssg();
     }
 
-    //***********************************************************************
-    //************************************************************ Exception
-    //***********************************************************************
+    public Response2(HttpStatus statusCode, String userMssg, boolean status, T data) {
+        this.statusCode = statusCode;
+        this.userMssg = userMssg;
+        this.status = status;
+        this.data = data;
+    }
+
+    // ***********************************************************************
+    // ************************************************************ Exception
+    // ***********************************************************************
     public Response2(InvalidFormException exception) {
         this(HttpStatus.BAD_REQUEST, exception.getMessage(), false);
         setError(exception);
-    } 
+    }
+
     public Response2(ConflictException exception) {
         this(HttpStatus.CONFLICT, exception.getMessage(), false);
         setError(exception);
-    } 
-
-
+    }
 
     public Response2(DataAccessException ex) {
-        
+
         SQLException sqlEx = (SQLException) ex.getMostSpecificCause();
 
         userMssg = sqlEx.getMessage();
@@ -90,22 +95,21 @@ public class Response2<T> {
     public Response2(Exception exception) {
         this(HttpStatus.INTERNAL_SERVER_ERROR, UserMessageConst.INTERNAL_SERVER_ERROR, false);
         setError(exception);
-    } 
-    
+    }
+
     public Response2(Exception exception, String userMssg) {
         this(HttpStatus.INTERNAL_SERVER_ERROR, userMssg, false);
         setError(exception);
-    }   
+    }
 
-    public String setError(Exception exception)
-    {
+    public String setError(Exception exception) {
         try {
             StackTraceElement elemento = exception.getStackTrace()[0];
 
-                errorMssg += " | class: " + elemento.getClassName() +
-                " | line: " + elemento.getLineNumber() +
-                " | method: " + elemento.getMethodName() +
-                " | error: "+ exception.getMessage();
+            errorMssg += " | class: " + elemento.getClassName() +
+                    " | line: " + elemento.getLineNumber() +
+                    " | method: " + elemento.getMethodName() +
+                    " | error: " + exception.getMessage();
         } catch (Exception e) {
             errorMssg += " | json: -";
         }
@@ -113,9 +117,9 @@ public class Response2<T> {
         return errorMssg;
     }
 
-    //***************************************************************
-    //*********************************************GETTERS AND SETTER
-    //***************************************************************
+    // ***************************************************************
+    // *********************************************GETTERS AND SETTER
+    // ***************************************************************
     public boolean isStatus() {
         return status;
     }

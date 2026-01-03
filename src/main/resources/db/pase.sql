@@ -1,182 +1,80 @@
-drop procedure if exists sp_insert_scan;
+DROP PROCEDURE IF EXISTS sp_insert_profile;
 DELIMITER //
-CREATE PROCEDURE sp_insert_scan(
-	ni_user_id					bigint,
-    vi_profile_id_concatenated  varchar(100),
-    vi_separator				varchar(1),
-    vi_product_name				varchar(100),
-    vi_image_path				varchar(200)
+
+CREATE PROCEDURE sp_insert_profile(
+    vi_user_id         BIGINT,
+    vi_name            VARCHAR(50),
+    vi_birthdate       DATE,
+    vi_image_path      VARCHAR(500)
 )
 sp:BEGIN
 
-	-- ***************************************************************************
-	-- Versión:		1.0
-	-- Autor: 		Cristhian Díaz
-	-- Fecha:  		2024-09-03
-	-- Objetivo: 	Insert a scan from tmp
-	-- ------------------------------------------------------------
-	-- Descripción de parámetros:
-	-- ------------------------------------------------------------
-	-- Ejemplo de uso
-	-- 				call sp_insert_scan (1, 'testing');
-	-- ------------------------------------------------------------
-	-- Log
-	-- Fecha			Autor		Cod. Mod.	Comentarios
-    -- 
-	-- ***************************************************************************
-    
-    DECLARE d_current_date DATETIME DEFAULT CURRENT_TIMESTAMP();
-    
-    DROP TEMPORARY TABLE IF EXISTS tmp_profile;
-	CREATE TEMPORARY TABLE tmp_profile AS
-	SELECT CAST(jt.value AS UNSIGNED) AS profile_id
-	FROM JSON_TABLE(
-		CONCAT('["', REPLACE(vi_profile_id_concatenated, vi_separator, '","'), '"]'),
-		'$[*]' COLUMNS (value VARCHAR(20) PATH '$')
-	) jt;
+    DECLARE n_subscription_id INT;
+    DECLARE n_existing_profiles INT;
+    DECLARE n_max_profiles INT;
+    DECLARE v_descripcion_perfiles VARCHAR(255);
+    DECLARE n_profile_name_exists INT;
 
-    -- Insert header para TODOS los profiles
-INSERT INTO scan_header (
-    profile_id,
-    data,
-    harmless_additives_number,
-    medium_additives_number,
-    harmful_additives_number,
-    product_name,
-    created_date,
-    created_time,
-    image_path
-)
-SELECT 
-    p.profile_id,
-    h.data,
-    h.harmless_additives_number,
-    h.medium_additives_number,
-    h.harmful_additives_number,
-    vi_product_name,
-    d_current_date,
-    d_current_date,
-    vi_image_path
-FROM tmp_scan_header h
-JOIN tmp_profile p
-WHERE h.user_id = ni_user_id;
+    -- Obtener subscription_id
+    SELECT subscription_id INTO n_subscription_id
+    FROM `user`
+    WHERE user_id = vi_user_id;
 
-    
-INSERT INTO scan_detail (
-    scan_header_id,
-    additive_id,
-    created_date,
-    created_time
-)
-SELECT
-    sh.scan_header_id,
-    d.additive_id,
-    d_current_date,
-    d_current_date
-FROM scan_header sh
-JOIN tmp_scan_detail d
-    ON d.user_id = ni_user_id
-WHERE sh.created_date = d_current_date
-  AND sh.user_id = ni_user_id;
+    -- Perfiles existentes (excepto eliminados)
+    SELECT COUNT(*) INTO n_existing_profiles
+    FROM profile
+    WHERE user_id = vi_user_id AND status_id != 5;
 
+    -- Validación nombre duplicado (solo activos)
+    SELECT COUNT(*) INTO n_profile_name_exists
+    FROM profile
+    WHERE user_id = vi_user_id 
+      AND name = UPPER(vi_name)
+      AND status_id = 3;
 
-    delete from tmp_scan_detail
-    where user_id = ni_user_id;
-    
-    delete from tmp_scan_header
-    where user_id = ni_user_id;
-    
-END;
-//
-DELIMITER ;
-grant execute on procedure qalert_bd.sp_insert_scan   to 'qalert_app'@'localhost';
+    IF n_profile_name_exists > 0 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El nombre indicado ya está asignado a otro perfil',
+                MYSQL_ERRNO = 50001;
+    END IF;
 
+    -- Determinar máximo de perfiles según suscripción
+    IF n_subscription_id IS NULL THEN
+        -- Usuario SIN suscripción (gratuito)
+        SELECT value_int, value_varchar
+        INTO n_max_profiles, v_descripcion_perfiles
+        FROM master
+        WHERE table_id = 0 AND field_id = 2 AND status = 1;
 
-drop procedure if exists sp_login;
+    ELSE
+        -- Usuario CON suscripción (premium)
+        SELECT value_int, value_varchar
+        INTO n_max_profiles, v_descripcion_perfiles
+        FROM master
+        WHERE table_id = 0 AND field_id = 3 AND status = 1;
 
-DELIMITER //
+    END IF;
 
-CREATE PROCEDURE sp_login(
-vi_username 		varchar(40)
-,ni_device_id		int
-)
-sp:BEGIN
--- ______________________________________________________________________________
+    -- Validar límite de perfiles
+    IF n_existing_profiles >= n_max_profiles THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El usuario alcanzó el límite de perfiles permitidos',
+                MYSQL_ERRNO = 50001;
+    END IF;
 
-	-- ***************************************************************************
-	-- Versión:		1.0
-	-- Autor: 		Cristhian Díaz
-	-- Fecha:  		2024-09-03
-	-- Objetivo: 	Log in the user
-	-- ------------------------------------------------------------
-	-- Descripción de parámetros:
-	-- ------------------------------------------------------------
-	-- Ejemplo de uso
-	-- call sp_login('ALT.V4-B77TI9Q@YOPMAIL.COM', 431)
-	-- ------------------------------------------------------------
-	-- Log
-	-- Fecha			Autor		Cod. Mod.	Comentarios
-    -- 
-	-- ***************************************************************************
-	declare n_user_status_id__active		int default 2;
-	declare n_profile_status_id__active		int default 3;
-	declare n_user_id						BIGINT;
-  declare v_username						varchar(50);
-	declare	v_password						varchar(500);
-	DECLARE v_document_type_id				INT(50);
-	DECLARE v_document				VARCHAR(50);
-  declare v_full_name       varchar(40);
-  declare v_subscription_id     int;
+    -- Insertar perfil
+    INSERT INTO profile (user_id, name, birthdate, image_path, is_principal, status_id)
+    VALUES (
+        vi_user_id,
+        UPPER(vi_name),
+        vi_birthdate,
+        vi_image_path,
+        0,
+        3
+    );
 
-	-- ______________________________________________________________________________
-	-- Obtener información del usuario activo con ese username y device_id
-	SELECT 
-		u.user_id,
-		u.username,
-		u.password,
-		p.document_type_id,
-		p.document,
-    p.full_name,
-    u.subscription_id
-	INTO 
-		n_user_id,
-		v_username,
-		v_password,
-		v_document_type_id,
-		v_document,
-    v_full_name,
-    v_subscription_id
-	FROM user u
-	INNER JOIN person p ON p.person_id = u.user_id
-		AND p.status_id = n_user_status_id__active
-	WHERE u.status_id = n_user_status_id__active
-		AND u.username = vi_username
-		AND u.device_id = ni_device_id;
-
-	-- ______________________________________________________________________________
-	-- Devolver información del usuario
-	SELECT 
-		n_user_id 			AS user_id,
-		v_username 			AS email,
-		v_password 			AS password,
-		v_document_type_id 	AS document_type_id,
-		v_document		AS document,
-    v_full_name   as full_name,
-    v_subscription_id as subscription_id;
-
-	-- ______________________________________________________________________________
-	-- Devolver los perfiles activos asociados al usuario
-	select p.profile_id
-		, p.name
-		, p.is_principal
-    , p.image_path
-    from profile p 
-    where p.status_id = n_profile_status_id__active
-		and p.user_id = n_user_id;
-		
--- ______________________________________________________________________________
-END;
-//
+	SELECT LAST_INSERT_ID() AS profile_id; 
+END//
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_login to 'qalert_app'@'localhost';
+GRANT EXECUTE ON PROCEDURE qalert_bd.sp_insert_profile TO 'qalert_app'@'localhost';

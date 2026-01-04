@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -165,5 +166,45 @@ public class ScanController {
 
 		return ResponseEntity.status(out.getStatusCode()).body(out);
 	}
+
+        @PatchMapping(value=ApiConst.RENAME_SCAN,produces = ApiConst.PRODUCES)
+    public ResponseEntity<?> updateScanHeader(HttpServletRequest http, @RequestBody ScanRequest request) {
+        LogServiceRequest logModel = logService.setRequestData(http, request);
+
+        Response2<?> out;
+
+        try {
+
+            scanService.sp_update_scan_header(request,1);
+
+            out = new Response2<>(HttpStatus.OK, "Encabezado de escaneo actualizado exitosamente.", true);
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
+        }
+
+        logService.setResponseDataAndSave(logModel, out);
+
+        return ResponseEntity.status(out.getStatusCode()).body(out);
+    }
+
+        @PatchMapping(value=ApiConst.DELETE_SCAN,produces = ApiConst.PRODUCES)
+    public ResponseEntity<?> DeleteScanHeader(HttpServletRequest http, @RequestBody ScanRequest request) {
+        LogServiceRequest logModel = logService.setRequestData(http, request);
+
+        Response2<?> out;
+
+        try {
+
+            scanService.sp_update_scan_header(request,2);
+
+            out = new Response2<>(HttpStatus.OK, "Escaneo eliminado exitosamente.", true);
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
+        }
+
+        logService.setResponseDataAndSave(logModel, out);
+
+        return ResponseEntity.status(out.getStatusCode()).body(out);
+    }
 
 }

@@ -32,169 +32,155 @@ import software.amazon.awssdk.services.textract.model.Document;
 import software.amazon.awssdk.services.textract.model.TextractException;
 
 @Service
-public class ScanServiceImpl implements IScanService{
-    
+public class ScanServiceImpl implements IScanService {
+
 	@Autowired
 	private Environment env;
 
-    @Autowired
-    private IScanDao scanDao;
+	@Autowired
+	private IScanDao scanDao;
 
+	@Override
+	public void insert(ScanRequest request) {
+		scanDao.insert(request);
+	}
 
-	
-    @Override
-    public void insert(ScanRequest request) {
-        scanDao.insert(request);
-    }
-
-
-
-    @Override
-    public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(Long profileId, String data) {
+	@Override
+	public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(Long profileId, String data) {
 		Response2<ScanResponse> rsp = scanDao.insertAndGetAdditivesFromPlainText(profileId, data);
 
 		setPercentageOfTotal(rsp);
 
-        return rsp;
-    }
+		return rsp;
+	}
 
-    @Override
-    public Response2<String> getAdditivesFromImage(MultipartFile file) {
+	@Override
+	public Response2<String> getAdditivesFromImage(MultipartFile file) {
 
 		Response2<String> out;
 
 		try {
 			Response2<List<Block>> scanRsp = scanImage(file);
-			
-			if(scanRsp.isStatus()) {
 
-	            List<Block> wordList = scanRsp.getData();
-	            StringBuilder builder = new StringBuilder();
-	            String text;
-	            
-	            for (Block palabra : wordList) {
-	            	text = palabra.text();
-	            	
-	            	if(text != null) {		            
-	            		text = text.toUpperCase()
-	            				// .replaceAll("[()]", "")
-	            				// .replaceAll(":|( Y )", ",")
-	            				// .replaceAll(", ", ",")
-	            				.replaceAll("Á", "A")
-	            				.replaceAll("É", "E")
-	            				.replaceAll("Í", "I")
-	            				.replaceAll("Ó", "O")
-	            				.replaceAll("Ú", "U")
-	            				.trim();
+			if (scanRsp.isStatus()) {
 
-	            		builder.append(text).append(" ");
-	            	}
-	            }
+				List<Block> wordList = scanRsp.getData();
+				StringBuilder builder = new StringBuilder();
+				String text;
 
-	            text = builder.toString();
-	            
-	            text = noRepeat(text);    
+				for (Block palabra : wordList) {
+					text = palabra.text();
 
-				if(text.isEmpty())
+					if (text != null) {
+						text = text.toUpperCase()
+								// .replaceAll("[()]", "")
+								// .replaceAll(":|( Y )", ",")
+								// .replaceAll(", ", ",")
+								.replaceAll("Á", "A")
+								.replaceAll("É", "E")
+								.replaceAll("Í", "I")
+								.replaceAll("Ó", "O")
+								.replaceAll("Ú", "U")
+								.trim();
+
+						builder.append(text).append(" ");
+					}
+				}
+
+				text = builder.toString();
+
+				text = noRepeat(text);
+
+				if (text.isEmpty())
 					out = new Response2<>(HttpStatus.BAD_REQUEST, "La imagen no contiene ingredientes.", false);
-	            else if(text.length() <= 2000) 
-		            out = new Response2<>(text);
-	            else
-                    out = new Response2<>(HttpStatus.BAD_REQUEST, "Ingredientes inválidos, favor de recortar la imagen.", false);
-	            
-			}else
-                out = new Response2<>(scanRsp);
+				else if (text.length() <= 2000)
+					out = new Response2<>(text);
+				else
+					out = new Response2<>(HttpStatus.BAD_REQUEST,
+							"Ingredientes inválidos, favor de recortar la imagen.", false);
 
-        } catch (TextractException ex) {
-            out = new Response2<>(ex);
-        }     
+			} else
+				out = new Response2<>(scanRsp);
 
-		return out;
-	}
-
-	
-
-    private Response2<List<Block>> scanImage(MultipartFile file) {
-		
-		TextractClient awsTextExtract = null;
-		Response2<List<Block>> out = null;
-		
-		try {
-            SdkBytes sourceBytes = SdkBytes.fromInputStream(file.getInputStream());
-            Document myDoc = Document.builder()
-                    .bytes(sourceBytes)
-                    .build();
-            DetectDocumentTextRequest detectDocumentTextRequest = DetectDocumentTextRequest.builder()
-                    .document(myDoc)
-                    .build();
-            
-            awsTextExtract = createTextExtractClient();
-            
-            DetectDocumentTextResponse textResponse = awsTextExtract.detectDocumentText(detectDocumentTextRequest);
-
-            out = new Response2<>(textResponse.blocks());
-            
-		} catch (TextractException | IOException ex) {
-            out = new Response2<>(ex);
-        }   
-		finally {
-			if(awsTextExtract != null) 
-                awsTextExtract.close();
+		} catch (TextractException ex) {
+			out = new Response2<>(ex);
 		}
 
 		return out;
 	}
 
+	private Response2<List<Block>> scanImage(MultipartFile file) {
 
+		TextractClient awsTextExtract = null;
+		Response2<List<Block>> out = null;
 
-    private TextractClient createTextExtractClient() {
-		AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(
-                AwsBasicCredentials.create(
-                		env.getRequiredProperty(EnvironmentConst.AWS_TEXTEXTRACT_ACCESS_KEY)
-                		, env.getRequiredProperty(EnvironmentConst.AWS_TEXTEXTRACT_SECRET_KEY)
-                		)
-        );
-		
-        return TextractClient.builder()
-                .region(Region.US_EAST_2)
-                .credentialsProvider(credentialsProvider)
-                .build();
+		try {
+			SdkBytes sourceBytes = SdkBytes.fromInputStream(file.getInputStream());
+			Document myDoc = Document.builder()
+					.bytes(sourceBytes)
+					.build();
+			DetectDocumentTextRequest detectDocumentTextRequest = DetectDocumentTextRequest.builder()
+					.document(myDoc)
+					.build();
+
+			awsTextExtract = createTextExtractClient();
+
+			DetectDocumentTextResponse textResponse = awsTextExtract.detectDocumentText(detectDocumentTextRequest);
+
+			out = new Response2<>(textResponse.blocks());
+
+		} catch (TextractException | IOException ex) {
+			out = new Response2<>(ex);
+		} finally {
+			if (awsTextExtract != null)
+				awsTextExtract.close();
+		}
+
+		return out;
 	}
 
+	private TextractClient createTextExtractClient() {
+		AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(
+				AwsBasicCredentials.create(
+						env.getRequiredProperty(EnvironmentConst.AWS_TEXTEXTRACT_ACCESS_KEY),
+						env.getRequiredProperty(EnvironmentConst.AWS_TEXTEXTRACT_SECRET_KEY)));
 
+		return TextractClient.builder()
+				.region(Region.US_EAST_2)
+				.credentialsProvider(credentialsProvider)
+				.build();
+	}
 
-    private String noRepeat(String text) {
+	private String noRepeat(String text) {
 		try {
 			return text.substring(0, text.length() / 2);
 		} catch (Exception ex) {
-			return text;	
+			return text;
 		}
 	}
 
-
-
-    @Override
-    public Response2<ScanResponse> getAdditivesReport(ScanRequest request) {
+	@Override
+	public Response2<ScanResponse> getAdditivesReport(ScanRequest request) {
 		Response2<ScanResponse> rsp = scanDao.getAdditivesReport(request);
 
 		setPercentageOfTotal(rsp);
 
-        return rsp;
-    }
+		return rsp;
+	}
 
-	private void setPercentageOfTotal(Response2<ScanResponse> rsp){
-		if(rsp.isStatus()){
-			
+	private void setPercentageOfTotal(Response2<ScanResponse> rsp) {
+		if (rsp.isStatus()) {
+
 			double total = 0;
-	
-			for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+
+			for (ScanHeaderResponse item : rsp.getData().getHeaderList())
 				total += item.getTotal();
-	
-			if(total > 0){
-				for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+
+			if (total > 0) {
+				for (ScanHeaderResponse item : rsp.getData().getHeaderList())
 					item.setPercentageOfTotal(item.getTotal() / total);
-			}else{
-				for (ScanHeaderResponse item : rsp.getData().getHeaderList()) 
+			} else {
+				for (ScanHeaderResponse item : rsp.getData().getHeaderList())
 					item.setPercentageOfTotal(0.0);
 			}
 		}
@@ -205,16 +191,20 @@ public class ScanServiceImpl implements IScanService{
 		return scanDao.getScanList(profileId);
 	}
 
+	@Override
+	public void isValidImageContent(MultipartFile file) {
+		if (file == null || file.isEmpty())
+			throw new InvalidFormException("Imagen vacía");
+
+		try {
+			ImageIO.read(file.getInputStream());
+		} catch (IOException e) {
+			throw new InvalidFormException("Imagen inválida");
+		}
+	}
 
 	@Override
-    public void isValidImageContent(MultipartFile file) {
-        if (file == null || file.isEmpty()) 
-            throw new InvalidFormException("Imagen vacía");
-
-        try {
-            ImageIO.read(file.getInputStream());
-        } catch (IOException e) {
-            throw new InvalidFormException("Imagen inválida");
-        }
-    }
+	public void sp_update_scan_header(ScanRequest request, int operacion) {
+		scanDao.sp_update_scan_header(request, operacion);
+	}
 }

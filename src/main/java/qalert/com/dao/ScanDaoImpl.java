@@ -33,8 +33,6 @@ public class ScanDaoImpl implements IScanDao {
     @Autowired
     private BaseData data;
 
-
-
     @Override
     public Response2<ScanResponse> insertAndGetAdditivesFromPlainText(Long profileId, String data) {
         SqlParameterSource input = new MapSqlParameterSource()
@@ -43,8 +41,6 @@ public class ScanDaoImpl implements IScanDao {
 
         return getAdditivesReport(DbConst.SP_INSERT_AND_GET_ADDITIVES_FROM_PLAIN_TEXT, input);
     }
-
-
 
     @Override
     public void insert(ScanRequest request) {
@@ -67,12 +63,9 @@ public class ScanDaoImpl implements IScanDao {
 
         Map<String, Object> resultset = (Map<String, Object>) jdbcCall.execute(input);
 
-        
-        if(DbUtil.getInt(resultset, DbConst.UPDATE_COUNT_1) == 0)
+        if (DbUtil.getInt(resultset, DbConst.UPDATE_COUNT_1) == 0)
             throw new ConflictException("No se pudo guardar el producto escaneado.");
     }
-
-
 
     @Override
     public Response2<ScanResponse> getAdditivesReport(ScanRequest request) {
@@ -84,8 +77,6 @@ public class ScanDaoImpl implements IScanDao {
 
         return getAdditivesReport(DbConst.SP_GET_ADDITIVES_REPORT, input);
     }
-
-
 
     private Response2<ScanResponse> getAdditivesReport(String sp, SqlParameterSource input) {
         Response2<ScanResponse> out = new Response2<>();
@@ -187,6 +178,22 @@ public class ScanDaoImpl implements IScanDao {
         }
 
         return out;
+    }
+
+    @Override
+    public void sp_update_scan_header(ScanRequest request, int operacion) {
+
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName(data.getSchema())
+                .withProcedureName(DbConst.SP_UPDATE_SCAN_HEADER);
+
+        SqlParameterSource input = new MapSqlParameterSource()
+                .addValue("ni_operacion", operacion)
+                .addValue("ni_scan_header_id", request.getScanHeaderId())
+                .addValue("vi_product_name", request.getProductName());
+
+        jdbcCall.execute(input);
+
     }
 
 }

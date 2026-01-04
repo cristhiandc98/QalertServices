@@ -23,6 +23,7 @@ public class DbConst {
     public static final String SP_INSERT_SCAN = "sp_insert_scan";
     public static final String SP_GET_ADDITIVES_REPORT = "sp_get_additives_report";
     public static final String SP_GET_SCAN_LIST = "sp_get_scan_list";
+        public static final String SP_UPDATE_SCAN_HEADER = "sp_update_scan_header";
 
     //Profile
     public static final String SP_INSERT_PROFILE =  "sp_insert_profile";

@@ -17,4 +17,6 @@ public interface  IScanDao {
 
     Response2<List<ScanHeaderResponse>> getScanList(Long profileId);
 
+    void sp_update_scan_header(ScanRequest request,int operacion);
+
 }

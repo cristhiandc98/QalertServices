@@ -1,80 +1,29 @@
-DROP PROCEDURE IF EXISTS sp_insert_profile;
+DROP PROCEDURE IF EXISTS sp_update_scan_product_name;
 DELIMITER //
 
-CREATE PROCEDURE sp_insert_profile(
-    vi_user_id         BIGINT,
-    vi_name            VARCHAR(50),
-    vi_birthdate       DATE,
-    vi_image_path      VARCHAR(500)
+CREATE PROCEDURE sp_update_scan_header (
+    IN ni_operacion INT,
+    IN ni_scan_header_id INT,
+    IN vi_product_name   VARCHAR(100)
 )
-sp:BEGIN
+BEGIN
 
-    DECLARE n_subscription_id INT;
-    DECLARE n_existing_profiles INT;
-    DECLARE n_max_profiles INT;
-    DECLARE v_descripcion_perfiles VARCHAR(255);
-    DECLARE n_profile_name_exists INT;
+    IF ni_operacion = 1 THEN
 
-    -- Obtener subscription_id
-    SELECT subscription_id INTO n_subscription_id
-    FROM `user`
-    WHERE user_id = vi_user_id;
+        UPDATE scan_header
+        SET product_name = vi_product_name
+        WHERE scan_header_id = ni_scan_header_id;
 
-    -- Perfiles existentes (excepto eliminados)
-    SELECT COUNT(*) INTO n_existing_profiles
-    FROM profile
-    WHERE user_id = vi_user_id AND status_id != 5;
+    ELSEIF ni_operacion = 2 THEN
 
-    -- Validación nombre duplicado (solo activos)
-    SELECT COUNT(*) INTO n_profile_name_exists
-    FROM profile
-    WHERE user_id = vi_user_id 
-      AND name = UPPER(vi_name)
-      AND status_id = 3;
-
-    IF n_profile_name_exists > 0 THEN
-        SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'El nombre indicado ya está asignado a otro perfil',
-                MYSQL_ERRNO = 50001;
-    END IF;
-
-    -- Determinar máximo de perfiles según suscripción
-    IF n_subscription_id IS NULL THEN
-        -- Usuario SIN suscripción (gratuito)
-        SELECT value_int, value_varchar
-        INTO n_max_profiles, v_descripcion_perfiles
-        FROM master
-        WHERE table_id = 0 AND field_id = 2 AND status = 1;
-
-    ELSE
-        -- Usuario CON suscripción (premium)
-        SELECT value_int, value_varchar
-        INTO n_max_profiles, v_descripcion_perfiles
-        FROM master
-        WHERE table_id = 0 AND field_id = 3 AND status = 1;
+        UPDATE scan_header
+        SET status_id = ni_status_id
+        WHERE scan_header_id = ni_scan_header_id;
 
     END IF;
 
-    -- Validar límite de perfiles
-    IF n_existing_profiles >= n_max_profiles THEN
-        SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'El usuario alcanzó el límite de perfiles permitidos',
-                MYSQL_ERRNO = 50001;
-    END IF;
+END //
 
-    -- Insertar perfil
-    INSERT INTO profile (user_id, name, birthdate, image_path, is_principal, status_id)
-    VALUES (
-        vi_user_id,
-        UPPER(vi_name),
-        vi_birthdate,
-        vi_image_path,
-        0,
-        3
-    );
-
-	SELECT LAST_INSERT_ID() AS profile_id; 
-END//
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE qalert_bd.sp_insert_profile TO 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_update_scan_header   to 'qalert_app'@'localhost';

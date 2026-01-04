@@ -251,9 +251,11 @@ CREATE TABLE scan_header (
   harmful_additives_number INT,
   created_date DATE not null,
   created_time TIME not null,
+  status BIT(1) NOT NULL DEFAULT b'1',
   CONSTRAINT pk_scan_header PRIMARY KEY (scan_header_id),
   CONSTRAINT fk_scan_header__profile FOREIGN KEY (profile_id) REFERENCES profile (profile_id)
 );
+
 
 alter table scan_header add image_path varchar(200);
 

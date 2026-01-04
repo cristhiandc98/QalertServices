@@ -835,7 +835,8 @@ sp:BEGIN
         , x.image_path
     from scan_header x
 	where x.profile_id = ni_profile_id
-		and x.created_date between d_begin_date and d_end_date;
+		and x.created_date between d_begin_date and d_end_date
+    and x.status == 1;
 
 END;
 //
@@ -1122,9 +1123,11 @@ sp:BEGIN
 	select t.toxicity_level_id
 		, t.name as toxicity_level
 		, count(a.toxicity_level_id) as total
+    , h.product_name
 	from scan_detail d 
 		inner join scan_header h on h.scan_header_id = d.scan_header_id
 			and h.profile_id = ni_profile_id
+      and h.status = 1
 			
             -- buscar por producto
             and ((ni_report_type = 0 and h.scan_header_id = ni_scan_header_id)
@@ -1145,6 +1148,7 @@ sp:BEGIN
 		inner join additive a on a.additive_id = d.additive_id
 		inner join scan_header h on h.scan_header_id = d.scan_header_id
 			and h.profile_id = ni_profile_id
+      and h.status = 1
 			
             -- buscar por producto
             and ((ni_report_type = 0 and h.scan_header_id = ni_scan_header_id)
@@ -1333,3 +1337,33 @@ END ;;
 DELIMITER ;;
 
 GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_app_settings_list TO 'qalert_app'@'localhost';
+
+DROP PROCEDURE IF EXISTS sp_update_scan_product_name;
+DELIMITER //
+
+CREATE PROCEDURE sp_update_scan_header (
+    IN ni_operacion INT,
+    IN ni_scan_header_id INT,
+    IN vi_product_name   VARCHAR(100)
+)
+BEGIN
+
+    IF ni_operacion = 1 THEN
+
+        UPDATE scan_header
+        SET product_name = vi_product_name
+        WHERE scan_header_id = ni_scan_header_id;
+
+    ELSEIF ni_operacion = 2 THEN
+
+        UPDATE scan_header
+        SET status_id = ni_status_id
+        WHERE scan_header_id = ni_scan_header_id;
+
+    END IF;
+
+END //
+
+DELIMITER ;
+
+grant execute on procedure qalert_bd.sp_update_scan_header   to 'qalert_app'@'localhost';

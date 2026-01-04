@@ -804,6 +804,8 @@ END;
 DELIMITER ;
 grant execute on procedure qalert_bd.sp_insert_scan   to 'qalert_app'@'localhost';
 
+
+
 drop procedure if exists sp_get_scan_list;
 DELIMITER //
 CREATE PROCEDURE sp_get_scan_list(
@@ -836,18 +838,16 @@ sp:BEGIN
     from scan_header x
 	where x.profile_id = ni_profile_id
 		and x.created_date between d_begin_date and d_end_date
-    and x.status == 1;
-
+    and x.status = 1;
 END;
 //
-
 DELIMITER ;
-
 grant execute on procedure qalert_bd.sp_get_scan_list   to 'qalert_app'@'localhost';
+
+
 
 DROP FUNCTION IF EXISTS fn_validate_new_user;
 DELIMITER $$
-
 CREATE FUNCTION fn_validate_new_user(p_username VARCHAR(50)) 
 RETURNS BOOLEAN
 DETERMINISTIC
@@ -1166,6 +1166,7 @@ grant execute on procedure qalert_bd.sp_get_additives_report   to 'qalert_app'@'
 
 
 
+
 drop procedure if exists sp_insert_suggestions;
 DELIMITER //
 
@@ -1335,12 +1336,12 @@ BEGIN
 		or (table_id = 0 and field_id in (2, 3) AND status = 1);
 END ;;
 DELIMITER ;;
-
 GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_app_settings_list TO 'qalert_app'@'localhost';
 
-DROP PROCEDURE IF EXISTS sp_update_scan_product_name;
-DELIMITER //
 
+
+DROP PROCEDURE IF EXISTS sp_update_scan_header;
+DELIMITER //
 CREATE PROCEDURE sp_update_scan_header (
     IN ni_operacion INT,
     IN ni_scan_header_id INT,
@@ -1361,9 +1362,6 @@ BEGIN
         WHERE scan_header_id = ni_scan_header_id;
 
     END IF;
-
 END //
-
 DELIMITER ;
-
 grant execute on procedure qalert_bd.sp_update_scan_header   to 'qalert_app'@'localhost';

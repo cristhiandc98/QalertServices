@@ -291,11 +291,11 @@ CREATE TABLE suggestions_type (
 GRANT SELECT, INSERT, UPDATE ON qalert_bd.suggestions_type           TO 'qalert_app'@'localhost';
 
 CREATE TABLE suggestions (
-  id_suggestions BIGINT NOT NULL AUTO_INCREMENT,
+  suggestions_id BIGINT NOT NULL AUTO_INCREMENT,
   suggestions_type_id INT DEFAULT NULL,
   user_id BIGINT DEFAULT NULL,
   suggestion VARCHAR(900) DEFAULT NULL,
-  PRIMARY KEY (id_suggestions),
+  PRIMARY KEY (suggestions_id),
   KEY fk_suggestions__suggestions_type (suggestions_type_id),
   KEY fk_suggestions__user (user_id),
   CONSTRAINT fk_suggestions__suggestions_type FOREIGN KEY (suggestions_type_id) REFERENCES suggestions_type (suggestions_type_id),

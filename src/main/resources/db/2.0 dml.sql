@@ -16,7 +16,7 @@ use qalert_bd;
  ('/master/get-app-settings','GET','Ajustes de Configuración'),
  ('/scan/get-additives-from-image','POST','Detecta aditivos desde un texto y devuelve su reporte de toxicidad'),
  ('/scan','POST','Guarda el resultado final del escaneo del producto'),
- ('/scan/get-additives-report','GET','Obtiene el reporte de toxicidad del producto escaneado'),
+ ('/scan/get-additives-report','POST','Obtiene el reporte de toxicidad del producto escaneado'),
  ('/scan/get-scan-list','GET','Listado de escaneos del usuario en los últimos 30 días'),
  ('/additive','GET','Lista todos los aditivos registrados'),
  ('/aliment','GET','Listado de alimentos'),
@@ -36,7 +36,7 @@ values(1, 1, 'Terms and conditions', 'What is Lorem Ipsum? Lorem Ipsum is simply
 
 insert into master(table_id, field_id, description, value_int)
 values(0, 0, 'Services settings', null)
-	,(0, 1, 'Verification code expiration time in minutes.', 5);
+	,(0, 1, 'Verification code expiration time in minutes.', 10);
     
 insert into status_type(status_type_id, name)
 values(1, 'General')
@@ -69,7 +69,7 @@ insert into master(table_id,field_id,sequence,created_datetime,status,descriptio
 value(0,2,1,now(),1,"Máximo perfiles para no premium",1,"1 adicional");
 
 insert into master(table_id,field_id,sequence,created_datetime,status,description,value_int,value_varchar)
-value(0,3,2,now(),1,"Máximo perfiles para premium",5,"4 adicionales");
+value(0,3,2,now(),1,"Máximo perfiles para premium",4,"3 adicionales");
 
 INSERT INTO suggestions_type (description) VALUES 
   ('Muy Enojado'),

@@ -82,57 +82,52 @@ public class ScanDaoImpl implements IScanDao {
         Response2<ScanResponse> out = new Response2<>();
         out.setData(new ScanResponse());
 
-        try {
-            SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                    .withCatalogName(data.getSchema())
-                    .withProcedureName(sp);
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName(data.getSchema())
+                .withProcedureName(sp);
 
-            Map<String, Object> dbData = jdbcCall.execute(input);
+        Map<String, Object> dbData = jdbcCall.execute(input);
 
-            List<Map<String, Object>> resultset = (List<Map<String, Object>>) dbData.get(DbConst.RESUL_SET_1);
+        List<Map<String, Object>> resultset = (List<Map<String, Object>>) dbData.get(DbConst.RESUL_SET_1);
 
-            boolean continue_ = false;
+        boolean continue_ = false;
 
-            if (resultset != null && !resultset.isEmpty()) {
+        if (resultset != null && !resultset.isEmpty()) {
 
-                ScanHeaderResponse header;
+            ScanHeaderResponse header;
 
-                for (Map<String, Object> row : resultset) {
+            for (Map<String, Object> row : resultset) {
 
-                    header = new ScanHeaderResponse();
+                header = new ScanHeaderResponse();
 
-                    header.setToxocityLevelId(DbUtil.getInteger(row, "toxicity_level_id"));
-                    header.setToxocityLevel(DbUtil.getString(row, "toxicity_level"));
-                    header.setTotal(DbUtil.getLong(row, "total").intValue());
+                header.setToxocityLevelId(DbUtil.getInteger(row, "toxicity_level_id"));
+                header.setToxocityLevel(DbUtil.getString(row, "toxicity_level"));
+                header.setTotal(DbUtil.getLong(row, "total").intValue());
 
-                    out.getData().addScanHeader(header);
-                }
-                continue_ = true;
+                out.getData().addScanHeader(header);
             }
+            continue_ = true;
+        }
 
-            if (continue_) {
+        if (continue_) {
 
-                resultset = (List<Map<String, Object>>) dbData.get(DbConst.RESUL_SET_2);
+            resultset = (List<Map<String, Object>>) dbData.get(DbConst.RESUL_SET_2);
 
-                ScanDetailResponse detail;
+            ScanDetailResponse detail;
 
-                for (Map<String, Object> row : resultset) {
+            for (Map<String, Object> row : resultset) {
 
-                    detail = new ScanDetailResponse();
+                detail = new ScanDetailResponse();
 
-                    detail.setAdditiveId(DbUtil.getInteger(row, "toxicity_level_id"));
-                    detail.setAdditiveName(DbUtil.getString(row, "name"));
-                    detail.setTotal(DbUtil.getLong(row, "total").intValue());
-                    detail.setToxicityLevelId(DbUtil.getInteger(row, "toxicity_level_id"));
+                detail.setAdditiveId(DbUtil.getInteger(row, "toxicity_level_id"));
+                detail.setAdditiveName(DbUtil.getString(row, "name"));
+                detail.setTotal(DbUtil.getLong(row, "total").intValue());
+                detail.setToxicityLevelId(DbUtil.getInteger(row, "toxicity_level_id"));
 
-                    out.getData().addScanDetail(detail);
-                }
-            } else {
-                out = new Response2<>(HttpStatus.OK, "Aditivos no encontrados", false);
+                out.getData().addScanDetail(detail);
             }
-
-        } catch (Exception ex) {
-            out = new Response2<>(ex);
+        } else {
+            out = new Response2<>(HttpStatus.OK, "Aditivos no encontrados", false);
         }
 
         return out;

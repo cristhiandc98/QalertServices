@@ -50,7 +50,7 @@ public class WebSecurityConfig {
 		return http
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(requests -> {
-					//requests.requestMatchers("/**").permitAll();
+					requests.requestMatchers("/**").permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.USER + ApiConst.VALIDATE)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.MASTER + ApiConst.GET_TERMS_AND_CONDITIONS))
 							.permitAll();

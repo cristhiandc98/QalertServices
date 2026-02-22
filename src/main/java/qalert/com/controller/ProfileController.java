@@ -85,10 +85,10 @@ public class ProfileController {
 
         try {
             if (profileId == null || profileId <= 0) {
-                out = new Response2<>(HttpStatus.BAD_REQUEST, "Id de perfil inválido.", true);
+                out = new Response2<>(HttpStatus.BAD_REQUEST, "Id de perfil inválido.", false);
             } else {
                 service.deleteProfile(profileId);
-                out = new Response2<>(HttpStatus.OK, "Perfil eliminado exitosamente", false);
+                out = new Response2<>(HttpStatus.OK, "Perfil eliminado exitosamente", true);
             }
         } catch (Exception ex) {
             out = new Response2<>(ex);

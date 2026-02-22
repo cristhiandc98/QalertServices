@@ -703,7 +703,7 @@ sp:BEGIN
 	DROP TEMPORARY TABLE IF EXISTS additive_found_by_name_tmp;
 	DROP TEMPORARY TABLE IF EXISTS additive_found_by_code_tmp;
     
-    call sp_get_additives_report(ni_user_id, 0);
+    call sp_get_additives_report(ni_user_id, -1, 0);
 
 END;
 // DELIMITER ;
@@ -711,35 +711,25 @@ grant execute on procedure qalert_bd.sp_insert_and_get_additives_from_plain_text
 
 
 
-drop procedure if exists sp_insert_scan;
+DROP PROCEDURE IF EXISTS sp_insert_scan;
 DELIMITER //
+
 CREATE PROCEDURE sp_insert_scan(
-	ni_user_id					bigint,
-    vi_profile_id_concatenated  varchar(100),
-    vi_separator				varchar(1),
-    vi_product_name				varchar(100),
-    vi_image_path				varchar(200)
+	ni_user_id                  BIGINT,
+    vi_profile_id_concatenated  VARCHAR(100),
+    vi_separator                VARCHAR(1),
+    vi_product_name             VARCHAR(100),
+    vi_image_path               VARCHAR(200)
 )
 sp:BEGIN
 
-	-- ***************************************************************************
-	-- Versión:		1.0
-	-- Autor: 		Cristhian Díaz
-	-- Fecha:  		2024-09-03
-	-- Objetivo: 	Insert a scan from tmp
-	-- ------------------------------------------------------------
-	-- Descripción de parámetros:
-	-- ------------------------------------------------------------
-	-- Ejemplo de uso
-	-- 				call sp_insert_scan (1, 'testing');
-	-- ------------------------------------------------------------
-	-- Log
-	-- Fecha			Autor		Cod. Mod.	Comentarios
-    -- 
-	-- ***************************************************************************
-    
-    DECLARE d_current_date DATETIME DEFAULT CURRENT_TIMESTAMP();
-    
+    DECLARE d_current_date DATE DEFAULT CURRENT_DATE();
+    DECLARE d_current_time DATE DEFAULT CURRENT_TIME();
+
+    -- ============================================
+    -- Crear tabla temporal con profiles
+    -- ============================================
+
     DROP TEMPORARY TABLE IF EXISTS tmp_profile;
 	CREATE TEMPORARY TABLE tmp_profile AS
 	SELECT CAST(jt.value AS UNSIGNED) AS profile_id
@@ -748,61 +738,89 @@ sp:BEGIN
 		'$[*]' COLUMNS (value VARCHAR(20) PATH '$')
 	) jt;
 
-    -- Insert header para TODOS los profiles
-INSERT INTO scan_header (
-    profile_id,
-    data,
-    harmless_additives_number,
-    medium_additives_number,
-    harmful_additives_number,
-    product_name,
-    created_date,
-    created_time,
-    image_path
-)
-SELECT 
-    p.profile_id,
-    h.data,
-    h.harmless_additives_number,
-    h.medium_additives_number,
-    h.harmful_additives_number,
-    vi_product_name,
-    d_current_date,
-    d_current_date,
-    vi_image_path
-FROM tmp_scan_header h
-JOIN tmp_profile p
-WHERE h.user_id = ni_user_id;
+    -- ============================================
+    -- Insertar header y guardar IDs generados
+    -- ============================================
 
+    DROP TEMPORARY TABLE IF EXISTS tmp_inserted_headers;
+
+    CREATE TEMPORARY TABLE tmp_inserted_headers (
+        scan_header_id BIGINT,
+        profile_id BIGINT
+    );
+
+    INSERT INTO scan_header (
+        profile_id,
+        data,
+        harmless_additives_number,
+        medium_additives_number,
+        harmful_additives_number,
+        product_name,
+        created_date,
+        created_time,
+        image_path
+    )
+    SELECT 
+        p.profile_id,
+        h.data,
+        h.harmless_additives_number,
+        h.medium_additives_number,
+        h.harmful_additives_number,
+        vi_product_name,
+        d_current_date,
+        d_current_time,
+        vi_image_path
+    FROM tmp_scan_header h
+    JOIN tmp_profile p
+    WHERE h.user_id = ni_user_id;
+
+    -- Guardar los IDs recién insertados
+    INSERT INTO tmp_inserted_headers
+    SELECT 
+        sh.scan_header_id,
+        sh.profile_id
+    FROM scan_header sh
+    JOIN tmp_profile p 
+        ON p.profile_id = sh.profile_id
+    WHERE sh.created_date = d_current_date
+		and sh.created_time = d_current_time;
+
+    -- ============================================
+    -- Insertar detalle usando los IDs correctos
+    -- ============================================
+
+    INSERT INTO scan_detail (
+        scan_header_id,
+        additive_id,
+        created_date,
+        created_time
+    )
+    SELECT
+        th.scan_header_id,
+        d.additive_id,
+        d_current_date,
+        d_current_date
+    FROM tmp_inserted_headers th
+    JOIN tmp_scan_detail d 
+        ON d.user_id = ni_user_id;
+
+    -- ============================================
+    -- Limpiar temporales
+    -- ============================================
+
+    DELETE FROM tmp_scan_detail
+    WHERE user_id = ni_user_id;
     
-INSERT INTO scan_detail (
-    scan_header_id,
-    additive_id,
-    created_date,
-    created_time
-)
-SELECT
-    sh.scan_header_id,
-    d.additive_id,
-    d_current_date,
-    d_current_date
-FROM scan_header sh
-JOIN tmp_scan_detail d
-    ON d.user_id = ni_user_id
-WHERE sh.created_date = d_current_date
-  AND sh.user_id = ni_user_id;
+    DELETE FROM tmp_scan_header
+    WHERE user_id = ni_user_id;
 
 
-    delete from tmp_scan_detail
-    where user_id = ni_user_id;
-    
-    delete from tmp_scan_header
-    where user_id = ni_user_id;
-    
 END;
 //
 DELIMITER ;
-grant execute on procedure qalert_bd.sp_insert_scan   to 'qalert_app'@'localhost';
+
+GRANT EXECUTE ON PROCEDURE qalert_bd.sp_insert_scan 
+TO 'qalert_app'@'localhost';
 
 
 
@@ -1078,91 +1096,113 @@ grant execute on procedure qalert_bd.sp_delete_profile   to 'qalert_app'@'localh
 
 
 
+
 drop procedure if exists sp_get_additives_report;
 DELIMITER //
+
 CREATE PROCEDURE sp_get_additives_report(
-    ni_profile_id 	BIGINT
-  	,ni_report_type int
-    ,ni_scan_header_id int
+    ni_profile_id     BIGINT,
+    ni_report_type    INT,
+    ni_scan_header_id INT
 )
 sp:BEGIN
 
-	-- ***************************************************************************
-	-- Versión:		1.0
-	-- Autor: 		Cristhian Díaz
-	-- Fecha:  		2024-12-19
-	-- Objetivo: 	Get report of additives
-	-- ------------------------------------------------------------
-	-- Descripción de parámetros:
-    -- 				ni_report_type: 
-	-- 						1, Report last scan
-	-- ------------------------------------------------------------
-	-- Ejemplo de uso
-	-- 				call sp_get_additives_report(1, 0, 1);
-	-- ------------------------------------------------------------
-	-- Log
-	-- Fecha			Autor		Cod. Mod.	Comentarios
-    -- 
-	-- ***************************************************************************
-    
-    declare d_current_date date default current_date();
-    declare d_begin_date   date;
-    declare d_end_date	   date default d_current_date;
-		
-        
-	set d_begin_date = case ni_report_type  when 1 then d_current_date
-											when 2 then DATE_SUB(d_current_date, INTERVAL 7 DAY)
-                                            when 3 then DATE_SUB(d_current_date, INTERVAL 30 DAY)
-                                            when 4 then DATE_SUB(d_current_date, INTERVAL 90 DAY)
-						end;
-                        
+    DECLARE d_current_date DATE DEFAULT CURRENT_DATE();
+    DECLARE d_begin_date   DATE;
+    DECLARE d_end_date     DATE DEFAULT d_current_date;
 
-	-- ***********************************************************
-	-- **************************************************header
-	-- ***********************************************************
-	select t.toxicity_level_id
-		, t.name as toxicity_level
-		, count(a.toxicity_level_id) as total
-    , h.product_name
-	from scan_detail d 
-		inner join scan_header h on h.scan_header_id = d.scan_header_id
-			and h.profile_id = ni_profile_id
-      and h.status = 1
-			
-            -- buscar por producto
-            and ((ni_report_type = 0 and h.scan_header_id = ni_scan_header_id)
-            
-            -- buscar por rango de fechas
-				or (h.created_date between d_begin_date and d_end_date))
-            
-		inner join additive a on a.additive_id = d.additive_id
-		right join toxicity_level t on t.toxicity_level_id = a.toxicity_level_id
-	group by  t.toxicity_level_id;
-	
-    
-	select d.additive_id
-		, a.name
-		, a.toxicity_level_id
-		, count(1) total
-	from scan_detail d 
-		inner join additive a on a.additive_id = d.additive_id
-		inner join scan_header h on h.scan_header_id = d.scan_header_id
-			and h.profile_id = ni_profile_id
-      and h.status = 1
-			
-            -- buscar por producto
-            and ((ni_report_type = 0 and h.scan_header_id = ni_scan_header_id)
-            
-            -- buscar por rango de fechas
-				or (h.created_date between d_begin_date and d_end_date))
-	group by d.additive_id, a.name, a.toxicity_level_id
-	order by a.toxicity_level_id asc, a.name
-	;
+    -- ============================================================
+    -- CALCULAR RANGO SOLO SI NO ES -1 NI 0
+    -- ============================================================
+
+    IF ni_report_type > 0 THEN
+
+        SET d_begin_date = CASE ni_report_type
+            WHEN 1 THEN d_current_date
+            WHEN 2 THEN DATE_SUB(d_current_date, INTERVAL 7 DAY)
+            WHEN 3 THEN DATE_SUB(d_current_date, INTERVAL 30 DAY)
+            WHEN 4 THEN DATE_SUB(d_current_date, INTERVAL 90 DAY)
+        END;
+
+    END IF;
+
+
+    -- ============================================================
+    -- SI ES REPORTE DESDE TABLA TEMPORAL
+    -- ============================================================
+
+    IF ni_report_type = -1 THEN
+
+        -- *******************************************************
+        -- HEADER (desde tmp)
+        -- *******************************************************
+        SELECT t.toxicity_level_id,
+               t.name AS toxicity_level,
+               COUNT(a.toxicity_level_id) AS total
+        FROM tmp_scan_detail d
+        INNER JOIN additive a ON a.additive_id = d.additive_id
+        RIGHT JOIN toxicity_level t ON t.toxicity_level_id = a.toxicity_level_id
+        GROUP BY t.toxicity_level_id, t.name;
+
+        -- *******************************************************
+        -- DETALLE (desde tmp)
+        -- *******************************************************
+        SELECT d.additive_id,
+               a.name,
+               a.toxicity_level_id,
+               COUNT(1) total
+        FROM tmp_scan_detail d
+        INNER JOIN additive a ON a.additive_id = d.additive_id
+        GROUP BY d.additive_id, a.name, a.toxicity_level_id
+        ORDER BY a.toxicity_level_id ASC, a.name;
+
+    ELSE
+
+        -- ========================================================
+        -- LÓGICA NORMAL (scan_header)
+        -- ========================================================
+
+        -- HEADER
+        SELECT t.toxicity_level_id,
+               t.name AS toxicity_level,
+               COUNT(a.toxicity_level_id) AS total,
+               h.product_name
+        FROM scan_detail d
+        INNER JOIN scan_header h ON h.scan_header_id = d.scan_header_id
+            AND h.profile_id = ni_profile_id
+            AND h.status = 1
+            AND (
+                    (ni_report_type = 0 AND h.scan_header_id = ni_scan_header_id)
+                 OR (ni_report_type > 0 AND h.created_date BETWEEN d_begin_date AND d_end_date)
+                )
+        INNER JOIN additive a ON a.additive_id = d.additive_id
+        RIGHT JOIN toxicity_level t ON t.toxicity_level_id = a.toxicity_level_id
+        GROUP BY t.toxicity_level_id, t.name, h.product_name;
+
+        -- DETALLE
+        SELECT d.additive_id,
+               a.name,
+               a.toxicity_level_id,
+               COUNT(1) total
+        FROM scan_detail d
+        INNER JOIN additive a ON a.additive_id = d.additive_id
+        INNER JOIN scan_header h ON h.scan_header_id = d.scan_header_id
+            AND h.profile_id = ni_profile_id
+            AND h.status = 1
+            AND (
+                    (ni_report_type = 0 AND h.scan_header_id = ni_scan_header_id)
+                 OR (ni_report_type > 0 AND h.created_date BETWEEN d_begin_date AND d_end_date)
+                )
+        GROUP BY d.additive_id, a.name, a.toxicity_level_id
+        ORDER BY a.toxicity_level_id ASC, a.name;
+
+    END IF;
 
 END;
 //
 DELIMITER ;
-grant execute on procedure qalert_bd.sp_get_additives_report   to 'qalert_app'@'localhost';
+
+GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_additives_report TO 'qalert_app'@'localhost';
 
 
 

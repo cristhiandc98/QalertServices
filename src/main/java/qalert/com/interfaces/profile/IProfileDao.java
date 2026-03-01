@@ -5,7 +5,7 @@ import java.util.List;
 import qalert.com.models.profile.ProfileRequest;
 import qalert.com.models.profile.ProfileResponse;
 
-public interface profileDao {
+public interface IProfileDao {
 
     Long insert (ProfileRequest request);
 

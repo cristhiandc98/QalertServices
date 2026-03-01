@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import qalert.com.interfaces.profile.profileDao;
+import qalert.com.interfaces.profile.IProfileDao;
 import qalert.com.models.BaseData;
 import qalert.com.models.profile.ProfileRequest;
 import qalert.com.models.profile.ProfileResponse;
@@ -20,7 +20,7 @@ import qalert.com.utils.consts.DbConst;
 import qalert.com.utils.utils.DbUtil;
 
 @Repository
-public class ProfileDaoImpl implements profileDao {
+public class ProfileDaoImpl implements IProfileDao {
 
         @Autowired
         private JdbcTemplate jdbcTemplate;

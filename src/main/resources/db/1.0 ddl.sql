@@ -11,9 +11,10 @@ create table status_type(
 GRANT SELECT, INSERT, UPDATE ON qalert_bd.status_type           TO 'qalert_app'@'localhost';
 
 create table status(
-	status_id int NOT NULL AUTO_INCREMENT,
-	status_type_id int,
-    name varchar(50),
+    status_id int NOT NULL AUTO_INCREMENT,
+    status_type_id int not null,
+    status_code varchar(20) not null,
+    name varchar(50) not null,
     status bit DEFAULT b'1',
     constraint pk_status primary key (status_id),
     constraint fk_status__status_type foreign key(status_type_id) references status_type(status_type_id)

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.log.ILogService;
-import qalert.com.interfaces.profile.profileService;
+import qalert.com.interfaces.profile.IProfileService;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.profile.ProfileRequest;
 import qalert.com.models.profile.ProfileResponse;
@@ -32,7 +32,7 @@ import qalert.com.utils.consts.UserMessageConst;
 public class ProfileController {
 
     @Autowired
-    private profileService service;
+    private IProfileService service;
 
     @Autowired
     private ILogService logService;

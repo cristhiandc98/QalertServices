@@ -528,6 +528,7 @@ GRANT select on qalert_bd.vw_status to 'qalert_app'@'localhost';
 
 
 
+
 drop procedure if exists sp_insert_and_get_additives_from_plain_text;
 DELIMITER //
 CREATE PROCEDURE sp_insert_and_get_additives_from_plain_text(
@@ -711,6 +712,7 @@ grant execute on procedure qalert_bd.sp_insert_and_get_additives_from_plain_text
 
 
 
+
 DROP PROCEDURE IF EXISTS sp_insert_scan;
 DELIMITER //
 
@@ -724,7 +726,7 @@ CREATE PROCEDURE sp_insert_scan(
 sp:BEGIN
 
     DECLARE d_current_date DATE DEFAULT CURRENT_DATE();
-    DECLARE d_current_time DATE DEFAULT CURRENT_TIME();
+    DECLARE d_current_time time DEFAULT CURRENT_TIME();
 
     -- ============================================
     -- Crear tabla temporal con profiles
@@ -799,7 +801,7 @@ sp:BEGIN
         th.scan_header_id,
         d.additive_id,
         d_current_date,
-        d_current_date
+        d_current_time
     FROM tmp_inserted_headers th
     JOIN tmp_scan_detail d 
         ON d.user_id = ni_user_id;
@@ -821,6 +823,7 @@ DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE qalert_bd.sp_insert_scan 
 TO 'qalert_app'@'localhost';
+
 
 
 

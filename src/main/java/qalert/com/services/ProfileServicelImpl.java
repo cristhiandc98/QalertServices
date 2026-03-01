@@ -5,16 +5,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import qalert.com.interfaces.profile.profileDao;
-import qalert.com.interfaces.profile.profileService;
+import qalert.com.interfaces.profile.IProfileDao;
+import qalert.com.interfaces.profile.IProfileService;
 import qalert.com.models.profile.ProfileRequest;
 import qalert.com.models.profile.ProfileResponse;
 
 @Service
-public class ProfileServicelImpl implements profileService {
+public class ProfileServicelImpl implements IProfileService {
 
     @Autowired
-    private profileDao profileDao;
+    private IProfileDao profileDao;
 
     @Override
     public Long insert(ProfileRequest request) {

@@ -7,6 +7,7 @@ public class CommonConsts {
 
     public static final String QALIFIER_SERVICE = "SERVICE";
     public static final String QALIFIER_DAO = "DAO";
+    public static final String QALIFIER_IZIPAY_WEB_CLIENT = "izipayWebClient";
 
     public static final String SEPARADOR_CONTRASENIA__ID_EQUIPO = " ";
 

@@ -12,8 +12,11 @@ import org.springframework.stereotype.Repository;
 
 import qalert.com.interfaces.payment.IPaymentDao;
 import qalert.com.models.BaseData;
-import qalert.com.models.payment.PaymentRequest;
+import qalert.com.models.payment.PaymentCreationRequest;
+import qalert.com.models.payment.PaymentCreationResponse;
+import qalert.com.models.payment.PaymentUpdateRequest;
 import qalert.com.utils.consts.DbConst;
+import qalert.com.utils.utils.DbUtil;
 
 @Repository
 public class PaymentDaoImpl implements IPaymentDao{
@@ -24,15 +27,44 @@ public class PaymentDaoImpl implements IPaymentDao{
     @Autowired
     private BaseData data;
 
+
+
     @Override
-    public void insert(PaymentRequest request) {
+    public PaymentCreationResponse insert(PaymentCreationRequest request) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
                                 .withCatalogName(data.getSchema())
                                 .withProcedureName(DbConst.SP_INSERT_PAYMENT);
 
         SqlParameterSource input = new MapSqlParameterSource()
                         .addValue("ni_user_id", request.getUserId())
-                        .addValue("amount", request.getAmount());
+                        .addValue("ni_subscription_id", request.getSubscriptionId());
+
+        List<Map<String, Object>> resultset = (List<Map<String, Object>>) jdbcCall.execute(input).get(DbConst.RESUL_SET_1);
+
+        PaymentCreationResponse model = new PaymentCreationResponse();
+        
+        for (Map<String,Object> map : resultset) {
+            model.setPaymentId(DbUtil.getLong(map, "payment_id"));
+            model.setOrderId(DbUtil.getString(map, "payment_code"));
+            model.setAmount(DbUtil.getBigDecimal(map, "amount"));
+            model.setCurrency(DbUtil.getString(map, "currency_code"));
+        }
+
+    	return model;
+    }
+
+
+
+    @Override
+    public void update(PaymentUpdateRequest request) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                                .withCatalogName(data.getSchema())
+                                .withProcedureName(DbConst.SP_UPDATE_PAYMENT);
+
+        SqlParameterSource input = new MapSqlParameterSource()
+                        .addValue("ni_payment_id", request.getPaymentId())
+                        .addValue("ni_payment_status_id", request.getPaymentStatusId().getStatusId())
+                        .addValue("vi_payment_error", request.getPaymentError());
 
         jdbcCall.execute(input);
     }

@@ -17,4 +17,9 @@ public class EnvironmentConst {
     public static final String AWS_S3_SECRET_KEY = "aws.s3.secret-key";
     public static final String AWS_TEXTEXTRACT_ACCESS_KEY = "aws.textextrac.access-key";
     public static final String AWS_TEXTEXTRACT_SECRET_KEY = "aws.textextrac.secret-key";
+
+    public static final String IZIPAY_BASE_URL = "izipay.base-url";
+    public static final String IZIPAY_API_CREATEPAYMENT = "izipay.api-createPayment";
+    public static final String IZIPAY_API_USER = "izipay.api-user";
+    public static final String IZIPAY_API_PASSWORD = "izipay.api-password";
 }

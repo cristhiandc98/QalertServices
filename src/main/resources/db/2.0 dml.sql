@@ -20,7 +20,8 @@ use qalert_bd;
  ('/scan/get-scan-list','GET','Listado de escaneos del usuario en los últimos 30 días'),
  ('/additive','GET','Lista todos los aditivos registrados'),
  ('/aliment','GET','Listado de alimentos'),
- ('/user/update-password','PUT','Actualiza la contraseña del usuario');
+ ('/user/update-password','PUT','Actualiza la contraseña del usuario'),
+ ('/payment', 'POST', 'inserta un nuevo pago en el sistema y genera url de izipay');
 
  INSERT INTO subscription(amount,subscription_months)
  VALUE (21.90,1),(59.90,6),(99.90,12);

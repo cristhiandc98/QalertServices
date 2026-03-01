@@ -7,11 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -24,6 +28,9 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import qalert.com.models.BaseData;
 import qalert.com.utils.consts.EnvironmentConst;
+import java.time.Duration;
+
+import reactor.netty.http.client.HttpClient;
 
 @Configuration
 @ComponentScan
@@ -79,23 +86,22 @@ public class AppConfig implements WebMvcConfigurer{
 
 		return objectMapper;
 	}
-	
-	// @Bean
-	// AmazonS3 awsS3() {
-	// 	AWSCredentials credentials = new BasicAWSCredentials(
-	// 			env.getRequiredProperty(EnvironmentConst.AWS_S3_ACCESS_KEY), 
-	// 			env.getRequiredProperty(EnvironmentConst.AWS_S3_SECRET_KEY)
-	// 			);
-		
-	// 	return AmazonS3ClientBuilder
-	// 		.standard()
-	// 		.withCredentials(new AWSStaticCredentialsProvider(credentials))
-	// 		.withRegion(Regions.US_EAST_2)
-	// 		.build();
-	// }
 
 	@Bean
 	RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
+
+	@Bean
+    WebClient izipayWebClient() {
+
+        HttpClient httpClient = HttpClient.create()
+                .responseTimeout(Duration.ofSeconds(30));
+
+        return WebClient.builder()
+                .baseUrl(env.getRequiredProperty(EnvironmentConst.IZIPAY_BASE_URL))
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
 }

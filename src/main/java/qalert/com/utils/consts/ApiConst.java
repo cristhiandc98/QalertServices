@@ -15,7 +15,7 @@ public class ApiConst {
     public static final String SUGGESTIONS = "/suggestions";
     public static final String ADDITIVE = "/additive";
     public static final String ALIMENT = "/aliment";
-    public static final String QALERT = "/qalert";
+    public static final String PAYMENT = "/payment";
 
     // SECURITY
     public static final String GET_VERIFICATION_CODE = "/get-verification-code";
@@ -43,7 +43,4 @@ public class ApiConst {
 
     // Suggestions
     public static final String INSERT_SUGGESTIONS = "/insert";
-
-    // QALERT
-    public static final String SUBSCRIBE = "/subscribe";
 }

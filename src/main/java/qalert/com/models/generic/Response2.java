@@ -71,7 +71,11 @@ public class Response2<T> {
 
     public Response2(ConflictException exception) {
         this(HttpStatus.CONFLICT, exception.getMessage(), false);
-        setError(exception);
+
+        if(exception.errorMssg == null)
+            setError(exception);
+        else 
+            errorMssg = exception.errorMssg;
     }
 
     public Response2(DataAccessException ex) {

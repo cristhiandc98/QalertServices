@@ -10,40 +10,50 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import jakarta.servlet.http.HttpServletRequest;
-import qalert.com.interfaces.IQalert;
 import qalert.com.interfaces.log.ILogService;
+import qalert.com.interfaces.payment.IPaymentService;
 import qalert.com.models.generic.Response2;
+import qalert.com.models.izipay.IzipayPaymentCreationResponse;
+import qalert.com.models.payment.PaymentCreationRequest;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.subscription.SubscriptionModel;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
+import qalert.com.utils.exceptions.ConflictException;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping(ApiConst.QALERT)
-public class QalertController {
+@RequestMapping(ApiConst.PAYMENT)
+public class PaymentController {
 
-    @Qualifier(CommonConsts.QALIFIER_SERVICE)
     @Autowired
-    private IQalert service;
+    private IPaymentService service;
 
     @Autowired
     private ILogService logService;
 
-    @PostMapping(value = ApiConst.SUBSCRIBE, produces = ApiConst.PRODUCES)
-    public ResponseEntity<?> subscribe(@RequestBody SubscriptionModel request, HttpServletRequest http) {
+
+
+    @PostMapping(produces = ApiConst.PRODUCES)
+    public ResponseEntity<?> subscribe(@RequestBody PaymentCreationRequest request, HttpServletRequest http) {
 
         LogServiceRequest logModel = logService.setRequestData(http, request);
 
-        Response2<Boolean> out;
+        Response2<IzipayPaymentCreationResponse> out;
 
         try {
-            service.subscribe(logModel.getUserId(), request); // SIN retorno
-            out = new Response2<>();
-            out = new Response2<>(HttpStatus.OK, "Suscripción realizada correctamente", true);
+            IzipayPaymentCreationResponse izipayModel = service.insertAndGenerateUrl(request);
+            
+            out = new Response2<>(izipayModel);
+
         } catch (DataAccessException ex) {
+            out = new Response2<>(ex);
+        } catch (ConflictException ex) {
+            out = new Response2<>(ex);
+        } catch (Exception ex) {
             out = new Response2<>(ex);
         }
 

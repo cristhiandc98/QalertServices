@@ -1,5 +1,6 @@
 package qalert.com.utils.utils;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -93,4 +94,21 @@ public class DbUtil {
         }
     }
 
+    public static BigDecimal getBigDecimal(Map<String, Object> data, String key) {
+        Object value = data.get(key);
+
+        if (value == null) {
+            return BigDecimal.ZERO; // o null si prefieres
+        }
+
+        if (value instanceof BigDecimal) {
+            return (BigDecimal) value;
+        }
+
+        if (value instanceof Number) {
+            return new BigDecimal(value.toString());
+        }
+
+        return new BigDecimal(value.toString());
+    }
 }

@@ -23,8 +23,9 @@ insert into status(status_type_id, status_id, status_code, name)values
 (6, 9, 'PAID',      'Pago confirmado exitosamente'),
 (6, 10, 'FAILED',    'Pago rechazado o fallido'),
 (6, 11, 'CANCELLED', 'Pago cancelado por el usuario'),
-(6, 12, 'EXPIRED',   'Payment session expired'),
-(6, 13, 'REFUNDED',  'Payment refunded');
+(6, 12, 'EXPIRED',   'Sesión de pago expirada'),
+(6, 13, 'REFUNDED',  'Pago reintegrado'),
+(6, 14, 'ERROR_GENERATE_URL',  'Error durante la generación de URL de pago');
 
 
 
@@ -49,13 +50,13 @@ values(1, 'QALERT-0001', 'QALERT PREMIUM',
 
 
 CREATE TABLE currency (
-    currency_id int,
-    code 		VARCHAR(3) NOT NULL UNIQUE,
-    name 		VARCHAR(50) NOT NULL,
-    symbol 		VARCHAR(5) NOT NULL,
+    currency_id 		int,
+    currency_code 		VARCHAR(3) NOT NULL UNIQUE,
+    currency_name 		VARCHAR(50) NOT NULL,
+    symbol 				VARCHAR(5) NOT NULL,
     constraint pk_currency primary key(currency_id)
 );
-INSERT INTO currency (currency_id, code, name, symbol) VALUES
+INSERT INTO currency (currency_id, currency_code, currency_name, symbol) VALUES
 (1, 'PEN', 'SOL', 'S/');
 GRANT SELECT, INSERT, UPDATE ON qalert_bd.currency                TO 'qalert_app'@'localhost';
 
@@ -71,8 +72,11 @@ CREATE TABLE payment (
 
     payment_status_id			int DEFAULT 8,
 
-    created_at 					DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_date 				DATE DEFAULT (CURRENT_DATE),
+    created_time 				TIME DEFAULT (CURRENT_TIME),
     updated_at 					DATETIME NULL,
+    
+    payment_error				text,
 	
     constraint pk_payment primary key(payment_id),
     CONSTRAINT fk_payment__currency FOREIGN KEY (currency_id) REFERENCES currency(currency_id),
@@ -177,29 +181,67 @@ BEGIN
 			and p.product_status_id = 6
     where s.subscription_id = ni_subscription_id	
 		and s.status = 1;
-    
-    select 1
-			  from payment_detail x 
-              where x.payment_id = @last_id;
+        
               
-    if exists(select 1
-			  from payment_detail x 
-              where x.payment_id = @last_id) then
+    if not exists(select 1
+				  from payment_detail x 
+				  where x.payment_id = @last_id) then
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Suscripción inválida.', MYSQL_ERRNO = 50001;
+	else 
 		UPDATE payment p
 		SET p.payment_code = CONCAT('QALERT', DATE_FORMAT(current_date(), '%Y%m'), LPAD(RIGHT(@last_id, 5), 5, '0'))
 			, p.amount = (select sum(x.total_amount)
 						  from payment_detail x 
 						  where x.payment_id = p.payment_id)
 		WHERE p.payment_id = @last_id;
-	else 
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Suscripción inválida.', MYSQL_ERRNO = 50001;
     end if;
 	
     COMMIT;
+    
+    
+    select p.payment_id
+		, p.payment_code
+		, p.amount
+		, c.currency_code
+    from payment p
+		inner join currency c on c.currency_id = p.currency_id
+    where p.payment_id = @last_id;
+    
 END;;
 DELIMITER ;
 grant execute on procedure qalert_bd.sp_insert_payment   to 'qalert_app'@'localhost';
-call sp_insert_payment(1, 3);
 
 
 
+drop procedure if exists sp_update_payment;
+DELIMITER ;;
+CREATE PROCEDURE sp_update_payment(
+	ni_payment_id				bigint,
+	ni_payment_status_id		int,
+    vi_payment_error			text
+)
+BEGIN
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2026-02-28
+	-- Objetivo: 	update a payment
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- call sp_update_payment(4, 9);
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************    
+    
+	UPDATE payment p
+	SET p.payment_status_id = ni_payment_status_id
+		, updated_at = CURRENT_TIMESTAMP()
+        , payment_error = vi_payment_error
+	WHERE p.payment_id = ni_payment_id;
+    
+END;;
+DELIMITER ;
+grant execute on procedure qalert_bd.sp_update_payment   to 'qalert_app'@'localhost';

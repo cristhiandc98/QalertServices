@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,11 +18,14 @@ import qalert.com.interfaces.log.ILogService;
 import qalert.com.interfaces.payment.IPaymentService;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.izipay.IzipayPaymentCreationResponse;
+import qalert.com.models.izipay.IzipayPaymentUpdateRequest;
 import qalert.com.models.payment.PaymentCreationRequest;
+import qalert.com.models.payment.PaymentUpdateRequest;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.subscription.SubscriptionModel;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
+import qalert.com.utils.enums.PaymentStatusEnum;
 import qalert.com.utils.exceptions.ConflictException;
 
 @CrossOrigin(origins = "*")
@@ -30,10 +34,18 @@ import qalert.com.utils.exceptions.ConflictException;
 public class PaymentController {
 
     @Autowired
-    private IPaymentService service;
+    private IPaymentService paymentService;
 
     @Autowired
     private ILogService logService;
+
+    private final SimpMessagingTemplate messagingTemplate;
+
+
+    
+    public PaymentController(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
 
 
@@ -45,7 +57,7 @@ public class PaymentController {
         Response2<IzipayPaymentCreationResponse> out;
 
         try {
-            IzipayPaymentCreationResponse izipayModel = service.insertAndGenerateUrl(request);
+            IzipayPaymentCreationResponse izipayModel = paymentService.insertAndGenerateUrl(request);
             
             out = new Response2<>(izipayModel);
 
@@ -60,6 +72,21 @@ public class PaymentController {
         logService.setResponseDataAndSave(logModel, out);
 
         return ResponseEntity.status(out.getStatusCode()).body(out);
+    }
+
+
+
+    @PostMapping("/update")
+    public ResponseEntity<?> receiveWebhook(@RequestBody IzipayPaymentUpdateRequest request){
+
+        paymentService.update(new PaymentUpdateRequest(request.getPaymentId(), PaymentStatusEnum.fromId(request.getPaymentStatusId()), null));
+
+        messagingTemplate.convertAndSend(
+                ApiConst.WS_CLIENT_PREFIX + "/" + request.getPaymentId(),
+                new Response2<>(true)
+        );
+
+        return ResponseEntity.ok().build();
     }
 
 }

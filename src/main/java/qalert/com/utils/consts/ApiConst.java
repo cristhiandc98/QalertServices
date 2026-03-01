@@ -43,4 +43,10 @@ public class ApiConst {
 
     // Suggestions
     public static final String INSERT_SUGGESTIONS = "/insert";
+
+
+    //WEB SOCKET
+    public static final String WS_ENDPOINT = "/ws";
+    public static final String WS_SERVER_PREFIX = "/app";
+    public static final String WS_CLIENT_PREFIX = "/payment";
 }

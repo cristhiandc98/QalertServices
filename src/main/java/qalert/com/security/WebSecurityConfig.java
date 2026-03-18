@@ -55,10 +55,8 @@ public class WebSecurityConfig {
 				.authorizeHttpRequests(requests -> {
 					requests.requestMatchers("/**").permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.USER + ApiConst.VALIDATE)).permitAll();
-					requests.requestMatchers(mvc.pattern(ApiConst.MASTER + ApiConst.GET_TERMS_AND_CONDITIONS))
-							.permitAll();
-					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.GET_VERIFICATION_CODE))
-							.permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.MASTER + ApiConst.GET_TERMS_AND_CONDITIONS)).permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.GET_VERIFICATION_CODE)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.USER)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.LOGIN)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.USER + ApiConst.UPDATE_PASSWORD)).permitAll();

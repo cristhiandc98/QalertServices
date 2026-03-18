@@ -6,23 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
-import qalert.com.interfaces.IMaster;
 import qalert.com.interfaces.ISubscription;
 import qalert.com.interfaces.log.ILogService;
 import qalert.com.models.generic.Response2;
-import qalert.com.models.master.MasterResponse;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.subscription.SubscriptionLabelsResponse;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(ApiConst.SUBSCRIPTION)
 public class SubscriptionController {

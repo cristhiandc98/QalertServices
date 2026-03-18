@@ -3,6 +3,7 @@ package qalert.com.utils.consts;
 public class EnvironmentConst {
 
     public static final String APP_NAME = "app.name";
+    public static final String SERVICE_CONTEXT = "service.context";
     
     public static final String SPRING_DATASOURCE_HIKARI_URL = "spring.datasource.hikari.jdbc-url";
     public static final String SPRING_DATASOURCE_HIKARI_USUARIO = "spring.datasource.hikari.username";

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +18,6 @@ import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
 
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(ApiConst.ALIMENT)
 public class AlimentController {

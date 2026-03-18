@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import qalert.com.interfaces.log.ILogService;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.utils.consts.CommonConsts;
+import qalert.com.utils.consts.EnvironmentConst;
 import qalert.com.utils.utils.DateUtil;
 
 @Qualifier(CommonConsts.QALIFIER_SERVICE)
@@ -30,6 +32,8 @@ public class ServiceLogServiceImpl implements ILogService {
     @Autowired
     private ObjectMapper objectMapper;
 
+	@Autowired
+	private Environment env;
 
 
     @Override
@@ -43,7 +47,7 @@ public class ServiceLogServiceImpl implements ILogService {
     public LogServiceRequest setRequestData(HttpServletRequest httpRequest, Object request) {
         LogServiceRequest logModel = new LogServiceRequest();
 
-        logModel.setEndPoint(httpRequest.getRequestURI());
+        logModel.setEndPoint(httpRequest.getRequestURI().replaceAll(env.getProperty(EnvironmentConst.SERVICE_CONTEXT), ""));
         logModel.setMethod(httpRequest.getMethod());
         logModel.setBeginDateTime(DateUtil.getCurrentDateTime());
 

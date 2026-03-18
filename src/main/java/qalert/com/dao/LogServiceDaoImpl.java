@@ -64,10 +64,11 @@ public class LogServiceDaoImpl implements ILogDao{
                 String json = objectMapper.writeValueAsString(request);
 
                 logger.error(
+                        " | error2: " + ex.getMessage() + 
+                        " | error: " + request.getError() + 
                         " | jsonError: " + json +
                         " | cuerpoSolicitud: " + cuerpoSolicitud +
-                        " | cuerpoRespuesta: " + cuerpoRespuesta +
-                        " | error: " + request.getError());
+                        " | cuerpoRespuesta: " + cuerpoRespuesta);
             }
             catch (Exception e)
             {

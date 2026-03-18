@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +20,6 @@ import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts; 
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(ApiConst.USER)
 public class UserController {

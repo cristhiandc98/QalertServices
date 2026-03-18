@@ -40,6 +40,9 @@ public class DbConst {
     //aliment
     public static final String SP_GET_ALIMENT_LIST = "sp_get_aliment_list";
 
+    //subscriptions
+    public static final String SP_SUBSCRIPTION_LIST = "sp_subscription_list";
+
     //payment
     public static final String SP_INSERT_PAYMENT = "sp_insert_payment";
     public static final String SP_UPDATE_PAYMENT = "sp_update_payment";

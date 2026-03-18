@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -48,6 +49,8 @@ public class WebSecurityConfig {
 		jwtAuthentication.setFilterProcessesUrl(ApiConst.SECURITY + ApiConst.LOGIN);
 
 		return http
+				.cors()
+				.and()
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(requests -> {
 					requests.requestMatchers("/**").permitAll();
@@ -59,6 +62,7 @@ public class WebSecurityConfig {
 					requests.requestMatchers(mvc.pattern(ApiConst.USER)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.LOGIN)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.USER + ApiConst.UPDATE_PASSWORD)).permitAll();
+					requests.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 					requests.anyRequest().authenticated();
 				})
 				.httpBasic()

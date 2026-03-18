@@ -104,7 +104,7 @@ END;
 
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_insert_user to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_insert_user to 'qalert_app'@'%';
 
 
 
@@ -190,7 +190,7 @@ END;
 
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_save_verification_code to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_save_verification_code to 'qalert_app'@'%';
 
 drop procedure if exists sp_login;
 
@@ -279,7 +279,7 @@ END;
 //
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_login to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_login to 'qalert_app'@'%';
 
 
 
@@ -353,7 +353,7 @@ sp:BEGIN
 END ;;
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE qalert_bd.sp_update_password TO 'qalert_app'@'localhost';
+GRANT EXECUTE ON PROCEDURE qalert_bd.sp_update_password TO 'qalert_app'@'%';
 
 
 
@@ -386,7 +386,7 @@ sp:BEGIN
 END ;;
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_list_app_settings   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_list_app_settings   to 'qalert_app'@'%';
 
 
 
@@ -420,7 +420,7 @@ sp:BEGIN
 END ;;
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_get_terms_and_conditions   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_get_terms_and_conditions   to 'qalert_app'@'%';
 
 
 
@@ -495,7 +495,7 @@ sp:BEGIN
 
 END ;;
 DELIMITER ;
-grant execute on procedure qalert_bd.sp_insert_log_service   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_insert_log_service   to 'qalert_app'@'%';
 
 CREATE  OR REPLACE VIEW vw_status AS
 
@@ -524,7 +524,7 @@ CREATE  OR REPLACE VIEW vw_status AS
 	from status_type st
 		inner join status s on s.status_type_id = st.status_type_id;
     
-GRANT select on qalert_bd.vw_status to 'qalert_app'@'localhost';
+GRANT select on qalert_bd.vw_status to 'qalert_app'@'%';
 
 
 
@@ -708,7 +708,7 @@ sp:BEGIN
 
 END;
 // DELIMITER ;
-grant execute on procedure qalert_bd.sp_insert_and_get_additives_from_plain_text   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_insert_and_get_additives_from_plain_text   to 'qalert_app'@'%';
 
 
 
@@ -822,7 +822,7 @@ END;
 DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE qalert_bd.sp_insert_scan 
-TO 'qalert_app'@'localhost';
+TO 'qalert_app'@'%';
 
 
 
@@ -863,7 +863,7 @@ sp:BEGIN
 END;
 //
 DELIMITER ;
-grant execute on procedure qalert_bd.sp_get_scan_list   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_get_scan_list   to 'qalert_app'@'%';
 
 
 
@@ -887,7 +887,7 @@ END $$
 
 DELIMITER ;
 
-grant execute on function qalert_bd.fn_validate_new_user to 'qalert_app'@'localhost';
+grant execute on function qalert_bd.fn_validate_new_user to 'qalert_app'@'%';
 
 DROP PROCEDURE IF EXISTS sp_insert_profile;
 DELIMITER //
@@ -968,7 +968,7 @@ sp:BEGIN
 END//
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE qalert_bd.sp_insert_profile TO 'qalert_app'@'localhost';
+GRANT EXECUTE ON PROCEDURE qalert_bd.sp_insert_profile TO 'qalert_app'@'%';
 
 drop procedure if exists sp_fetch_profiles;
 DELIMITER //
@@ -1030,7 +1030,7 @@ END;
 //
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_fetch_profiles   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_fetch_profiles   to 'qalert_app'@'%';
 
 drop procedure if exists sp_update_profile;
 
@@ -1074,7 +1074,7 @@ END;
 
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_update_profile   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_update_profile   to 'qalert_app'@'%';
 
 drop procedure if exists sp_delete_profile; 
 DELIMITER //
@@ -1095,7 +1095,7 @@ END;
 //
 
 DELIMITER ;
-grant execute on procedure qalert_bd.sp_delete_profile   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_delete_profile   to 'qalert_app'@'%';
 
 
 
@@ -1205,7 +1205,7 @@ END;
 //
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_additives_report TO 'qalert_app'@'localhost';
+GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_additives_report TO 'qalert_app'@'%';
 
 
 
@@ -1237,7 +1237,7 @@ END;
 
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_insert_suggestions to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_insert_suggestions to 'qalert_app'@'%';
 
 drop procedure if exists sp_listar_additive;
 DELIMITER //
@@ -1257,7 +1257,7 @@ END;
 
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_listar_additive to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_listar_additive to 'qalert_app'@'%';
 
 
 
@@ -1314,7 +1314,7 @@ sp:BEGIN
     
 END ;;
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_aliment_list TO 'qalert_app'@'localhost';
+GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_aliment_list TO 'qalert_app'@'%';
 
 
 
@@ -1361,7 +1361,7 @@ BEGIN
 END //
 
 DELIMITER ;
-grant execute on procedure qalert_bd.sp_subscription   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_subscription   to 'qalert_app'@'%';
 
 
 
@@ -1379,7 +1379,7 @@ BEGIN
 		or (table_id = 0 and field_id in (2, 3) AND status = 1);
 END ;;
 DELIMITER ;;
-GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_app_settings_list TO 'qalert_app'@'localhost';
+GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_app_settings_list TO 'qalert_app'@'%';
 
 
 
@@ -1407,4 +1407,149 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-grant execute on procedure qalert_bd.sp_update_scan_header   to 'qalert_app'@'localhost';
+grant execute on procedure qalert_bd.sp_update_scan_header   to 'qalert_app'@'%';
+
+
+
+drop procedure if exists sp_insert_payment;
+DELIMITER ;;
+CREATE PROCEDURE sp_insert_payment(
+	ni_user_id				bigint,
+    ni_subscription_id		int
+)
+BEGIN
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2026-02-28
+	-- Objetivo: 	insert a payment
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- call sp_insert_payment(1, 1);
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************
+    
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN 
+		ROLLBACK; 
+	END;
+    START TRANSACTION;
+    
+    
+	insert into payment(user_id)
+    values(ni_user_id);
+    
+    
+    SET @last_id = LAST_INSERT_ID();
+    
+    
+    insert into payment_detail(payment_id, product_id, quantity, unit_price, discount, total_amount)
+    select @last_id, p.product_id, s.subscription_months, p.price, s.discount, (s.subscription_months * p.price - s.discount)
+    from subscription s
+		inner join product p on p.product_id = s.product_id
+			and p.product_status_id = 6
+    where s.subscription_id = ni_subscription_id	
+		and s.subscription_status = 1;
+        
+              
+    if not exists(select 1
+				  from payment_detail x 
+				  where x.payment_id = @last_id) then
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Suscripción inválida.', MYSQL_ERRNO = 50001;
+	else 
+		UPDATE payment p
+		SET p.payment_code = CONCAT('QALERT', DATE_FORMAT(current_date(), '%Y%m'), LPAD(RIGHT(@last_id, 5), 5, '0'))
+			, p.amount = (select sum(x.total_amount)
+						  from payment_detail x 
+						  where x.payment_id = p.payment_id)
+		WHERE p.payment_id = @last_id;
+    end if;
+	
+    COMMIT;
+    
+    
+    select p.payment_id
+		, p.payment_code
+		, p.amount
+		, c.currency_code
+    from payment p
+		inner join currency c on c.currency_id = p.currency_id
+    where p.payment_id = @last_id;
+    
+END;;
+DELIMITER ;
+grant execute on procedure qalert_bd.sp_insert_payment   to 'qalert_app'@'%';
+
+
+
+drop procedure if exists sp_update_payment;
+DELIMITER ;;
+CREATE PROCEDURE sp_update_payment(
+	ni_payment_id				bigint,
+	ni_payment_status_id		int,
+    vi_payment_error			text
+)
+BEGIN
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2026-02-28
+	-- Objetivo: 	update a payment
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- call sp_update_payment(4, 9);
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************    
+    
+	UPDATE payment p
+	SET p.payment_status_id = ni_payment_status_id
+		, updated_datetime = CURRENT_TIMESTAMP()
+        , payment_error = vi_payment_error
+	WHERE p.payment_id = ni_payment_id;
+    
+END;;
+DELIMITER ;
+grant execute on procedure qalert_bd.sp_update_payment   to 'qalert_app'@'%';
+
+
+
+drop procedure if exists sp_subscription_list;
+DELIMITER ;;
+CREATE PROCEDURE sp_subscription_list()
+BEGIN
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2026-02-28
+	-- Objetivo: 	get all active subcriptions
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- call sp_subscription_list();
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************    
+    
+	select s.subscription_id 
+		, concat(s.subscription_months, ' mes', if(s.subscription_months = 1, '', 'es'))  as subscription_months
+        , p.price
+        , (p.price - s.discount) as discounted_price
+        , concat(cast((s.discount / p.price) * 100 as SIGNED), '%') as discount_percentage
+    from subscription s 
+		inner join product p on p.product_id = s.product_id
+				and p.product_status_id = 6
+    where s.subscription_status = 1;
+    
+END;;
+DELIMITER ;
+grant execute on procedure qalert_bd.sp_subscription_list   to 'qalert_app'@'%';

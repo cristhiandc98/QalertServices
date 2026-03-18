@@ -7,8 +7,7 @@ create table status_type(
     constraint pk_status primary key (status_type_id)
 );
 
-
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.status_type           TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.status_type           TO 'qalert_app'@'%';
 
 create table status(
     status_id int NOT NULL AUTO_INCREMENT,
@@ -20,7 +19,7 @@ create table status(
     constraint fk_status__status_type foreign key(status_type_id) references status_type(status_type_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.status                TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.status                TO 'qalert_app'@'%';
 
   CREATE TABLE subscription (
     subscription_id INTEGER NOT NULL AUTO_INCREMENT,
@@ -31,7 +30,7 @@ GRANT SELECT, INSERT, UPDATE ON qalert_bd.status                TO 'qalert_app'@
     CONSTRAINT pk_subscription PRIMARY KEY (subscription_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.subscription                TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.subscription                TO 'qalert_app'@'%';
 
 CREATE TABLE user (
   user_id bigint NOT NULL AUTO_INCREMENT,
@@ -55,7 +54,7 @@ MODIFY username VARCHAR(40) not null;
 
 create index idx_user__login on user(username, user_id, password, device_id);
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.user                  TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.user                  TO 'qalert_app'@'%';
 
 create table document_type(
 	document_type_id int not null,
@@ -63,7 +62,7 @@ create table document_type(
     constraint pk_document primary key(document_type_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.document_type         TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.document_type         TO 'qalert_app'@'%';
 
 create table person (
 	person_id bigint not null,
@@ -87,7 +86,7 @@ MODIFY email VARCHAR(40) not null;
 ALTER TABLE person
 MODIFY full_name VARCHAR(40) not null;
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.person                TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.person                TO 'qalert_app'@'%';
 
 CREATE TABLE tmp_validate_email (
   validate_email_id int NOT NULL AUTO_INCREMENT,
@@ -99,7 +98,7 @@ CREATE TABLE tmp_validate_email (
 );
 create index idx_tmp_validate_email__login on tmp_validate_email(email);
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.tmp_validate_email    TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.tmp_validate_email    TO 'qalert_app'@'%';
 
 CREATE TABLE profile (
   profile_id bigint NOT NULL AUTO_INCREMENT,
@@ -119,7 +118,7 @@ CREATE TABLE profile (
 ALTER TABLE profile
 MODIFY name VARCHAR(20) not null;
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.profile               TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.profile               TO 'qalert_app'@'%';
 
 create table master(
 	master_id int not null auto_increment,
@@ -135,7 +134,7 @@ create table master(
     constraint uk_master unique(table_id, field_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.master                TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.master                TO 'qalert_app'@'%';
 
 
 
@@ -152,7 +151,7 @@ create table endpoint(
     created_datetime 		datetime DEFAULT CURRENT_TIMESTAMP,
 	constraint pk_endpoint primary key(endpoint_id)
 );
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.endpoint          TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.endpoint          TO 'qalert_app'@'%';
 create table log_service(
 	  log_service_id bigint NOT NULL AUTO_INCREMENT,
     user_id bigint,
@@ -170,7 +169,7 @@ create table log_service(
     error_ text,
 	constraint pk_log_service_id PRIMARY KEY (log_service_id)
 );
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.log_service           TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.log_service           TO 'qalert_app'@'%';
 
 
 
@@ -182,7 +181,7 @@ CREATE TABLE toxicity_level (
   constraint pk_toxicity_level PRIMARY KEY (toxicity_level_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.toxicity_level        TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.toxicity_level        TO 'qalert_app'@'%';
 
 CREATE TABLE additive_group (
   additive_group_id int ,
@@ -196,7 +195,7 @@ CREATE TABLE additive_group (
   CONSTRAINT fk_additive_group__status FOREIGN KEY (status_id) REFERENCES status (status_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.additive_group        TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.additive_group        TO 'qalert_app'@'%';
 
 CREATE TABLE additive (
   additive_id int  AUTO_INCREMENT,
@@ -215,7 +214,7 @@ CREATE TABLE additive (
   CONSTRAINT fk_aditivo__toxicity_level FOREIGN KEY (toxicity_level_id) REFERENCES toxicity_level (toxicity_level_id),
   CONSTRAINT fk_aditivo__status FOREIGN KEY (status_id) REFERENCES status (status_id)
 );
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.additive              TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.additive              TO 'qalert_app'@'%';
 
 
 
@@ -228,7 +227,7 @@ CREATE TABLE tmp_scan_header (
    created_datetime datetime DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_tmp_scan_header__user FOREIGN KEY (user_id) REFERENCES user (user_id)
 );
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.tmp_scan_header       TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.tmp_scan_header       TO 'qalert_app'@'%';
 
 
 
@@ -238,7 +237,7 @@ CREATE TABLE tmp_scan_detail (
   aditive_name_or_code varchar(50),
   CONSTRAINT fk_tmp_scan_detail__user FOREIGN KEY (user_id) REFERENCES user (user_id)
 );
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.tmp_scan_detail           TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.tmp_scan_detail           TO 'qalert_app'@'%';
 
 
 
@@ -260,7 +259,7 @@ CREATE TABLE scan_header (
 
 alter table scan_header add image_path varchar(200);
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.scan_header           TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.scan_header           TO 'qalert_app'@'%';
 
 CREATE TABLE scan_detail (
   scan_detail_id int AUTO_INCREMENT,
@@ -272,7 +271,7 @@ CREATE TABLE scan_detail (
   CONSTRAINT fk_scan_detail__scan_header FOREIGN KEY (scan_header_id) REFERENCES scan_header (scan_header_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.scan_detail           TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.scan_detail           TO 'qalert_app'@'%';
 
 
 
@@ -289,7 +288,7 @@ CREATE TABLE suggestions_type (
   PRIMARY KEY (suggestions_type_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.suggestions_type           TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.suggestions_type           TO 'qalert_app'@'%';
 
 CREATE TABLE suggestions (
   suggestions_id BIGINT NOT NULL AUTO_INCREMENT,
@@ -303,7 +302,7 @@ CREATE TABLE suggestions (
   CONSTRAINT fk_suggestions__user FOREIGN KEY (user_id) REFERENCES user (user_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.suggestions          TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.suggestions          TO 'qalert_app'@'%';
 
 
 
@@ -317,7 +316,7 @@ create table additive_function(
     created_datetime 		datetime DEFAULT CURRENT_TIMESTAMP,
 	constraint pk_additive_function primary key(additive_function_id)
 );
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.additive_function          TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.additive_function          TO 'qalert_app'@'%';
 
 
 
@@ -332,7 +331,7 @@ create table aliment_category(
     created_datetime 		datetime DEFAULT CURRENT_TIMESTAMP,
 	constraint pk_additive_function primary key(aliment_category_id)
 );
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.aliment_category          TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.aliment_category          TO 'qalert_app'@'%';
 
 
 
@@ -347,7 +346,7 @@ create table aliment(
 	constraint pk_aliment primary key(aliment_id),
 	CONSTRAINT fk_aliment__category FOREIGN KEY (aliment_category_id) REFERENCES aliment_category(aliment_category_id)
 );
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.aliment          TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.aliment          TO 'qalert_app'@'%';
 
 CREATE TABLE user_subscription (
     user_subscription_id BIGINT NOT NULL AUTO_INCREMENT,
@@ -361,4 +360,123 @@ CREATE TABLE user_subscription (
     CONSTRAINT fk_user_subscription__user FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
-GRANT SELECT, INSERT, UPDATE ON qalert_bd.user_subscription                TO 'qalert_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.user_subscription                TO 'qalert_app'@'%';
+
+
+
+
+-- ************************************************************************************************
+-- *************************************************************************************** payments
+-- ************************************************************************************************
+drop table if exists payment_detail;
+drop table if exists payment;
+drop table if exists payment_status;
+drop table if exists currency;
+
+ALTER TABLE user DROP FOREIGN KEY fk_user__subscription;
+DROP TABLE IF EXISTS user_subscription;
+DROP TABLE IF EXISTS subscription;
+drop table if exists product;
+
+
+
+create table product(
+	product_id			int,
+    product_code 		CHAR(11),
+    product_name		varchar(100),
+    price				DECIMAL(10, 2),
+    product_description	varchar(200),
+    product_status_id	int default 6,
+    created_datetime 	DATETIME DEFAULT CURRENT_TIMESTAMP,
+    constraint pk_product primary key(product_id),
+    constraint fk_product__status foreign key(product_status_id) references status(status_id),
+    constraint uk_product__code unique(product_code)
+);
+GRANT SELECT ON qalert_bd.product                TO 'qalert_app'@'%';
+
+
+
+CREATE TABLE currency (
+    currency_id 		int,
+    currency_code 		VARCHAR(3) NOT NULL UNIQUE,
+    currency_name 		VARCHAR(50) NOT NULL,
+    symbol 				VARCHAR(5) NOT NULL,
+    constraint pk_currency primary key(currency_id)
+);
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.currency                TO 'qalert_app'@'%';
+
+
+
+CREATE TABLE payment (
+    payment_id 					BIGINT AUTO_INCREMENT,
+    payment_code				char(17),
+    user_id 					BIGINT NOT NULL,
+
+    amount 						DECIMAL(10,2),
+    currency_id 				int NOT NULL DEFAULT 1,
+
+    payment_status_id			int DEFAULT 8,
+
+    created_date 				DATE DEFAULT (CURRENT_DATE),
+    created_time 				TIME DEFAULT (CURRENT_TIME),
+    updated_datetime 			DATETIME NULL,
+    
+    payment_error				text,
+	
+    constraint pk_payment primary key(payment_id),
+    CONSTRAINT fk_payment__currency FOREIGN KEY (currency_id) REFERENCES currency(currency_id),
+    CONSTRAINT fk_payment__payment_status FOREIGN KEY (payment_status_id) REFERENCES status(status_id),
+    CONSTRAINT fk_payment__user FOREIGN KEY (user_id) REFERENCES user(user_id)
+);
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.payment                TO 'qalert_app'@'%';
+
+
+
+CREATE TABLE payment_detail (
+	payment_id  bigint not null,
+	product_id	int not null,
+    quantity 	INT NOT NULL,
+    unit_price 	DECIMAL(10,2) NOT NULL,
+    discount	DECIMAL(10,2) NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    constraint pk_payment_detail primary key(payment_id, product_id),
+    constraint fk_payment_detail__product foreign key(product_id) references product(product_id)
+);
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.payment_detail                TO 'qalert_app'@'%';
+
+
+
+CREATE TABLE subscription (
+    subscription_id 	INTEGER not null,
+    product_id			int not null,
+    discount 			DECIMAL(10, 2),
+    subscription_months INT,
+    created_datetime 	DATETIME DEFAULT CURRENT_TIMESTAMP,
+    subscription_status BIT(1) DEFAULT b'1',
+    CONSTRAINT pk_subscription PRIMARY KEY (subscription_id),
+    constraint fk_subscription__product foreign key(product_id) references product(product_id)
+);
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.subscription                TO 'qalert_app'@'%';
+insert into subscription(subscription_id, product_id, discount, subscription_months) values
+(1, 1, 0, 1),
+(2, 1, 20, 6),
+(3, 1, 50, 12);
+
+
+
+ALTER TABLE user ADD CONSTRAINT fk_user__subscription FOREIGN KEY (subscription_id) REFERENCES subscription(subscription_id);
+
+
+
+CREATE TABLE user_subscription (
+    user_subscription_id BIGINT NOT NULL AUTO_INCREMENT,
+    subscription_id INTEGER NOT NULL,
+    user_id BIGINT NOT NULL,
+    created_datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    expires_at	DATETIME,
+    status BIT(1) DEFAULT b'1',
+    CONSTRAINT pk_user_subscription PRIMARY KEY (user_subscription_id),
+    CONSTRAINT fk_user_subscription__subscription FOREIGN KEY (subscription_id) REFERENCES subscription(subscription_id),
+    CONSTRAINT fk_user_subscription__user FOREIGN KEY (user_id) REFERENCES user(user_id)
+);
+GRANT SELECT, INSERT, UPDATE ON qalert_bd.user_subscription                TO 'qalert_app'@'%';

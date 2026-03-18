@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+
+<input id="message" type="text" />
+
+<button onclick="consumirPost()">Consumir POST</button>
+
+<ul id="messages"></ul>
+
+<script>
+    // WebSocket
+    var socket = new SockJS('http://localhost:8080/qalert-services/ws');
+    var stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function(frame) {
+
+        stompClient.subscribe('/payment/1', function(message) {
+            console.log(message);
+        });
+
+    });
+
+    // POST
+    function consumirPost() {
+        fetch('http://localhost:8080/qalert-services/profile/acm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userName: "JEANPAULDC90@GMAIL.COM"
+                ,password: "123456789"
+                ,deviceId: 665
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Respuesta:', data);
+
+            // opcional: mostrar en pantalla
+            const ul = document.getElementById('messages');
+            const li = document.createElement('li');
+            li.textContent = JSON.stringify(data);
+            ul.appendChild(li);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -13,7 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         //config.setApplicationDestinationPrefixes(ApiConst.WS_SERVER_PREFIX); 
-        config.enableSimpleBroker(ApiConst.WS_CLIENT_PREFIX); 
+        config.enableSimpleBroker(ApiConst.WS_CLIENT_PREFIX);
     }
 
     @Override

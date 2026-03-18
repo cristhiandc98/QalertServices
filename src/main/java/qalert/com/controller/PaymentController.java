@@ -1,5 +1,7 @@
 package qalert.com.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -9,6 +11,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -22,7 +25,7 @@ import qalert.com.models.izipay.IzipayPaymentUpdateRequest;
 import qalert.com.models.payment.PaymentCreationRequest;
 import qalert.com.models.payment.PaymentUpdateRequest;
 import qalert.com.models.service_log.LogServiceRequest;
-import qalert.com.models.subscription.SubscriptionModel;
+import qalert.com.models.subscription.SubscriptionLabelsResponse;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.enums.PaymentStatusEnum;
@@ -77,16 +80,48 @@ public class PaymentController {
 
 
     @PostMapping("/update")
-    public ResponseEntity<?> receiveWebhook(@RequestBody IzipayPaymentUpdateRequest request){
+    public ResponseEntity<?> izipayWebhook(
+            @RequestBody Map<String, Object> request, HttpServletRequest http) {
 
-        paymentService.update(new PaymentUpdateRequest(request.getPaymentId(), PaymentStatusEnum.fromId(request.getPaymentStatusId()), null));
+        LogServiceRequest logModel = logService.setRequestData(http, request);
 
-        messagingTemplate.convertAndSend(
-                ApiConst.WS_CLIENT_PREFIX + "/" + request.getPaymentId(),
-                new Response2<>(true)
-        );
+        Response2<Map<String, Object>> out;
+
+        try {
+            messagingTemplate.convertAndSend(
+                    ApiConst.WS_CLIENT_PREFIX + "/" + 1,
+                    new Response2<>(request)
+            );
+
+            out = new Response2<>();
+
+        } catch (DataAccessException ex) {
+            out = new Response2<>(ex);
+        } catch (ConflictException ex) {
+            out = new Response2<>(ex);
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
+        }
+
+        out.setData(request);
+        logService.setResponseDataAndSave(logModel, out);
 
         return ResponseEntity.ok().build();
     }
+
+
+
+    // @PostMapping("/update")
+    // public ResponseEntity<?> receiveWebhook(@RequestBody IzipayPaymentUpdateRequest request){
+
+    //     paymentService.update(new PaymentUpdateRequest(request.getPaymentId(), PaymentStatusEnum.fromId(request.getPaymentStatusId()), null));
+
+    //     messagingTemplate.convertAndSend(
+    //             ApiConst.WS_CLIENT_PREFIX + "/" + request.getPaymentId(),
+    //             new Response2<>(true)
+    //     );
+
+    //     return ResponseEntity.ok().build();
+    // }
 
 }

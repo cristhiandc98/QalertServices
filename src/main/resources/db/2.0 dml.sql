@@ -21,7 +21,9 @@ use qalert_bd;
  ('/additive','GET','Lista todos los aditivos registrados'),
  ('/aliment','GET','Listado de alimentos'),
  ('/user/update-password','PUT','Actualiza la contraseña del usuario'),
- ('/payment', 'POST', 'inserta un nuevo pago en el sistema y genera url de izipay');
+ ('/payment', 'POST', 'inserta un nuevo pago en el sistema y genera url de izipay'),
+ ('/subscription','GET','Obtiene el listado de suscripciones activas del sistema'),
+ ('/payment/update','POST','actualiza el estado de un pago en el sistema');
 
  INSERT INTO subscription(amount,subscription_months)
  VALUE (21.90,1),(59.90,6),(99.90,12);
@@ -325,3 +327,39 @@ insert into aliment(aliment_name,letter,description,aliment_category_id)values('
 insert into aliment(aliment_name,letter,description,aliment_category_id)values('Zapallo','Z','Cuenta con innumerables propiedades como regular la función intestinal por ser alta en fibra y producir sensación de saciedad. Regula el sistema nervioso y es gran fortalecedor óseo. Gran desintoxicante y la regularidad de su consumo mejora el funcionamiento de la vejiga y riñones, etc.',10); 
 insert into aliment(aliment_name,letter,description,aliment_category_id)values('Zapallito Italiano','Z','También conocida como calabacín. Ayuda a bajar el nivel de colesterol y contribuye a disminuir el riesgo de la aterosclerosis. Fortalece la vista, gracias a la luteína y la zeaxantina.',10); 
 insert into aliment(aliment_name,letter,description,aliment_category_id)values('Zarzamora','Z','Es una planta generalmente silvestre de la que se aprovechan sus frutos, unas bayas pequeñas de color negro muy aromáticas y algo ácidas. Se consumen crudas, aunque también se emplean en la elaboración de compotas, macedonias, tartas, etc. Son ricas en vitaminas y minerales. Además aportan fibra y contienen pocas calorías.',10); 
+
+
+
+delete from status where status_type_id = 5;
+delete from status where status_type_id = 6;
+delete from status_type where status_type_id = 5;
+delete from status_type where status_type_id = 6;
+
+
+
+insert into status_type(status_type_id, name)values(5, 'product');
+insert into status(status_id, status_type_id, name)values(6, 5, 'active'), (7, 5, 'inactive');
+
+
+
+insert into status_type(status_type_id, name)values(6, 'payment');
+insert into status(status_type_id, status_id, status_code, name)values
+(6, 8, 'PENDING',   'Pago creado, esperando confirmación'),
+(6, 9, 'PAID',      'Pago confirmado exitosamente'),
+(6, 10, 'FAILED',    'Pago rechazado o fallido'),
+(6, 11, 'CANCELLED', 'Pago cancelado por el usuario'),
+(6, 12, 'EXPIRED',   'Sesión de pago expirada'),
+(6, 13, 'REFUNDED',  'Pago reintegrado'),
+(6, 14, 'ERROR_GENERATE_URL',  'Error durante la generación de URL de pago');
+
+
+
+INSERT INTO product(product_id, product_code, product_name,
+	price, product_description)
+values(1, 'QALERT-0001', 'QALERT PREMIUM', 
+	100, 'versión premium del app');
+
+
+
+INSERT INTO currency (currency_id, currency_code, currency_name, symbol) VALUES
+(1, 'PEN', 'SOL', 'S/');

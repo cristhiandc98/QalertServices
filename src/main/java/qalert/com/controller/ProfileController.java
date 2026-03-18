@@ -26,7 +26,7 @@ import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.UserMessageConst;
 
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(ApiConst.PROFILE)
 public class ProfileController {
@@ -36,6 +36,7 @@ public class ProfileController {
 
     @Autowired
     private ILogService logService;
+
 
     @PostMapping(produces = ApiConst.PRODUCES)
     public ResponseEntity<?> InsertProfile(HttpServletRequest http, @RequestBody ProfileRequest request) {

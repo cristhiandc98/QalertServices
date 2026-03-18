@@ -16,6 +16,7 @@ public class ApiConst {
     public static final String ADDITIVE = "/additive";
     public static final String ALIMENT = "/aliment";
     public static final String PAYMENT = "/payment";
+    public static final String SUBSCRIPTION = "/subscription";
 
     // SECURITY
     public static final String GET_VERIFICATION_CODE = "/get-verification-code";

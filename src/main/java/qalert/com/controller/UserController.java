@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mysql.cj.protocol.x.Ok;
+
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.IUser;
 import qalert.com.interfaces.log.ILogService;
@@ -18,7 +20,8 @@ import qalert.com.models.generic.Response2;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.models.user.UserRequest;
 import qalert.com.utils.consts.ApiConst;
-import qalert.com.utils.consts.CommonConsts; 
+import qalert.com.utils.consts.CommonConsts;
+import qalert.com.utils.exceptions.InvalidFormException; 
 
 @RestController
 @RequestMapping(ApiConst.USER)
@@ -38,11 +41,19 @@ public class UserController {
         Response2<String> out;
 
         try {
-            String error;
-            if ((error = request.validateUserRegister()) == null)
-                service.insert(request);
-                out = new Response2<>(HttpStatus.CREATED, "¡Usuario registrado exitosamente!", true);
+            request.validateUserRegister();
+
+            service.insert(request);
+
+            out = new Response2<>(HttpStatus.CREATED, "¡Usuario registrado exitosamente!", true);
+
+        } catch (InvalidFormException e) {
+            out = new Response2<>(e);
+        
         } catch (DataAccessException ex) {
+            out = new Response2<>(ex);
+
+        } catch (Exception ex) {
             out = new Response2<>(ex);
         }
 
@@ -50,6 +61,8 @@ public class UserController {
 
         return ResponseEntity.status(out.getStatusCode()).body(out);
     }
+
+
 
     @PutMapping(value = ApiConst.UPDATE_PASSWORD, produces = ApiConst.PRODUCES)
     public ResponseEntity<?> updatePassword(HttpServletRequest http, @RequestBody UserRequest request) { 
@@ -74,17 +87,34 @@ public class UserController {
         return ResponseEntity.status(out.getStatusCode()).body(out);
     }
 
-    @PostMapping(value = ApiConst.VALIDATE, produces = ApiConst.PRODUCES)
-    public ResponseEntity<Response2<String>> validateNewUser(HttpServletRequest http,
-            @RequestBody UserRequest request) {
-        LogServiceRequest logModel = serviceLog.setRequestData(http, request);
-        Response2<String> out;
 
-        String error;
-        if ((error = request.validateUserRegister()) == null) {
-            out = service.validateNewUser(request);
-        } else {
-            out = new Response2<>(HttpStatus.BAD_REQUEST, error, false);
+
+    @PostMapping(value = ApiConst.EXISTING_USER, produces = ApiConst.PRODUCES)
+    public ResponseEntity<?> existingUser(HttpServletRequest http,
+            @RequestBody UserRequest request) {
+
+        LogServiceRequest logModel = serviceLog.setRequestData(http, request);
+
+        Response2<Boolean> out;
+
+        try {
+            request.validateUserRegister();
+
+            Boolean existingUser = service.existingUser(request);
+
+            if(existingUser)
+                out = new Response2<>(HttpStatus.OK, "El usuario ingresado ya existe en el sistema", true, true);
+            else
+                out = new Response2<>(HttpStatus.OK, "El usuario ingresado no existe en el sistema", true, false);
+
+        } catch (InvalidFormException e) {
+            out = new Response2<>(e);
+        
+        } catch (DataAccessException ex) {
+            out = new Response2<>(ex);
+
+        } catch (Exception ex) {
+            out = new Response2<>(ex);
         }
 
         serviceLog.setResponseDataAndSave(logModel, out);

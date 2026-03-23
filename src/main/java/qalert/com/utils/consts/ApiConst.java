@@ -31,7 +31,7 @@ public class ApiConst {
 
     // USER
     public static final String UPDATE_PASSWORD = "/update-password";
-    public static final String VALIDATE = "/validate";
+    public static final String EXISTING_USER = "/existing-user";
 
     // MASTER
     public static final String GET_APP_SETTINGS = "/get-app-settings";
@@ -45,6 +45,7 @@ public class ApiConst {
     // Suggestions
     public static final String INSERT_SUGGESTIONS = "/insert";
 
+    //Subcripstion  
 
     //WEB SOCKET
     public static final String WS_ENDPOINT = "/ws";

@@ -112,8 +112,6 @@ public class AppConfig implements WebMvcConfigurer{
 
     @Bean
     CorsFilter corsFilter() {
-        System.out.println("CORS FILTER ACTIVADO");
-
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*");

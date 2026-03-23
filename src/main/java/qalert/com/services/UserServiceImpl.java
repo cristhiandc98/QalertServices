@@ -43,8 +43,8 @@ public class UserServiceImpl implements IUser{
     }
 
     @Override
-    public Response2<String> validateNewUser(UserRequest request) {
-        return dao.validateNewUser(request);
+    public Boolean existingUser(UserRequest request) {
+        return dao.existingUser(request);
     }
 
 }

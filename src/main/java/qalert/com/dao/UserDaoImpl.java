@@ -37,21 +37,21 @@ public class UserDaoImpl implements IUser {
     @Override
     public void insert(UserRequest request) {
         
-            SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                    .withCatalogName(data.getSchema())
-                    .withProcedureName(DbConst.SP_INSERT_USER);
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName(data.getSchema())
+                .withProcedureName(DbConst.SP_INSERT_USER);
 
-            SqlParameterSource input = new MapSqlParameterSource()
-                    .addValue("vi_username", request.getLogin().getUserName())
-                    .addValue("vi_password", request.getLogin().getPassword())
-                    .addValue("ni_device_id", request.getLogin().getDeviceId())
-                    .addValue("vi_verification_code", request.getLogin().getVerificationCode())
-                    .addValue("vi_email", request.getEmail())
-                    .addValue("vi_full_name", request.getFullName())
-                    .addValue("ni_document_type_id", request.getDocumentTypeId())
-                    .addValue("vi_document", request.getDocument());
+        SqlParameterSource input = new MapSqlParameterSource()
+                .addValue("vi_username", request.getLogin().getUserName())
+                .addValue("vi_password", request.getLogin().getPassword())
+                .addValue("ni_device_id", request.getLogin().getDeviceId())
+                .addValue("vi_verification_code", request.getLogin().getVerificationCode())
+                .addValue("vi_email", request.getEmail())
+                .addValue("vi_full_name", request.getFullName())
+                .addValue("ni_document_type_id", request.getDocumentTypeId())
+                .addValue("vi_document", request.getDocument());
 
-             jdbcCall.execute(input);
+            jdbcCall.execute(input);
     }
 
     @Override
@@ -141,26 +141,12 @@ public class UserDaoImpl implements IUser {
     }
 
     @Override
-    public Response2<String> validateNewUser(UserRequest request) {
-        Response2<String> out;
+    public Boolean existingUser(UserRequest request) {
 
-        try {
-            String sql = "SELECT fn_validate_new_user(?)";
-            Boolean exists = jdbcTemplate.queryForObject(sql, new Object[] {
-                    request.getLogin().getUserName()
-            }, Boolean.class);
+        String sql = "SELECT " + data.getSchema() + ".fn_existing_user(?)";
 
-            if (Boolean.TRUE.equals(exists)) {
-                out = new Response2<>(HttpStatus.OK, "El nombre de usuario ya se encuentra registrado", false);
-            } else {
-                out = new Response2<>(HttpStatus.OK, "Usuario disponible", true);
-            }
-
-        } catch (Exception ex) {
-            out = new Response2<>(ex, "Error al validar si el usuario existe");
-        }
-
-        return out;
+        return jdbcTemplate.queryForObject(sql, new Object[] {
+                request.getLogin().getUserName()
+        }, Boolean.class);
     }
-
 }

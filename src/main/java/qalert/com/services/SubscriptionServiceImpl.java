@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import qalert.com.interfaces.ISubscription;
-import qalert.com.models.subscription.SubscriptionLabelsResponse;
+import qalert.com.models.subscription.SubscriptionResponse;
 import qalert.com.utils.consts.CommonConsts;
 
 @Qualifier(CommonConsts.QALIFIER_SERVICE)
@@ -19,8 +19,8 @@ public class SubscriptionServiceImpl implements ISubscription{
     private ISubscription dao;
 
     @Override
-    public List<SubscriptionLabelsResponse> getAll() {
-        return dao.getAll();
+    public List<SubscriptionResponse> getSubscriptions() {
+        return dao.getSubscriptions();
     }
 
 }

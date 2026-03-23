@@ -73,6 +73,13 @@ public class DbUtil {
         return (boolean) data.get(key);
     }
 
+    public static float getFloat(Map<String, Object> data, String key) {
+        if (data.get(key) == null) {
+            return 0f;
+        }
+        return ((Number) data.get(key)).floatValue();
+    }
+
     public static LocalDate getLocalDate(Map<String, Object> data, String key) {
         Object value = data.get(key);
         if (value == null) return null;

@@ -23,7 +23,8 @@ use qalert_bd;
  ('/user/update-password','PUT','Actualiza la contraseña del usuario'),
  ('/payment', 'POST', 'inserta un nuevo pago en el sistema y genera url de izipay'),
  ('/subscription','GET','Obtiene el listado de suscripciones activas del sistema'),
- ('/payment/update','POST','actualiza el estado de un pago en el sistema');
+ ('/payment/update','POST','actualiza el estado de un pago en el sistema'),
+ ('/user/existing-user','POST','verifica si el usuario ingresado existe en el sistema');
 
  INSERT INTO subscription(amount,subscription_months)
  VALUE (21.90,1),(59.90,6),(99.90,12);

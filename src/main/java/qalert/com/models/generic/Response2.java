@@ -6,10 +6,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import qalert.com.utils.consts.UserMessageConst;
 import qalert.com.utils.exceptions.ConflictException;
 import qalert.com.utils.exceptions.InvalidFormException;
+import qalert.com.utils.exceptions.WebServiceException;
 
 public class Response2<T> {
 
@@ -71,11 +74,16 @@ public class Response2<T> {
 
     public Response2(ConflictException exception) {
         this(HttpStatus.CONFLICT, exception.getMessage(), false);
+    }
 
-        if(exception.errorMssg == null)
-            setError(exception);
-        else 
-            errorMssg = exception.errorMssg;
+    public Response2(WebServiceException exception, ObjectMapper mapper) {
+        this(HttpStatus.CONFLICT, exception.getMessage(), false);
+        try {
+            this.setErrorMssg(" - request: " + mapper.writeValueAsString(exception.getRequest()) + 
+                    " - response: " + mapper.writeValueAsString(exception.getResponse()));
+        } catch (JsonProcessingException e) {
+            errorMssg += " | error al obtener el json de la excepción: WebServiceException";
+        }
     }
 
     public Response2(DataAccessException ex) {
@@ -115,7 +123,7 @@ public class Response2<T> {
                     " | method: " + elemento.getMethodName() +
                     " | error: " + exception.getMessage();
         } catch (Exception e) {
-            errorMssg += " | json: -";
+            errorMssg += " | error al obtener datos de la excepción";
         }
 
         return errorMssg;

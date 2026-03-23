@@ -54,7 +54,7 @@ public class WebSecurityConfig {
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(requests -> {
 					requests.requestMatchers("/**").permitAll();
-					requests.requestMatchers(mvc.pattern(ApiConst.USER + ApiConst.VALIDATE)).permitAll();
+					requests.requestMatchers(mvc.pattern(ApiConst.USER + ApiConst.EXISTING_USER)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.MASTER + ApiConst.GET_TERMS_AND_CONDITIONS)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.SECURITY + ApiConst.GET_VERIFICATION_CODE)).permitAll();
 					requests.requestMatchers(mvc.pattern(ApiConst.USER)).permitAll();

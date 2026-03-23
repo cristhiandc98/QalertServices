@@ -2,10 +2,10 @@ package qalert.com.interfaces;
 
 import java.util.List;
 
-import qalert.com.models.subscription.SubscriptionLabelsResponse;
+import qalert.com.models.subscription.SubscriptionResponse;
 
 public interface ISubscription {
 
-    List<SubscriptionLabelsResponse> getAll();
+    List<SubscriptionResponse> getSubscriptions();
 
 }

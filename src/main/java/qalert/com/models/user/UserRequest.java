@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import qalert.com.models.login.LoginRequest;
 import qalert.com.models.person.PersonRequest;
+import qalert.com.utils.exceptions.InvalidFormException;
 
 public class UserRequest extends PersonRequest {
 
@@ -33,7 +34,7 @@ public class UserRequest extends PersonRequest {
         return error;
     }
 
-    public String validateUserRegister() {
+    public void validateUserRegister() {
         String error;
         String fullName = getFullName();
         Integer documentTypeId = getDocumentTypeId();
@@ -47,9 +48,9 @@ public class UserRequest extends PersonRequest {
                 && (error = (documentTypeId != null && documentTypeId > 0) ? null : "Tipo de documento inválido") == null
                 && (error = validateDocument(document, documentTypeId)) == null
                 && (error = (getEmail().equals(getLogin().getUserName())  ? null : "Formulario inválido")) == null) {
-            return null;
-        }
-        return error;
+                    
+        }else
+            throw new InvalidFormException(error);
     }
 
     private String validateDocument(String document, Integer documentTypeId) {

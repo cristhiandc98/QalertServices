@@ -1,7 +1,5 @@
 package qalert.com.models.izipay;
 
-import java.math.BigDecimal;
-
 import qalert.com.models.payment.PaymentCreationResponse;
 
 public class IzipayPaymentCreationRequest{

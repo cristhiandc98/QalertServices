@@ -497,6 +497,8 @@ END ;;
 DELIMITER ;
 grant execute on procedure qalert_bd.sp_insert_log_service   to 'qalert_app'@'%';
 
+
+
 CREATE  OR REPLACE VIEW vw_status AS
 
 	-- ***************************************************************************
@@ -867,27 +869,26 @@ grant execute on procedure qalert_bd.sp_get_scan_list   to 'qalert_app'@'%';
 
 
 
-DROP FUNCTION IF EXISTS fn_validate_new_user;
+DROP FUNCTION IF EXISTS fn_existing_user;
 DELIMITER $$
-CREATE FUNCTION fn_validate_new_user(p_username VARCHAR(50)) 
-RETURNS BOOLEAN
-DETERMINISTIC
-READS SQL DATA
+CREATE FUNCTION fn_existing_user(p_username VARCHAR(50)) 
+RETURNS TINYINT(1)
 BEGIN
-    DECLARE exists_flag BOOLEAN;
+    DECLARE exists_flag TINYINT(1);
 
     SELECT EXISTS (
         SELECT 1 
-        FROM user 
+        FROM `user` 
         WHERE username = p_username
     ) INTO exists_flag;
 
     RETURN exists_flag;
 END $$
-
 DELIMITER ;
+grant execute on function qalert_bd.fn_existing_user to 'qalert_app'@'%';
 
-grant execute on function qalert_bd.fn_validate_new_user to 'qalert_app'@'%';
+
+
 
 DROP PROCEDURE IF EXISTS sp_insert_profile;
 DELIMITER //
@@ -1372,6 +1373,7 @@ BEGIN
 	
 	select table_id
 		, field_id
+        , sequence
         , value_int
         , value_varchar
     from master
@@ -1447,7 +1449,7 @@ BEGIN
     SET @last_id = LAST_INSERT_ID();
     
     
-    insert into payment_detail(payment_id, product_id, quantity, unit_price, discount, total_amount)
+    insert into payment_detail(payment_id, product_id, quantity, unit_price, total_discount, total_amount)
     select @last_id, p.product_id, s.subscription_months, p.price, s.discount, (s.subscription_months * p.price - s.discount)
     from subscription s
 		inner join product p on p.product_id = s.product_id
@@ -1490,7 +1492,8 @@ drop procedure if exists sp_update_payment;
 DELIMITER ;;
 CREATE PROCEDURE sp_update_payment(
 	ni_payment_id				bigint,
-	ni_payment_status_id		int,
+    vi_payment_order_id			char(32),
+	vi_payment_status_name		varchar(20),
     vi_payment_error			text
 )
 BEGIN
@@ -1507,12 +1510,18 @@ BEGIN
 	-- Log
 	-- Fecha			Autor		Cod. Mod.	Comentarios
     -- 
-	-- ***************************************************************************    
+	-- ***************************************************************************  
+    
+    declare n_payment_status_id int default (select x.status_id
+											from status x 
+                                            where x.status_type_id = 6
+												and x.status_code = vi_payment_status_name);
     
 	UPDATE payment p
-	SET p.payment_status_id = ni_payment_status_id
+	SET p.payment_status_id = IFNULL(n_payment_status_id, payment_status_id)
+		, payment_order_id = IFNULL(vi_payment_order_id, payment_order_id)
 		, updated_datetime = CURRENT_TIMESTAMP()
-        , payment_error = vi_payment_error
+        , payment_error = IFNULL(vi_payment_error, payment_error)
 	WHERE p.payment_id = ni_payment_id;
     
 END;;
@@ -1521,35 +1530,82 @@ grant execute on procedure qalert_bd.sp_update_payment   to 'qalert_app'@'%';
 
 
 
-drop procedure if exists sp_subscription_list;
+drop procedure if exists sp_get_payment;
 DELIMITER ;;
-CREATE PROCEDURE sp_subscription_list()
+CREATE PROCEDURE sp_get_payment(
+	vi_payment_code			char(17)
+)
 BEGIN
 
 	-- ***************************************************************************
 	-- Versión:		1.0
 	-- Autor: 		Cristhian Díaz
 	-- Fecha:  		2026-02-28
-	-- Objetivo: 	get all active subcriptions
+	-- Objetivo: 	get a payment
 	-- ------------------------------------------------------------
 	-- Ejemplo de uso
-	-- call sp_subscription_list();
+	-- call sp_get_payment('');
 	-- ------------------------------------------------------------
 	-- Log
 	-- Fecha			Autor		Cod. Mod.	Comentarios
     -- 
 	-- ***************************************************************************    
     
-	select s.subscription_id 
-		, concat(s.subscription_months, ' mes', if(s.subscription_months = 1, '', 'es'))  as subscription_months
-        , p.price
-        , (p.price - s.discount) as discounted_price
-        , concat(cast((s.discount / p.price) * 100 as SIGNED), '%') as discount_percentage
-    from subscription s 
-		inner join product p on p.product_id = s.product_id
-				and p.product_status_id = 6
-    where s.subscription_status = 1;
+	select p.payment_id
+		, payment_order_id
+		, p.payment_code
+		, p.amount
+		, c.currency_code
+    from payment p
+		inner join currency c on c.currency_id = p.currency_id
+    where p.payment_code = vi_payment_code;
     
 END;;
 DELIMITER ;
-grant execute on procedure qalert_bd.sp_subscription_list   to 'qalert_app'@'%';
+grant execute on procedure qalert_bd.sp_get_payment   to 'qalert_app'@'%';
+
+
+
+
+drop procedure if exists sp_get_subscriptions;
+DELIMITER ;;
+CREATE PROCEDURE sp_get_subscriptions()
+BEGIN
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2026-02-28
+	-- Objetivo: 	get a payment
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- call sp_get_subscriptions();
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************    
+    
+    with subscription_cte as (
+		select s.subscription_id
+			, s.subscription_months
+			, p.price * s.subscription_months as price_without_discount
+			, p.price * s.subscription_months - s.discount as price_with_discount
+		from subscription s
+			inner join product p on p.product_id = s.product_id
+				and p.product_status_id = 6
+		where s.subscription_status = 1
+	)
+    select x.subscription_id
+		, x.subscription_months
+        , x.price_without_discount
+        , x.price_with_discount
+		, ROUND(100 - (x.price_with_discount * 100) / x.price_without_discount, 2) as discount_percentage
+    from subscription_cte x
+    order by x.subscription_months asc;
+    
+END;;
+DELIMITER ;
+grant execute on procedure qalert_bd.sp_get_subscriptions   to 'qalert_app'@'%';
+
+call sp_get_subscriptions();

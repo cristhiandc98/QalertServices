@@ -1,23 +1,19 @@
 package qalert.com.models.payment;
 
-import qalert.com.utils.enums.PaymentStatusEnum;
-
 public class PaymentUpdateRequest {
 
     private long paymentId;
-    private PaymentStatusEnum paymentStatusId;
+    private String paymentOrderId;
+    private String paymentStatusCode;
     private String paymentError;
 
     public PaymentUpdateRequest() {
     }
 
-    public PaymentUpdateRequest(long paymentId, PaymentStatusEnum paymentStatusId) {
-        this(paymentId, paymentStatusId, null);
-    }
-
-    public PaymentUpdateRequest(long paymentId, PaymentStatusEnum paymentStatusId, String paymentError) {
+    public PaymentUpdateRequest(long paymentId, String paymentOrderId, String paymentStatusName, String paymentError) {
         this.paymentId = paymentId;
-        this.paymentStatusId = paymentStatusId;
+        this.paymentOrderId = paymentOrderId;
+        this.paymentStatusCode = paymentStatusName;
         this.paymentError = paymentError;
     }
 
@@ -37,11 +33,19 @@ public class PaymentUpdateRequest {
         this.paymentId = paymentId;
     }
 
-    public PaymentStatusEnum getPaymentStatusId() {
-        return paymentStatusId;
+    public String getPaymentStatusCode() {
+        return paymentStatusCode;
     }
 
-    public void setPaymentStatusId(PaymentStatusEnum paymentStatusId) {
-        this.paymentStatusId = paymentStatusId;
+    public void setPaymentStatusCode(String paymentStatusName) {
+        this.paymentStatusCode = paymentStatusName;
+    }
+
+    public String getPaymentOrderId() {
+        return paymentOrderId;
+    }
+
+    public void setPaymentOrderId(String paymentOrderId) {
+        this.paymentOrderId = paymentOrderId;
     }
 }

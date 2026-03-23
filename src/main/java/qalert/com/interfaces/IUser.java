@@ -13,6 +13,6 @@ public interface IUser {
 	
     Response2<UserResponse> login(LoginRequest request);
 
-    Response2<String> validateNewUser(UserRequest request);
+    Boolean existingUser(UserRequest request);
 
 }

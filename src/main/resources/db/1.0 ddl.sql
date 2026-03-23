@@ -437,7 +437,7 @@ CREATE TABLE payment_detail (
 	product_id	int not null,
     quantity 	INT NOT NULL,
     unit_price 	DECIMAL(10,2) NOT NULL,
-    discount	DECIMAL(10,2) NOT NULL,
+    total_discount	DECIMAL(10,2) NOT NULL,
     total_amount DECIMAL(10,2) NOT NULL,
     constraint pk_payment_detail primary key(payment_id, product_id),
     constraint fk_payment_detail__product foreign key(product_id) references product(product_id)

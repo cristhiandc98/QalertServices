@@ -42,8 +42,10 @@ public class MasterController {
 
         try {
             out = new Response2<> (service.getTermsAndConditions());
+
         } catch (DataAccessException ex) {
             out = new Response2<>(ex);
+            
         } catch (Exception ex) {
             out = new Response2<>(ex);
         }

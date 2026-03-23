@@ -15,7 +15,7 @@ import qalert.com.interfaces.ISubscription;
 import qalert.com.interfaces.log.ILogService;
 import qalert.com.models.generic.Response2;
 import qalert.com.models.service_log.LogServiceRequest;
-import qalert.com.models.subscription.SubscriptionLabelsResponse;
+import qalert.com.models.subscription.SubscriptionResponse;
 import qalert.com.utils.consts.ApiConst;
 import qalert.com.utils.consts.CommonConsts;
 
@@ -34,16 +34,18 @@ public class SubscriptionController {
 
 	
     @GetMapping(produces = ApiConst.PRODUCES)
-	public ResponseEntity<?> getTermsAndConditions(HttpServletRequest http) {
+	public ResponseEntity<?> getSubscriptions(HttpServletRequest http) {
 
 		LogServiceRequest logModel = logService.setRequestData(http);
 
-		Response2<List<SubscriptionLabelsResponse>> out;
+		Response2<List<SubscriptionResponse>> out;
 
         try {
-            out = new Response2<> (service.getAll());
+            out = new Response2<> (service.getSubscriptions());
+            
         } catch (DataAccessException ex) {
             out = new Response2<>(ex);
+
         } catch (Exception ex) {
             out = new Response2<>(ex);
         }

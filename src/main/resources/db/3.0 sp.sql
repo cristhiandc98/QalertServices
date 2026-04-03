@@ -1319,53 +1319,6 @@ GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_aliment_list TO 'qalert_app'@'%';
 
 
 
-DROP PROCEDURE IF EXISTS sp_subscription;
-DELIMITER //
-
-CREATE PROCEDURE sp_subscription(
-    IN vi_user_id INT,
-    IN vi_subscription_id INT
-)
-BEGIN
-
-    DECLARE v_months INT;
-    DECLARE v_expiration_date DATETIME;
-
-    DECLARE v_current_subscription INT;
-
-    -- 1. Revisar si el usuario ya tiene un subscription_id asignado
-    SELECT subscription_id
-    INTO v_current_subscription
-    FROM user
-    WHERE user_id = vi_user_id;
-
-    IF v_current_subscription IS NOT NULL THEN
-        SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'El usuario ya cuenta con la suscripción premium',
-                MYSQL_ERRNO = 50001;
-    END IF;
-
-    SELECT subscription_months 
-    INTO v_months
-    FROM subscription
-    WHERE subscription_id = vi_subscription_id;
-
-   SET v_expiration_date = DATE_ADD(NOW(), INTERVAL v_months MONTH);
-
-    UPDATE user
-    SET subscription_id = vi_subscription_id
-    WHERE user_id = vi_user_id;
-
- INSERT INTO user_subscription(user_id,subscription_id,expiration_months)
- VALUE(vi_user_id,vi_subscription_id,v_expiration_date);
-
-END //
-
-DELIMITER ;
-grant execute on procedure qalert_bd.sp_subscription   to 'qalert_app'@'%';
-
-
-
 DROP PROCEDURE IF EXISTS sp_get_app_settings_list;
 DELIMITER ;;
 CREATE PROCEDURE sp_get_app_settings_list()
@@ -1551,14 +1504,22 @@ BEGIN
     -- 
 	-- ***************************************************************************    
     
-	select p.payment_id
-		, payment_order_id
+	select p.user_id
+		, p.payment_id
 		, p.payment_code
+		, payment_order_id
 		, p.amount
 		, c.currency_code
+        , s.status_id
+        , s.status_code
+        , s.name as status_name
     from payment p
 		inner join currency c on c.currency_id = p.currency_id
-    where p.payment_code = vi_payment_code;
+        left join status s on s.status_type_id = 6
+			and s.status_id = p.payment_status_id
+    where p.payment_code = vi_payment_code
+		and p.payment_code = vi_payment_code
+	limit 1;
     
 END;;
 DELIMITER ;
@@ -1589,8 +1550,8 @@ BEGIN
     with subscription_cte as (
 		select s.subscription_id
 			, s.subscription_months
-			, p.price * s.subscription_months as price_without_discount
-			, p.price * s.subscription_months - s.discount as price_with_discount
+			, x.price_without_discount
+			, x.price_with_discount
 		from subscription s
 			inner join product p on p.product_id = s.product_id
 				and p.product_status_id = 6
@@ -1608,4 +1569,68 @@ END;;
 DELIMITER ;
 grant execute on procedure qalert_bd.sp_get_subscriptions   to 'qalert_app'@'%';
 
-call sp_get_subscriptions();
+
+
+drop procedure if exists sp_update_user_subscription;
+DELIMITER ;;
+CREATE PROCEDURE sp_update_user_subscription(
+	ni_user_id bigint
+)
+BEGIN
+
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2026-02-28
+	-- Objetivo: 	get a payment
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- call sp_get_payment('');
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************    
+    
+    declare n_payment_id		bigint;
+    declare n_subscription_id 	int default 1;
+    declare d_expire_at 		datetime;
+    
+    
+    select p.payment_id
+		, s.subscription_id
+		, DATE_ADD(p.created_date, INTERVAL s.subscription_months MONTH) AS fecha_vencimiento
+	into n_payment_id
+		, n_subscription_id
+		, d_expire_at
+	from payment p 
+		inner join payment_detail pd on pd.payment_id = p.payment_id
+		inner join subscription s on s.product_id = pd.product_id
+	where p.user_id = ni_user_id
+		and p.payment_status_id = 9
+	limit 1;
+    
+    
+    update user_subscription 
+    set status = 0
+    where user_id = ni_user_id
+		and status = 1;
+    
+    
+	insert into user_subscription(subscription_id,
+		user_id,
+		expires_at,
+        payment_id)
+	values(n_subscription_id,
+		ni_user_id,
+        d_expire_at,
+        n_payment_id);
+    
+    
+    UPDATE user
+    SET subscription_id = n_subscription_id
+    WHERE user_id = ni_user_id;
+    
+END;;
+DELIMITER ;
+grant execute on procedure qalert_bd.sp_update_user_subscription   to 'qalert_app'@'%';

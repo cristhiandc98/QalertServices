@@ -13,9 +13,9 @@
 <ul id="messages"></ul>
 
 <script>
-    // var path = 'http://localhost:8081/ws';
+    var path = 'http://localhost:8081/ws';
     //var path = 'http://localhost:8080/qalert-services/ws';
-     var path = 'https://api.qalert.click/qalert-services/ws';
+    //var path = 'https://api.qalert.click/qalert-services/ws';
     console.log(path);
 
 
@@ -24,9 +24,8 @@
     var stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function(frame) {
-
-        stompClient.subscribe('/1', function(message) {
-            console.log(message);
+        stompClient.subscribe('/payment/QALERT20260300028', function(message) {
+            console.log("MENSAJE:", message.body);
         });
 
     });

@@ -69,7 +69,7 @@ public class Response2<T> {
     // ***********************************************************************
     public Response2(InvalidFormException exception) {
         this(HttpStatus.BAD_REQUEST, exception.getMessage(), false);
-        setError(exception);
+        errorMssg = exception.getMessage();
     }
 
     public Response2(ConflictException exception) {
@@ -99,34 +99,19 @@ public class Response2<T> {
             default:
                 userMssg = UserMessageConst.INTERNAL_SERVER_ERROR;
                 statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-                setError(ex);
+                errorMssg = ex.getMessage();
                 break;
         }
     }
 
     public Response2(Exception exception) {
         this(HttpStatus.INTERNAL_SERVER_ERROR, UserMessageConst.INTERNAL_SERVER_ERROR, false);
-        setError(exception);
+        errorMssg = exception.getMessage();
     }
 
     public Response2(Exception exception, String userMssg) {
         this(HttpStatus.INTERNAL_SERVER_ERROR, userMssg, false);
-        setError(exception);
-    }
-
-    public String setError(Exception exception) {
-        try {
-            StackTraceElement elemento = exception.getStackTrace()[0];
-
-            errorMssg += " | class: " + elemento.getClassName() +
-                    " | line: " + elemento.getLineNumber() +
-                    " | method: " + elemento.getMethodName() +
-                    " | error: " + exception.getMessage();
-        } catch (Exception e) {
-            errorMssg += " | error al obtener datos de la excepción";
-        }
-
-        return errorMssg;
+        errorMssg = exception.getMessage();
     }
 
     // ***************************************************************

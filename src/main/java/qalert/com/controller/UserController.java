@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mysql.cj.protocol.x.Ok;
-
 import jakarta.servlet.http.HttpServletRequest;
 import qalert.com.interfaces.IUser;
 import qalert.com.interfaces.log.ILogService;

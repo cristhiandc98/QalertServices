@@ -2,7 +2,11 @@ package qalert.com.models.payment;
 
 import java.math.BigDecimal;
 
+import qalert.com.models.status.StatusResponse;
+
 public class PaymentGetResponse {
+
+    private Long userId;
 
     private Long paymentId;
 
@@ -14,7 +18,17 @@ public class PaymentGetResponse {
 
     private BigDecimal amount;
 
+    private StatusResponse status;
+
     public PaymentGetResponse() {
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getPaymentId() {
@@ -55,5 +69,13 @@ public class PaymentGetResponse {
 
     public void setPaymentOrderId(String paymentOrderId) {
         this.paymentOrderId = paymentOrderId;
+    }
+
+    public StatusResponse getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusResponse status) {
+        this.status = status;
     }
 }

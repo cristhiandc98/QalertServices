@@ -24,10 +24,8 @@ use qalert_bd;
  ('/payment', 'POST', 'inserta un nuevo pago en el sistema y genera url de izipay'),
  ('/subscription','GET','Obtiene el listado de suscripciones activas del sistema'),
  ('/payment/update','POST','actualiza el estado de un pago en el sistema'),
- ('/user/existing-user','POST','verifica si el usuario ingresado existe en el sistema');
-
- INSERT INTO subscription(amount,subscription_months)
- VALUE (21.90,1),(59.90,6),(99.90,12);
+ ('/user/existing-user','POST','verifica si el usuario ingresado existe en el sistema'),
+ ('/payment','GET','Obtiene los datos de un pago');
 
 -- ***********************************************************************
 -- ********************************************************************DML
@@ -357,8 +355,23 @@ insert into status(status_type_id, status_id, status_code, name)values
 
 INSERT INTO product(product_id, product_code, product_name,
 	price, product_description)
-values(1, 'QALERT-0001', 'QALERT PREMIUM', 
-	100, 'versión premium del app');
+values(1, 'QALERT-0001', 'QALERT PREMIUM', 100, 'versión premium del app'),
+    (2, 'QALERT-0002', 'QALERT PREMIUM 2', 600, 'versión premium del app 2'),
+    (3, 'QALERT-0003', 'QALERT PREMIUM 3', 1200, 'versión premium del app 3')
+
+
+
+INSERT INTO `qalert_bd`.`subscription`
+(`subscription_id`,
+`product_id`,
+`discount`,
+`subscription_months`,
+`created_datetime`,
+`subscription_status`)
+VALUES
+(4, 1, 10, 1, now(), 1),
+(5, 2, 20, 6, now(), 1),
+(6, 3, 30, 12, now(), 1);
 
 
 

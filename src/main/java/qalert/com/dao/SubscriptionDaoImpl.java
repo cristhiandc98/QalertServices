@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
@@ -58,6 +60,21 @@ public class SubscriptionDaoImpl implements ISubscription{
             out = null;
 
     	return out;
+    }
+
+
+
+    @Override
+    public void updateUserSubscription(long userId) {
+
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+            .withCatalogName(data.getSchema())
+            .withProcedureName(DbConst.SP_UPDATE_USER_SUBSCRIPTION);
+        
+        SqlParameterSource input = new MapSqlParameterSource()
+            .addValue("ni_user_id", userId);
+
+        jdbcCall.execute(input);
     }
 
 }

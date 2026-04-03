@@ -16,6 +16,7 @@ import qalert.com.models.payment.PaymentCreationRequest;
 import qalert.com.models.payment.PaymentCreationResponse;
 import qalert.com.models.payment.PaymentGetResponse;
 import qalert.com.models.payment.PaymentUpdateRequest;
+import qalert.com.models.status.StatusResponse;
 import qalert.com.utils.consts.DbConst;
 import qalert.com.utils.utils.DbUtil;
 
@@ -87,11 +88,18 @@ public class PaymentDaoImpl implements IPaymentDao{
         PaymentGetResponse model = new PaymentGetResponse();
         
         for (Map<String,Object> map : resultset) {
+            model.setUserId(DbUtil.getLong(map, "user_id"));
+
             model.setPaymentId(DbUtil.getLong(map, "payment_id"));
             model.setPaymentOrderId(DbUtil.getString(map, "payment_order_id"));
             model.setOrderId(DbUtil.getString(map, "payment_code"));
             model.setAmount(DbUtil.getBigDecimal(map, "amount"));
             model.setCurrency(DbUtil.getString(map, "currency_code"));
+
+            model.setStatus(new StatusResponse());
+            model.getStatus().setStatusId(DbUtil.getInt(map, "status_id"));
+            model.getStatus().setStatusCode(DbUtil.getString(map, "status_code"));
+            model.getStatus().setStatusName(DbUtil.getString(map, "status_name"));
         }
 
     	return model;

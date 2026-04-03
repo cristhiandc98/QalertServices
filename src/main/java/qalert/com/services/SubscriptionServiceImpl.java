@@ -23,4 +23,9 @@ public class SubscriptionServiceImpl implements ISubscription{
         return dao.getSubscriptions();
     }
 
+    @Override
+    public void updateUserSubscription(long userId) {
+        dao.updateUserSubscription(userId);
+    }
+
 }

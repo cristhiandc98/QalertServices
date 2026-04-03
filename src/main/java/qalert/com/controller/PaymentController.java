@@ -4,17 +4,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
+import qalert.com.interfaces.ISubscription;
 import qalert.com.interfaces.log.ILogService;
 import qalert.com.interfaces.payment.IPaymentService;
 import qalert.com.models.generic.Response2;
@@ -28,6 +32,7 @@ import qalert.com.models.payment.PaymentGetResponse;
 import qalert.com.models.payment.PaymentUpdateRequest;
 import qalert.com.models.service_log.LogServiceRequest;
 import qalert.com.utils.consts.ApiConst;
+import qalert.com.utils.consts.CommonConsts;
 import qalert.com.utils.enums.PaymentStatusEnum;
 import qalert.com.utils.exceptions.WebServiceException;
 
@@ -37,6 +42,10 @@ public class PaymentController {
 
     @Autowired
     private IPaymentService paymentService;
+
+    @Autowired
+    @Qualifier(CommonConsts.QALIFIER_SERVICE)
+    private ISubscription subscriptionService;
 
     @Autowired
     private ILogService logService;
@@ -110,7 +119,8 @@ public class PaymentController {
         Response2<Boolean> out;
 
         Long paymentId = null;
-        String paymentStatusName = PaymentStatusEnum.FAILED.toString();
+        String paymentStatusCode = PaymentStatusEnum.FAILED.toString();
+        boolean signed = false;
 
         try {
             //get payment code
@@ -126,9 +136,14 @@ public class PaymentController {
             paymentId = paymentRsp.getPaymentId();
 
             IzipayPaymenGetResponse iziRsp = paymentService.getIzipayPayment(new IzipayPaymenGetRequest(paymentRsp.getPaymentOrderId()));
-            paymentStatusName = iziRsp.getAnswer().getPaymentOrderStatus();
+            paymentStatusCode = iziRsp.getAnswer().getPaymentOrderStatus();
 
-            messagingTemplate.convertAndSend("/" + paymentCode);
+            if(paymentRsp.getStatus().getStatusCode().equals(paymentStatusCode)){
+                subscriptionService.updateUserSubscription(paymentRsp.getUserId());
+                signed = true;
+            }
+
+            messagingTemplate.convertAndSend(ApiConst.WS_CLIENT_PREFIX + "/" + paymentCode, signed);
 
             out = new Response2<>();
 
@@ -144,7 +159,7 @@ public class PaymentController {
 
         //if payment is created in bd
         if(paymentId != null)
-            paymentService.update(new PaymentUpdateRequest(paymentId, null, paymentStatusName, out.getErrorMssg() ));
+            paymentService.update(new PaymentUpdateRequest(paymentId, null, paymentStatusCode, out.getErrorMssg() ));
         
         
         logService.setResponseDataAndSave(logModel, out);
@@ -154,34 +169,19 @@ public class PaymentController {
 
 
 
-    @PostMapping(value = "/abandoned", consumes = "*/*")
-    public ResponseEntity<?> abandoned(HttpServletRequest http) {
+    @GetMapping(produces = ApiConst.PRODUCES)
+    public ResponseEntity<?> abandoned(@RequestParam("paymentCode") String paymentCode, HttpServletRequest http) {
 
-        LogServiceRequest logModel = logService.setRequestData(http, null);
-        Response2<Boolean> out;
+        LogServiceRequest logModel = logService.setRequestData(http, paymentCode);
+
+        Response2<PaymentGetResponse> out;
 
         try {
-            //get payment code
-            //String krAnswer = http.getParameter("kr-answer");
-            // Map<String, Object> json = objectMapper.readValue(krAnswer, Map.class);
-            // Map orderDetails = (Map) json.get("orderDetails");
-            // String paymentCode = (String) orderDetails.get("orderId");
+            out = new Response2<>(paymentService.get(paymentCode));
 
-            String body = http.getReader()
-            .lines()
-            .collect(Collectors.joining(System.lineSeparator()));
-
-
-            messagingTemplate.convertAndSend(
-                    ApiConst.WS_CLIENT_PREFIX + "/" + 1,
-                    new Response2<>(true)
-            );
-
-
-            logModel = logService.setRequestData(http, body);
-
-            out = new Response2<>();
-
+        } catch (DataAccessException ex) {
+            out = new Response2<>(ex);
+        
         } catch (Exception ex) {
             out = new Response2<>(ex);
         }
@@ -189,6 +189,6 @@ public class PaymentController {
         
         logService.setResponseDataAndSave(logModel, out);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(out.getStatusCode()).body(out);
     }
 }

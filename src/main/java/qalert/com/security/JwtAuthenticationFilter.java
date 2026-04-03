@@ -75,7 +75,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setCharacterEncoding(CommonConsts.ENCODING);
         response.getWriter().write(new ObjectMapper().writeValueAsString(out));
         response.getWriter().flush();
-        out.setError(failed);
+        out.setErrorMssg(failed.getMessage());
 
         serviceLog.setResponseDataAndSave(logModel, out);
     }

@@ -473,10 +473,12 @@ CREATE TABLE user_subscription (
     subscription_id INTEGER NOT NULL,
     user_id BIGINT NOT NULL,
     created_datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
-    expires_at	DATETIME,
+    expires_at	DATE,
+    payment_id BIGINT,
     status BIT(1) DEFAULT b'1',
     CONSTRAINT pk_user_subscription PRIMARY KEY (user_subscription_id),
     CONSTRAINT fk_user_subscription__subscription FOREIGN KEY (subscription_id) REFERENCES subscription(subscription_id),
     CONSTRAINT fk_user_subscription__user FOREIGN KEY (user_id) REFERENCES user(user_id)
+    CONSTRAINT fk_user_subscription__payment FOREIGN KEY (payment_id) REFERENCES payment(payment_id)
 );
 GRANT SELECT, INSERT, UPDATE ON qalert_bd.user_subscription                TO 'qalert_app'@'%';

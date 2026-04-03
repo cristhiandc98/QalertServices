@@ -92,7 +92,6 @@ DROP PROCEDURE IF EXISTS `sp_insert_suggestions`;
 DROP PROCEDURE IF EXISTS sp_get_aliment_list;
 DROP PROCEDURE IF EXISTS sp_listar_additive;
 DROP PROCEDURE IF EXISTS `sp_get_app_settings_list`;
-DROP PROCEDURE IF EXISTS `sp_subscription`;
 -- Borrar funciones
 DROP FUNCTION IF EXISTS `fn_generar_nombre_archivo`;
 DROP FUNCTION IF EXISTS `fn_generar_url_archivo`;

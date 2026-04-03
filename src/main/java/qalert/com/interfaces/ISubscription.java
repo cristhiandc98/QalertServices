@@ -8,4 +8,6 @@ public interface ISubscription {
 
     List<SubscriptionResponse> getSubscriptions();
 
+    void updateUserSubscription(long userId);
+    
 }

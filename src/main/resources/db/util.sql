@@ -42,23 +42,16 @@ select * from scan_detail order by 1 desc limit 10;
 
 
 
-select p.payment_error
-	, p.payment_id
-	, p.payment_code
-    , u.user_id
-    , u.username
-    , c.currency_id
-    , c.currency_name
+select p.payment_error, p.payment_id, p.payment_code, p.payment_order_id
+    , u.user_id, u.username
+    , c.currency_id, c.currency_name
     , p.amount
     , p.payment_status_id
-    , s.name
-    , s.status_code
-    , pr.product_id
-    , pr.product_code
-    , pr.product_name
+    , s.name, s.status_code, ss.subscription_id
+    , pr.product_id, pr.product_code, pr.product_name
     , pd.quantity
     , pd.unit_price
-    , pd.discount
+    , pd.total_discount
     , pd.total_amount
     , p.created_date
     , p.created_time
@@ -68,5 +61,6 @@ from payment p
     inner join status s on s.status_id = p.payment_status_id
     left join payment_detail pd on pd.payment_id = p.payment_id
     left join product pr on pr.product_id = pd.product_id
+	left join subscription ss on ss.product_id = pd.product_id
 order by p.payment_id desc
-limit 1;
+limit 3;

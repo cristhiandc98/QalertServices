@@ -49,6 +49,10 @@ drop table if exists aliment_category;
 drop table if exists endpoint;
 drop table if exists `subscription`;
 drop table if exists user_subscription;
+drop table if exists payment_detail;
+drop table if exists payment;
+drop table if exists currency;
+drop table if exists product;
 SET FOREIGN_KEY_CHECKS = 1;
 -- Borrar procedimientos
 DROP PROCEDURE IF EXISTS `sp_actualizar_comprobante`;
@@ -92,10 +96,17 @@ DROP PROCEDURE IF EXISTS `sp_insert_suggestions`;
 DROP PROCEDURE IF EXISTS sp_get_aliment_list;
 DROP PROCEDURE IF EXISTS sp_listar_additive;
 DROP PROCEDURE IF EXISTS `sp_get_app_settings_list`;
+DROP PROCEDURE IF EXISTS sp_get_payment;
+DROP PROCEDURE IF EXISTS sp_get_promotions;
+DROP PROCEDURE IF EXISTS sp_get_subscriptions;
+DROP PROCEDURE IF EXISTS sp_insert_payment;
+DROP PROCEDURE IF EXISTS sp_update_payment;
+DROP PROCEDURE IF EXISTS sp_update_scan_header;
+DROP PROCEDURE IF EXISTS sp_update_user_subscription;
 -- Borrar funciones
 DROP FUNCTION IF EXISTS `fn_generar_nombre_archivo`;
 DROP FUNCTION IF EXISTS `fn_generar_url_archivo`;
 DROP FUNCTION IF EXISTS `fn_validate_new_user`;
 -- Borrar vistas
-DROP VIEW IF EXISTS `vs_status`;
 DROP VIEW IF EXISTS `vw_status`;
+DROP VIEW IF EXISTS fn_existing_user;

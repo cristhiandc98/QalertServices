@@ -1518,7 +1518,6 @@ BEGIN
         left join status s on s.status_type_id = 6
 			and s.status_id = p.payment_status_id
     where p.payment_code = vi_payment_code
-		and p.payment_code = vi_payment_code
 	limit 1;
     
 END;;
@@ -1550,8 +1549,8 @@ BEGIN
     with subscription_cte as (
 		select s.subscription_id
 			, s.subscription_months
-			, x.price_without_discount
-			, x.price_with_discount
+			, p.price as price_without_discount
+			, p.price - s.discount as price_with_discount
 		from subscription s
 			inner join product p on p.product_id = s.product_id
 				and p.product_status_id = 6

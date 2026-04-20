@@ -138,7 +138,7 @@ public class PaymentController {
             IzipayPaymenGetResponse iziRsp = paymentService.getIzipayPayment(new IzipayPaymenGetRequest(paymentRsp.getPaymentOrderId()));
             paymentStatusCode = iziRsp.getAnswer().getPaymentOrderStatus();
 
-            if(paymentRsp.getStatus().getStatusCode().equals(paymentStatusCode)){
+            if(PaymentStatusEnum.PAID.toString().equals(paymentStatusCode)){
                 subscriptionService.updateUserSubscription(paymentRsp.getUserId());
                 signed = true;
             }

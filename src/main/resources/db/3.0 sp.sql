@@ -1033,49 +1033,90 @@ DELIMITER ;
 
 grant execute on procedure qalert_bd.sp_fetch_profiles   to 'qalert_app'@'%';
 
-drop procedure if exists sp_update_profile;
-
-DELIMITER //
-
-CREATE PROCEDURE sp_update_profile(
-    vi_profile_id     BIGINT,
-    vi_name           VARCHAR(50),
-    vi_birthdate      DATE,
-	vi_image_path     VARCHAR(500)
+drop procedure if exists sp_update_password;
+DELIMITER ;;
+CREATE PROCEDURE sp_update_password(
+vi_username 				varchar(50)
+,vi_verification_code		int
+,vi_password				varchar(500)
 )
 sp:BEGIN
 
-    DECLARE n_profile_name_exists INT;
+	-- ***************************************************************************
+	-- Versión:		1.0
+	-- Autor: 		Cristhian Díaz
+	-- Fecha:  		2024-09-03
+	-- Objetivo: 	Update a user
+	-- ------------------------------------------------------------
+	-- Descripción de parámetros:
+	-- ------------------------------------------------------------
+	-- Ejemplo de uso
+	-- call sp_update_password('CRDC98CRDC@GMAIL.COM', 153, 'XXX');
+	-- ------------------------------------------------------------
+	-- Log
+	-- Fecha			Autor		Cod. Mod.	Comentarios
+    -- 
+	-- ***************************************************************************
+    
+	declare n_status_id__active		int default 2;
+    
+    -- Verification code variables
+  declare n_validate_email_id int;
+	declare d_current_datetime datetime default current_timestamp();
+	declare d_verification_code_expiration_datetime datetime;
+  DECLARE n_user_exists           INT DEFAULT 0;
 
-    -- Verificar si el nombre del perfil ya existe para otro perfil del mismo usuario (que no esté eliminado)
-    SELECT COUNT(1)INTO n_profile_name_exists
-    FROM profile
-    WHERE name = vi_name 
-      AND profile_id != vi_profile_id
-      AND status_id = 3
-      AND user_id = (
-          SELECT user_id FROM profile WHERE profile_id = vi_profile_id AND status_id != 5
-      );
+	-- ******************************************************************************
+	-- -- ***************************************Verify if verification code is valid
+	-- ******************************************************************************
+	begin 
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+		select t.expirate_datetime, t.validate_email_id
+		into d_verification_code_expiration_datetime, n_validate_email_id
+		from tmp_validate_email t
+		where t.email = vi_username
+			and t.verification_code = vi_verification_code;
 
-    IF n_profile_name_exists > 0 THEN
-        SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'El nombre indicado ya pertenece a otro perfil del usuario',
-                MYSQL_ERRNO = 50001;
-    END IF;
+		delete from tmp_validate_email where email = vi_username;
+		
+        IF d_verification_code_expiration_datetime IS NOT NULL THEN
+            IF d_verification_code_expiration_datetime < d_current_datetime THEN
+                SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = 'El código de verificación ya no es válido',
+                        MYSQL_ERRNO = 50001;
+            END IF;
+        ELSE
+            SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'El código de verificación ingresado no coincide',
+                    MYSQL_ERRNO = 50001;
+        END IF;
 
-    UPDATE profile
-    SET name = UPPER(vi_name),
-		  birthdate = vi_birthdate,
-          image_path = vi_image_path
-    WHERE profile_id = vi_profile_id
-      AND status_id = 3;
-
-END;
-//
-
+        SELECT COUNT(1)
+        INTO n_user_exists
+        FROM user
+        WHERE username = vi_username
+          AND status_id = n_status_id__active;
+          
+        IF n_user_exists = 0 THEN
+            SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'El usuario no existe',
+                    MYSQL_ERRNO = 50001;
+        END IF;
+        
+        update user 
+        set password = case when vi_password is null then password else vi_password end
+			,device_id = vi_verification_code
+        where username = vi_username
+			and status_id = n_status_id__active
+        ;
+        
+		select '¡Contraseña actualizada exitosamente!'	as user_mssg, '1' as status;
+	end;
+    
+END ;;
 DELIMITER ;
 
-grant execute on procedure qalert_bd.sp_update_profile   to 'qalert_app'@'%';
+GRANT EXECUTE ON PROCEDURE qalert_bd.sp_update_password TO 'qalert_app'@'%';
 
 drop procedure if exists sp_delete_profile; 
 DELIMITER //

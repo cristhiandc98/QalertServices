@@ -1,6 +1,6 @@
-use qalert_bd;
-
-
+use qalert_bd; 
+ 
+ 
  INSERT INTO endpoint(endpoint_name,method,description)
  VALUES 
  ('/user','POST','Registra un nuevo usuario'),
@@ -46,11 +46,11 @@ values(1, 'General')
     , (3, 'Profile')
     , (4, 'Additive');
 
-insert into status(status_id, status_type_id, name)
-values(1, 1, 'Active')
-	, (2, 2, 'Active')
-    , (3, 3, 'Active')
-    , (4, 4, 'Active');
+insert into status(status_id, status_type_id,status_code, name)
+values(1, 1,'ACTIVE_GE','Active')
+	, (2, 2,'ACTIVE_US_PERSON','Active')
+    , (3, 3,'ACTIVE_PF','Active')
+    , (4, 4,'ACTIVE_ADDV','Active');
 
 insert into document_type(document_type_id, name)
 values(1, 'DNI')
@@ -63,8 +63,8 @@ values('Inofensivo', 1, '#00913f')
     , ('Nocivo', 3, '#ff0000');
 
 
-insert into status(status_type_id,name,status)
-values(3,"inactive",0);
+insert into status(status_type_id,status_code,name,status)
+values(3,'INACTIVE_PF',"inactive",0);
 
 
 insert into master(table_id,field_id,sequence,created_datetime,status,description,value_int,value_varchar)
@@ -337,7 +337,7 @@ delete from status_type where status_type_id = 6;
 
 
 insert into status_type(status_type_id, name)values(5, 'product');
-insert into status(status_id, status_type_id, name)values(6, 5, 'active'), (7, 5, 'inactive');
+insert into status(status_id, status_type_id,status_code, name)values(6, 5,'ACTIVE_PD', 'active'), (7, 5,'INACTIVE_PD', 'inactive');
 
 
 
@@ -357,11 +357,11 @@ INSERT INTO product(product_id, product_code, product_name,
 	price, product_description)
 values(1, 'QALERT-0001', 'QALERT PREMIUM', 100, 'versión premium del app'),
     (2, 'QALERT-0002', 'QALERT PREMIUM 2', 600, 'versión premium del app 2'),
-    (3, 'QALERT-0003', 'QALERT PREMIUM 3', 1200, 'versión premium del app 3')
+    (3, 'QALERT-0003', 'QALERT PREMIUM 3', 1200, 'versión premium del app 3');
 
 
 
-INSERT INTO `qalert_bd`.`subscription`
+INSERT INTO subscription
 (`subscription_id`,
 `product_id`,
 `discount`,
@@ -376,4 +376,4 @@ VALUES
 
 
 INSERT INTO currency (currency_id, currency_code, currency_name, symbol) VALUES
-(1, 'PEN', 'SOL', 'S/');
+(1, 'USD', 'SOL', 'S/');

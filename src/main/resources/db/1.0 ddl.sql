@@ -364,6 +364,7 @@ GRANT SELECT, INSERT, UPDATE ON qalert_bd.currency TO 'qalert_app'@'%';
 CREATE TABLE IF NOT EXISTS payment (
     payment_id                  BIGINT AUTO_INCREMENT,
     payment_code                char(17),
+    payment_order_id            CHAR(32),
     user_id                     BIGINT NOT NULL,
     amount                      DECIMAL(10,2),
     currency_id                 int NOT NULL DEFAULT 1,

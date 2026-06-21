@@ -871,21 +871,22 @@ grant execute on procedure qalert_bd.sp_get_scan_list   to 'qalert_app'@'%';
 
 DROP FUNCTION IF EXISTS fn_existing_user;
 DELIMITER $$
-CREATE FUNCTION fn_existing_user(p_username VARCHAR(50)) 
+CREATE FUNCTION fn_existing_user(p_username VARCHAR(50))
 RETURNS TINYINT(1)
+READS SQL DATA
 BEGIN
     DECLARE exists_flag TINYINT(1);
 
     SELECT EXISTS (
-        SELECT 1 
-        FROM `user` 
+        SELECT 1
+        FROM `user`
         WHERE username = p_username
     ) INTO exists_flag;
 
     RETURN exists_flag;
 END $$
 DELIMITER ;
-grant execute on function qalert_bd.fn_existing_user to 'qalert_app'@'%';
+GRANT EXECUTE ON FUNCTION qalert_bd.fn_existing_user TO 'qalert_app'@'%';
 
 
 

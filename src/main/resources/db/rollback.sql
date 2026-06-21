@@ -103,6 +103,9 @@ DROP PROCEDURE IF EXISTS sp_insert_payment;
 DROP PROCEDURE IF EXISTS sp_update_payment;
 DROP PROCEDURE IF EXISTS sp_update_scan_header;
 DROP PROCEDURE IF EXISTS sp_update_user_subscription;
+DROP PROCEDURE IF EXISTS sp_subscription;
+DROP PROCEDURE IF EXISTS sp_subscription_list;
+DROP PROCEDURE IF EXISTS sp_subscriptions;
 -- Borrar funciones
 DROP FUNCTION IF EXISTS `fn_generar_nombre_archivo`;
 DROP FUNCTION IF EXISTS `fn_generar_url_archivo`;

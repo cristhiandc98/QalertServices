@@ -1119,6 +1119,50 @@ DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE qalert_bd.sp_update_password TO 'qalert_app'@'%';
 
+drop procedure if exists sp_update_profile;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_update_profile(
+    vi_profile_id     BIGINT,
+    vi_name           VARCHAR(50),
+    vi_birthdate      DATE,
+	vi_image_path     VARCHAR(500)
+)
+sp:BEGIN
+
+    DECLARE n_profile_name_exists INT;
+
+    -- Verificar si el nombre del perfil ya existe para otro perfil del mismo usuario (que no esté eliminado)
+    SELECT COUNT(1)INTO n_profile_name_exists
+    FROM profile
+    WHERE name = vi_name 
+      AND profile_id != vi_profile_id
+      AND status_id = 3
+      AND user_id = (
+          SELECT user_id FROM profile WHERE profile_id = vi_profile_id AND status_id != 5
+      );
+
+    IF n_profile_name_exists > 0 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El nombre indicado ya pertenece a otro perfil del usuario',
+                MYSQL_ERRNO = 50001;
+    END IF;
+
+    UPDATE profile
+    SET name = UPPER(vi_name),
+		  birthdate = vi_birthdate,
+          image_path = vi_image_path
+    WHERE profile_id = vi_profile_id
+      AND status_id = 3;
+
+END;
+//
+
+DELIMITER ;
+
+grant execute on procedure qalert_bd.sp_update_profile    to 'qalert_app'@'%';
+
 drop procedure if exists sp_delete_profile; 
 DELIMITER //
 
@@ -1375,7 +1419,7 @@ BEGIN
     where (table_id = 1 and field_id != 1 AND status = 1)
 		or (table_id = 0 and field_id in (2, 3) AND status = 1);
 END ;;
-DELIMITER ;;
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE qalert_bd.sp_get_app_settings_list TO 'qalert_app'@'%';
 
 

@@ -100,6 +100,7 @@ public class ScanDaoImpl implements IScanDao {
 
                 header = new ScanHeaderResponse();
 
+                header.setProductName(DbUtil.getString(row, "product_name"));
                 header.setToxocityLevelId(DbUtil.getInteger(row, "toxicity_level_id"));
                 header.setToxocityLevel(DbUtil.getString(row, "toxicity_level"));
                 header.setTotal(DbUtil.getLong(row, "total").intValue());

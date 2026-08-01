@@ -1,4 +1,4 @@
-﻿use qalert_bd;
+USE qalert_bd;
 -- Borrar todas las tablas
 -- Genera DROP statements para todas las tablas
 SET FOREIGN_KEY_CHECKS = 0;
@@ -112,4 +112,4 @@ DROP FUNCTION IF EXISTS `fn_generar_url_archivo`;
 DROP FUNCTION IF EXISTS `fn_validate_new_user`;
 -- Borrar vistas
 DROP VIEW IF EXISTS `vw_status`;
-DROP VIEW IF EXISTS fn_existing_user;
+DROP FUNCTION `fn_existing_user`;

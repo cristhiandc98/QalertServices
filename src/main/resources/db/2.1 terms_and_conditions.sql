@@ -1,4 +1,4 @@
-use qalert_bd;
+USE qalert_bd;
 
 update master set value_varchar = 
 'TÉRMINOS Y CONDICIONES

@@ -1,4 +1,4 @@
-use qalert_bd;
+USE qalert_bd;
 
 -- **************************************************additive_group**************************************************
 INSERT INTO additive_group(additive_group_id, toxicity_level_id, name, code, function_id, status_id) VALUES(1,1,'RIBOFLAVINAS','101',8,4);

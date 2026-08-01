@@ -1,4 +1,4 @@
-use qalert_bd;
+USE qalert_bd;
 
 drop procedure if exists sp_insert_user;
 

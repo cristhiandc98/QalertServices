@@ -1,5 +1,4 @@
-use qalert_bd; 
- 
+USE qalert_bd;
  
  INSERT INTO endpoint(endpoint_name,method,description)
  VALUES 
@@ -355,9 +354,9 @@ insert into status(status_type_id, status_id, status_code, name)values
 
 INSERT INTO product(product_id, product_code, product_name,
 	price, product_description)
-values(1, 'QALERT-0001', 'QALERT PREMIUM', 100, 'versión premium del app'),
-    (2, 'QALERT-0002', 'QALERT PREMIUM 2', 600, 'versión premium del app 2'),
-    (3, 'QALERT-0003', 'QALERT PREMIUM 3', 1200, 'versión premium del app 3');
+values(1, 'QALERT-0001', 'QALERT PREMIUM', 6, 'versión premium del app'),
+    (2, 'QALERT-0002', 'QALERT PREMIUM 2', 30, 'versión premium del app 2'),
+    (3, 'QALERT-0003', 'QALERT PREMIUM 3', 48, 'versión premium del app 3');
 
 
 
@@ -369,11 +368,12 @@ INSERT INTO subscription
 `created_datetime`,
 `subscription_status`)
 VALUES
-(4, 1, 10, 1, now(), 1),
-(5, 2, 20, 6, now(), 1),
-(6, 3, 30, 12, now(), 1);
+(4, 1, 2, 1, now(), 1),
+(5, 2, 10, 6, now(), 1),
+(6, 3, 12, 12, now(), 1);
 
 
 
 INSERT INTO currency (currency_id, currency_code, currency_name, symbol) VALUES
-(1, 'USD', 'SOL', 'S/');
+ (1, 'USD', 'DÓLAR', '$');
+-- (1, 'PEN', 'SOL','S/');

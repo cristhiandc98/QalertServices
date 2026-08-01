@@ -33,7 +33,7 @@ public class ScanRequest {
             if (!RegexUtil.validateNumericId(id))
                 throw new InvalidFormException("Perfil inválido");
             
-        if(productName == null || !RegexUtil.SIMPLE_NAME.matcher(productName).matches())
+        if(productName == null || !RegexUtil.ALLOWED_TEXT_PATTERN.matcher(productName).matches())
             throw new InvalidFormException("Nombre de producto inválido.");
     }
 

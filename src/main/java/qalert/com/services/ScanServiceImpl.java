@@ -93,7 +93,7 @@ public class ScanServiceImpl implements IScanService {
 
 				if (text.isEmpty())
 					out = new Response2<>(HttpStatus.BAD_REQUEST, "La imagen no contiene ingredientes.", false);
-				else if (text.length() <= 2000)
+				else if (text.length() <= 4000)
 					out = new Response2<>(text);
 				else
 					out = new Response2<>(HttpStatus.BAD_REQUEST,
